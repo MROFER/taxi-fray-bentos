@@ -26,7 +26,7 @@ export const GET: APIRoute = () =>
     [
       ...bots.map((b) => `User-agent: ${b}\nAllow: /\n`),
       'User-agent: *\nAllow: /\n',
-      `Sitemap: ${new URL('sitemap-index.xml', SITE.url).href}`,
+      `Sitemap: ${`${SITE.url}/sitemap-index.xml`}`,
       '',
     ].join('\n'),
     { headers: { 'Content-Type': 'text/plain; charset=utf-8' } },

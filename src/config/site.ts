@@ -5,8 +5,9 @@
  */
 export const SITE = {
   name: 'Taxi Fray Bentos',
-  url: 'https://taxifraybentos.com.uy',
-  domain: 'taxifraybentos.com.uy',
+  /** Dirección pública sin barra final (sale de `site` + `base` en astro.config.mjs). */
+  url: new URL(import.meta.env.BASE_URL, import.meta.env.SITE).href.replace(/\/$/, ''),
+  domain: new URL(import.meta.env.SITE).host,
   locale: 'es_UY',
   lang: 'es-UY',
   title: 'Taxi en Fray Bentos las 24 horas · Tarifas y WhatsApp',

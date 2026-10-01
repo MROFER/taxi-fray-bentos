@@ -3,14 +3,14 @@
   "short_name": "Taxi FB",
   "description": "Pedí un taxi habilitado en Fray Bentos por WhatsApp, las 24 horas.",
   "lang": "es-UY",
-  "start_url": "/?utm_source=pwa",
-  "scope": "/",
+  "start_url": "./?utm_source=pwa",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#F2ECDF",
   "theme_color": "#1B1A17",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

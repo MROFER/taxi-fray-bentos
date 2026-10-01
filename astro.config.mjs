@@ -3,8 +3,10 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // https://docs.astro.build/en/reference/configuration-reference/
+// SITE_URL y BASE_PATH permiten publicar en otra dirección (ej. GitHub Pages: ver .github/workflows/deploy.yml).
 export default defineConfig({
-  site: 'https://taxifraybentos.com.uy',
+  site: process.env.SITE_URL ?? 'https://taxifraybentos.com.uy',
+  base: process.env.BASE_PATH ?? '/',
   trailingSlash: 'ignore',
   integrations: [sitemap()],
   build: {

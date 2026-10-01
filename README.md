@@ -94,4 +94,6 @@ calculadora/                # La calculadora real: src/ (motor, ruta, modalidad,
 
 ## Deploy
 
-Sale como sitio estático en `dist/`: Netlify, Cloudflare Pages, Vercel o cualquier hosting. `public/_headers` trae el cacheo para Netlify/Cloudflare.
+Cada push a `main` se publica solo en GitHub Pages (`.github/workflows/deploy.yml`): https://mrofer.github.io/taxi-fray-bentos/
+
+Con dominio propio, cambiar en el workflow `SITE_URL` por el dominio y `BASE_PATH` por `/`. También sale como sitio estático en `dist/` para Netlify, Cloudflare Pages, Vercel o cualquier hosting (`public/_headers` trae el cacheo para Netlify/Cloudflare).
