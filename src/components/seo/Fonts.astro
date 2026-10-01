@@ -1,0 +1,26 @@
+---
+/**
+ * Fuentes autoalojadas (sin Google Fonts): sin DNS ni conexiones extra y sin CSS bloqueante.
+ * Solo el subset latin, que cubre el español. Se precargan las dos que pintan el primer pantallazo.
+ */
+import barlow700 from '@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2?url';
+import barlow800 from '@fontsource/barlow-condensed/files/barlow-condensed-latin-800-normal.woff2?url';
+import instrument from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
+import mono400 from '@fontsource/space-mono/files/space-mono-latin-400-normal.woff2?url';
+import mono700 from '@fontsource/space-mono/files/space-mono-latin-700-normal.woff2?url';
+
+const face = (family: string, src: string, weight: string) =>
+  `@font-face{font-family:'${family}';font-style:normal;font-display:swap;font-weight:${weight};src:url(${src}) format('woff2')}`;
+
+const css = [
+  face('Barlow Condensed', barlow700, '700'),
+  face('Barlow Condensed', barlow800, '800'),
+  face('Instrument Sans', instrument, '400 700'),
+  face('Space Mono', mono400, '400'),
+  face('Space Mono', mono700, '700'),
+].join('');
+---
+
+<link rel="preload" href={barlow800} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={instrument} as="font" type="font/woff2" crossorigin />
+<style set:html={css} is:inline></style>

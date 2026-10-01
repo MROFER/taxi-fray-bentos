@@ -1,0 +1,154 @@
+---
+import Placa from '@/components/ui/Placa.astro';
+import { TAXIS, mensajeAhora, mensajeReserva, whatsappUrl } from '@/data/taxis';
+
+const pendientes = [
+  TAXIS.some((t) => t.placa.includes('_')) && 'placas JTX',
+  TAXIS.some((t) => !t.whatsapp) && 'WhatsApp de cada taxi',
+  ...TAXIS.filter((t) => !t.plazas).map((t) => `plazas de la ${t.servicio}`),
+  'fotos reales',
+].filter(Boolean);
+
+const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas', 'A bordo'] as const;
+---
+
+<section class="sec flota" id="taxis" aria-labelledby="taxis-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="tag">Taxis · {TAXIS.length} servicios</span>
+      <h2 id="taxis-title">Elegí el auto según lo que lleves</h2>
+      <p>
+        Todos con chofer habilitado y taxímetro a la vista. Cada taxi tiene su propio WhatsApp: pedilo ahora o reservalo
+        para más tarde.
+      </p>
+    </header>
+
+    <div class="board-wrap">
+      <table class="board" role="table">
+        <caption class="sr-only">Taxis disponibles en Fray Bentos</caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            {columnas.map((c) => <th scope="col" role="columnheader">{c}</th>)}
+            <th scope="col" role="columnheader"><span class="sr-only">Pedir o reservar</span></th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {
+            TAXIS.map((t) => (
+              <tr role="row">
+                <th scope="row" role="rowheader" class="svc">
+                  {t.servicio}
+                  <small>{t.nota}</small>
+                </th>
+                <td role="cell" data-label="Placa">
+                  <Placa numero={t.placa} />
+                </td>
+                <td role="cell" data-label="Vehículo">
+                  <span>{t.vehiculo.map((linea, i) => (i ? [<br />, linea] : linea))}</span>
+                </td>
+                <td role="cell" data-label="Plazas">
+                  <span class="flip">
+                    <i class:list={{ todo: !t.plazas }}>{t.plazas || '?'}</i>
+                  </span>
+                </td>
+                <td role="cell" data-label="Valijas">{t.valijas}</td>
+                <td role="cell" data-label="A bordo">
+                  <span class="pills">
+                    {t.aBordo.map((b) => (
+                      <span class="pill">{b}</span>
+                    ))}
+                  </span>
+                </td>
+                <td role="cell" class="acciones-td">
+                  <div class="acciones">
+                    {t.whatsapp ? (
+                      <>
+                        <a class="pedir solid" href={whatsappUrl(t.whatsapp, mensajeAhora(t))} target="_blank" rel="noopener">
+                          Pedir ahora<span class="sr-only"> un {t.servicio} por WhatsApp</span>
+                        </a>
+                        <a class="pedir" href={whatsappUrl(t.whatsapp, mensajeReserva(t))} target="_blank" rel="noopener">
+                          Reservar<span class="sr-only"> un {t.servicio} por WhatsApp</span>
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        <button type="button" class="pedir solid" data-sin-whatsapp={t.servicio}>
+                          Pedir ahora<span class="sr-only"> un {t.servicio}</span>
+                        </button>
+                        <button type="button" class="pedir" data-sin-whatsapp={t.servicio}>
+                          Reservar<span class="sr-only"> un {t.servicio}</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    {pendientes.length > 1 && <p class="flota-note">[Pendiente: {pendientes.join(', ')}.]</p>}
+  </div>
+</section>
+
+<script>
+  import { toast } from '@/scripts/ui';
+
+  document.querySelectorAll<HTMLElement>('[data-sin-whatsapp]').forEach((b) =>
+    b.addEventListener('click', () => toast(`El WhatsApp del taxi ${b.dataset.sinWhatsapp} todavía no está definido.`)),
+  );
+</script>
+
+<style>
+  .flota { background: var(--ink); color: var(--paper); }
+  .flota .sec-head p { color: var(--muted-dark); }
+  .board-wrap { position: relative; overflow-x: auto; border: 2px solid var(--ink-3); border-radius: 14px; background: var(--ink-deep); }
+  .board { width: 100%; min-width: 980px; border-collapse: collapse; font-family: var(--f-mono); font-size: 14px; }
+  thead th { text-align: left; font-weight: 400; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-dark); padding: 16px 18px; background: var(--ink-2); }
+  td, .svc { padding: 20px 18px; border-top: 1px solid var(--ink-3); vertical-align: middle; text-align: left; }
+  tbody tr:hover { background: #17160f; }
+  .svc { font: 800 26px/1 var(--f-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--yellow); }
+  .svc small { display: block; font: 400 11px var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-dark); margin-top: 6px; }
+  .flip { display: inline-flex; gap: 3px; }
+  .flip i {
+    font-style: normal; display: inline-grid; place-items: center; width: 24px; height: 30px;
+    background: var(--ink-2); border-radius: 3px; color: var(--paper); font-weight: 700; box-shadow: inset 0 -15px 0 rgba(0, 0, 0, 0.25);
+  }
+  .flip i.todo { color: var(--yellow); }
+  .pill { display: inline-block; border: 1px solid var(--ink-3); border-radius: 4px; padding: 3px 8px; margin: 2px 4px 2px 0; font-size: 12px; color: var(--muted-dark); }
+  .acciones { display: flex; flex-direction: column; gap: 8px; }
+  .pedir {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+    font: 700 14px var(--f-body); text-decoration: none; text-align: center; white-space: nowrap;
+    background: transparent; color: var(--yellow); border: 1.5px solid var(--yellow); border-radius: 5px; padding: 9px 14px; cursor: pointer;
+  }
+  .pedir:hover { background: var(--yellow); color: var(--ink); }
+  .pedir.solid { background: var(--yellow); color: var(--ink); }
+  .pedir.solid:hover { background: var(--paper); border-color: var(--paper); }
+  .flota-note { margin-top: 18px; color: var(--muted-dark); font-size: 14px; }
+
+  /* Celular: cada taxi pasa a ser una tarjeta (sin scroll horizontal). Los role explícitos mantienen la semántica de tabla para lectores de pantalla. */
+  @media (max-width: 760px) {
+    .board-wrap { overflow: visible; border: 0; background: none; border-radius: 0; }
+    .board { min-width: 0; display: block; }
+    .board caption, .board thead { display: none; }
+    .board tbody { display: flex; flex-direction: column; gap: 16px; }
+    .board tr {
+      display: grid; grid-template-columns: 1fr auto; gap: 0 12px;
+      background: var(--ink-deep); border: 2px solid var(--ink-3); border-radius: 14px; padding: 18px 16px;
+    }
+    tbody tr:hover { background: var(--ink-deep); }
+    .board .svc { grid-column: 1; padding: 0 0 14px; border: 0; font-size: 30px; }
+    .board td { display: flex; justify-content: space-between; align-items: center; gap: 12px; grid-column: 1 / -1; padding: 10px 0; border-top: 1px dashed var(--ink-3); }
+    .board td[data-label]::before { content: attr(data-label); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-dark); flex: none; }
+    .board td[data-label='Placa'] { grid-column: 2; grid-row: 1; border: 0; padding: 0 0 14px; align-items: flex-start; }
+    .board td[data-label='Placa']::before { display: none; }
+    .board td[data-label='Vehículo'], .board td[data-label='A bordo'] { text-align: right; }
+    .pills { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+    .pills .pill { margin: 0; }
+    .board .acciones-td { border-top: 0; padding-top: 14px; }
+    .acciones { flex-direction: row; width: 100%; }
+    .pedir { flex: 1; min-height: 48px; font-size: 15px; }
+  }
+</style>

@@ -1,0 +1,58 @@
+---
+import Ticket from '@/components/ui/Ticket.astro';
+import { TARIFA, pesos } from '@/data/tarifa';
+
+const pasos = [
+  {
+    titulo: 'Bajada de bandera',
+    texto: `Apenas subís, el reloj arranca en ${pesos(TARIFA.bandera)}. Incluye los primeros ${TARIFA.metrosBandera} metros.`,
+  },
+  {
+    titulo: 'Recorrido y espera',
+    texto: `Cada 100 metros en ciudad suma una ficha de ${pesos(TARIFA.ficha)}. La hora de espera es de ${pesos(TARIFA.horaEspera)}. Fuera de la planta urbana, el kilómetro sale ${pesos(TARIFA.kmExtra)}.`,
+  },
+  {
+    titulo: 'Recargos y equipaje',
+    texto: `De 22:00 a 06:00, domingos y feriados hay un recargo de hasta ${Math.round(TARIFA.nocturno * 100)} %. La primera valija va sin cargo; cada valija extra se cobra un máximo de ${pesos(TARIFA.valija)}.`,
+  },
+];
+---
+
+<section class="sec tarifas" id="tarifas" aria-labelledby="tarifas-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <span class="tag dark">Tarifas</span>
+      <h2 id="tarifas-title">Sabés cuánto sale antes de subir</h2>
+      <p>Usamos la tarifa oficial de la Intendencia de Río Negro, la misma que marca el reloj. Así se arma tu viaje:</p>
+    </header>
+    <div class="tarifa-grid">
+      <ol class="steps">
+        {
+          pasos.map((p, i) => (
+            <li>
+              <span class="n" aria-hidden="true">{i + 1}</span>
+              <div>
+                <h3>{p.titulo}</h3>
+                <p>{p.texto}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <Ticket />
+    </div>
+  </div>
+</section>
+
+<style>
+  .tarifas { background: var(--paper-2); }
+  .tarifa-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+  @media (max-width: 900px) { .tarifa-grid { grid-template-columns: 1fr; } }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .steps li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 18px; padding-block: 22px; border-top: 3px dashed var(--ink); }
+  .steps li:last-child { border-bottom: 3px dashed var(--ink); }
+  @media (max-width: 520px) { .steps li { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; } }
+  .n { font: 800 46px/1 var(--f-display); color: var(--ink); }
+  h3 { font-size: 30px; margin-bottom: 6px; }
+  .steps p { color: var(--text-2); max-width: 34em; }
+</style>

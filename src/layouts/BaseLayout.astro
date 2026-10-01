@@ -1,0 +1,27 @@
+---
+import Head from '@/components/seo/Head.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Toast from '@/components/ui/Toast.astro';
+import { SITE } from '@/config/site';
+import '@/styles/global.css';
+
+type Props = Parameters<typeof Head>[0];
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <Head {...props} />
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <Header />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    <Toast />
+  </body>
+</html>

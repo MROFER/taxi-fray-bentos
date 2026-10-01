@@ -1,0 +1,23 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Página no encontrada · Taxi Fray Bentos" path="/404" noindex>
+  <section class="sec">
+    <div class="wrap nf">
+      <span class="tag dark">Error 404</span>
+      <h1>Esta calle no tiene salida</h1>
+      <p>La página que buscás no existe o cambió de lugar.</p>
+      <div class="ctas">
+        <a class="btn btn-ink" href="/#taxis">Pedir un taxi</a>
+        <a class="btn btn-line" href="/">Volver al inicio</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf { display: flex; flex-direction: column; gap: 22px; }
+  h1 { font-size: clamp(48px, 9vw, 112px); }
+  p { font-size: 18px; color: var(--text-2); }
+</style>

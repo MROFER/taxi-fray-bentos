@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es-UY">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editar cerco urbano</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    :root {
+      --fondo: #f6f5f1; --superficie: #fff; --texto: #1d1d1b; --suave: #5b5a55; --borde: #d9d6cc;
+      --acento: #b8860b; --ok: #1a7f37; --mal: #c62828; --aviso: #fff4d6; --aviso-borde: #e7c55a;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; background: var(--fondo); color: var(--texto); font: 16px/1.45 system-ui, sans-serif; }
+    .contenido { max-width: 1300px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+    @media (min-width: 900px) { .contenido { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; } }
+    h1 { margin: 0 0 4px; font-size: 1.4rem; }
+    h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .ayuda { color: var(--suave); margin: 0 0 12px; }
+    #mapa { height: 75vh; min-height: 400px; border-radius: 10px; border: 1px solid var(--borde); }
+    .panel { background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+    .botones { display: flex; flex-wrap: wrap; gap: 8px; }
+    button { font: inherit; min-height: 44px; padding: 8px 14px; border-radius: 8px; cursor: pointer; border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); }
+    button.principal { background: #1d1d1b; color: #ffd84d; border-color: #1d1d1b; font-weight: 700; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    .estado { margin: 10px 0 0; padding: 8px 10px; border-radius: 6px; background: var(--aviso); border-left: 4px solid var(--aviso-borde); }
+    .control { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; font-size: .95rem; }
+    .control li::before { display: inline-block; width: 1.4em; font-weight: 700; }
+    .control .bien::before { content: "✓"; color: var(--ok); }
+    .control .mal { color: var(--mal); font-weight: 600; }
+    .control .mal::before { content: "✗"; }
+    textarea { width: 100%; height: 220px; font: 12px/1.4 ui-monospace, Consolas, monospace; border: 1px solid var(--borde); border-radius: 8px; padding: 8px; }
+    summary { cursor: pointer; font-weight: 600; }
+    .vertice { width: 16px; height: 16px; border-radius: 50%; background: var(--acento); border: 2px solid #fff; box-shadow: 0 1px 4px rgb(0 0 0 / .4); }
+    .vertice.con-nota { background: #8a4b08; }
+    .medio { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid var(--acento); opacity: .85; }
+    .ref { font: 600 12px/1 system-ui, sans-serif; background: #fff; border: 1px solid #333; border-radius: 4px; padding: 3px 5px; white-space: nowrap; }
+    .ref.fuera { border-color: var(--mal); color: var(--mal); }
+    .editor-punto label { display: block; font-size: .85rem; color: var(--suave); margin-bottom: 4px; }
+    .editor-punto input { width: 220px; font: inherit; padding: 6px 8px; border: 1px solid var(--borde); border-radius: 6px; }
+    .editor-punto .botones { margin-top: 8px; }
+    .editor-punto button { min-height: 36px; padding: 4px 10px; }
+    .coords { font-size: .8rem; color: var(--suave); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div class="contenido">
+    <div>
+      <h1>Editar cerco urbano</h1>
+      <p class="ayuda">Dentro del cerco se cobra tarifa urbana.
+        <strong>Arrastrá</strong> un punto amarillo para moverlo ·
+        arrastrá un punto blanco (mitad de un lado) para <strong>agregar</strong> uno ·
+        <strong>tocá</strong> un punto amarillo para ponerle una nota o borrarlo.</p>
+      <div id="mapa"></div>
+    </div>
+
+    <div>
+      <section class="panel">
+        <h2>Guardar</h2>
+        <div class="botones">
+          <button id="guardar" class="principal" type="button" disabled>Aplicar y guardar</button>
+          <button id="descartar" type="button" disabled>Descartar cambios</button>
+        </div>
+        <p id="estado" class="estado" aria-live="polite">Cargando…</p>
+      </section>
+
+      <section class="panel">
+        <h2>Lugares de control</h2>
+        <ul id="control" class="control"></ul>
+      </section>
+
+      <section class="panel">
+        <details>
+          <summary>Copiar a mano (si no se puede guardar)</summary>
+          <p class="ayuda">Copiá esto y reemplazá la lista <code>CERCO_URBANO</code> completa en <code>src/cerco-urbano.js</code>
+            (por ejemplo, editando el archivo desde GitHub).</p>
+          <div class="botones"><button id="copiar" type="button">Copiar</button></div>
+          <textarea id="salida" readonly aria-label="Código del cerco"></textarea>
+        </details>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script type="module">
+    import { LUGARES_DE_CONTROL } from '../src/cerco-urbano.js';
+    import { dentroDeOtroCerco } from '../src/modalidad.js';
+
+    const $ = (id) => document.getElementById(id);
+    const r5 = (x) => Math.round(x * 1e5) / 1e5;
+    const escapar = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    let puntos = [];          // [{ lat, lon, nota }]
+    let guardado = '';        // copia de lo guardado, para saber si hay cambios
+    let hayServidor = false;
+
+    // ---------- Mapa ----------
+    const mapa = L.map('mapa').setView([-33.13, -58.305], 13);
+    window.mapaCerco = mapa; // para inspeccionar desde la consola
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">colaboradores de OpenStreetMap</a>',
+    }).addTo(mapa);
+
+    const lugares = [
+      ...Object.entries(LUGARES_DE_CONTROL.dentro).map(([n, p]) => ({ n, p, debeEstar: true })),
+      ...Object.entries(LUGARES_DE_CONTROL.fuera).map(([n, p]) => ({ n, p, debeEstar: false })),
+    ];
+    for (const l of lugares) {
+      L.circleMarker(l.p, { radius: 4, color: l.debeEstar ? '#1a7f37' : '#c62828', fillOpacity: 1, interactive: false }).addTo(mapa);
+      L.marker(l.p, {
+        icon: L.divIcon({ className: '', html: `<span class="ref ${l.debeEstar ? '' : 'fuera'}">${escapar(l.n)}</span>`, iconAnchor: [-6, 8] }),
+        interactive: false,
+      }).addTo(mapa);
+    }
+
+    const poligono = L.polygon([], { color: '#b8860b', weight: 2, fillOpacity: 0.08, interactive: false }).addTo(mapa);
+    const capa = L.layerGroup().addTo(mapa);
+    const icono = (clase, t) => L.divIcon({ className: '', html: `<div class="${clase}"></div>`, iconSize: [t, t], iconAnchor: [t / 2, t / 2] });
+    const coords = () => puntos.map((p) => [p.lat, p.lon]);
+
+    function dibujar() {
+      capa.clearLayers();
+      poligono.setLatLngs(coords());
+      puntos.forEach((p, i) => {
+        const m = L.marker([p.lat, p.lon], {
+          draggable: true, icon: icono('vertice' + (p.nota ? ' con-nota' : ''), 16),
+          title: p.nota || `Punto ${i + 1}`,
+        }).addTo(capa);
+        m.on('drag', () => { p.lat = r5(m.getLatLng().lat); p.lon = r5(m.getLatLng().lng); poligono.setLatLngs(coords()); });
+        m.on('dragend', cambio);
+        m.on('click', () => abrirEditor(i, m));
+
+        const q = puntos[(i + 1) % puntos.length];
+        const medio = L.marker([(p.lat + q.lat) / 2, (p.lon + q.lon) / 2], {
+          draggable: true, icon: icono('medio', 12), title: 'Arrastrar para agregar un punto',
+        }).addTo(capa);
+        medio.on('dragend', () => {
+          puntos.splice(i + 1, 0, { lat: r5(medio.getLatLng().lat), lon: r5(medio.getLatLng().lng), nota: '' });
+          cambio();
+        });
+      });
+      actualizarPanel();
+    }
+
+    function abrirEditor(i, marcador) {
+      const p = puntos[i];
+      const div = document.createElement('div');
+      div.className = 'editor-punto';
+      div.innerHTML = `
+        <label for="nota-punto">Nota del punto ${i + 1}</label>
+        <input id="nota-punto" type="text" maxlength="150" placeholder="Ej.: Mirador La Barranca" value="${escapar(p.nota)}">
+        <div class="coords">${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}</div>
+        <div class="botones">
+          <button type="button" data-accion="listo">Listo</button>
+          <button type="button" data-accion="borrar" ${puntos.length <= 3 ? 'disabled' : ''}>Borrar punto</button>
+        </div>`;
+      const popup = L.popup({ minWidth: 240 }).setLatLng(marcador.getLatLng()).setContent(div).openOn(mapa);
+      const campo = div.querySelector('input');
+      setTimeout(() => campo.focus(), 50);
+      const listo = () => { p.nota = campo.value.trim(); mapa.closePopup(popup); cambio(); };
+      campo.addEventListener('keydown', (e) => { if (e.key === 'Enter') listo(); });
+      div.querySelector('[data-accion="listo"]').addEventListener('click', listo);
+      div.querySelector('[data-accion="borrar"]').addEventListener('click', () => {
+        puntos.splice(i, 1);
+        mapa.closePopup(popup);
+        cambio();
+      });
+    }
+
+    // ---------- Estado ----------
+    const hayCambios = () => JSON.stringify(puntos) !== guardado;
+
+    function cambio() {
+      dibujar();
+      if (hayCambios()) estado('Hay cambios sin guardar.');
+    }
+
+    function estado(texto) { $('estado').textContent = texto; }
+
+    function actualizarPanel() {
+      const cerco = coords();
+      const errores = [];
+      $('control').innerHTML = lugares.map((l) => {
+        const esta = cerco.length >= 3 && dentroDeOtroCerco(l.p, cerco);
+        const bien = esta === l.debeEstar;
+        if (!bien) errores.push(l.n);
+        return `<li class="${bien ? 'bien' : 'mal'}">${escapar(l.n)}: ${esta ? 'adentro (urbano)' : 'afuera (extraurbano)'}</li>`;
+      }).join('');
+      $('guardar').disabled = !hayServidor || !hayCambios();
+      $('descartar').disabled = !hayCambios();
+      $('salida').value = 'export const CERCO_URBANO = [\n' + puntos.map((p) =>
+        `  [${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}],${p.nota ? ' // ' + p.nota : ''}`).join('\n') + '\n];';
+      return errores;
+    }
+
+    // ---------- Cargar y guardar ----------
+    async function cargar() {
+      try {
+        const r = await fetch('/api/cerco', { cache: 'no-store' });
+        if (!r.ok) throw new Error();
+        puntos = (await r.json()).puntos;
+        hayServidor = true;
+        estado('Cerco cargado. Mové los puntos y tocá "Aplicar y guardar".');
+      } catch {
+        // Sin el servidor local (por ejemplo, en la página publicada) solo se puede copiar a mano.
+        const { CERCO_URBANO } = await import(`../src/cerco-urbano.js?v=${Date.now()}`);
+        puntos = CERCO_URBANO.map(([lat, lon]) => ({ lat, lon, nota: '' }));
+        hayServidor = false;
+        estado('Para guardar directamente, abrí este editor con "npm run servir". Mientras tanto podés usar "Copiar a mano".');
+      }
+      guardado = JSON.stringify(puntos);
+      dibujar();
+      mapa.invalidateSize();
+      mapa.fitBounds(poligono.getBounds(), { padding: [20, 20] });
+    }
+
+    $('guardar').addEventListener('click', async () => {
+      const errores = actualizarPanel();
+      if (errores.length && !confirm(`Con este cerco quedan del lado equivocado: ${errores.join(', ')}.\n\n¿Guardar igual?`)) return;
+      $('guardar').disabled = true;
+      estado('Guardando…');
+      try {
+        const r = await fetch('/api/cerco', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ puntos }),
+        });
+        const datos = await r.json();
+        if (!r.ok) throw new Error(datos.error || 'No se pudo guardar.');
+        guardado = JSON.stringify(puntos);
+        actualizarPanel();
+        estado(`Guardado. La calculadora ya usa el cerco nuevo (recargá la página). Copia del anterior: ${datos.respaldo}`);
+      } catch (e) {
+        estado(`No se pudo guardar: ${e.message}`);
+        actualizarPanel();
+      }
+    });
+
+    $('descartar').addEventListener('click', () => {
+      if (!confirm('¿Descartar los cambios y volver al cerco guardado?')) return;
+      puntos = JSON.parse(guardado);
+      dibujar();
+      estado('Cambios descartados.');
+    });
+
+    $('copiar').addEventListener('click', async () => {
+      const t = $('salida');
+      try { await navigator.clipboard.writeText(t.value); } catch { t.select(); document.execCommand('copy'); }
+      estado('Copiado. Pegalo en src/cerco-urbano.js reemplazando la lista CERCO_URBANO.');
+    });
+
+    window.addEventListener('beforeunload', (e) => { if (hayCambios()) e.preventDefault(); });
+
+    cargar();
+  </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+---
+/** Instalar como app: usa el aviso nativo de instalación si el navegador lo ofrece; si no, explica cómo. */
+---
+
+<section class="app" id="app" aria-labelledby="app-title">
+  <div class="wrap app-grid">
+    <div class="app-copy">
+      <span class="tag">Sin descargas · Gratis</span>
+      <h2 id="app-title">Guardá el taxi en tu pantalla de inicio</h2>
+      <p>Un toque y estás pidiendo. No ocupa espacio y funciona en cualquier celular.</p>
+      <div class="ctas">
+        <button class="btn btn-yellow" type="button" data-howto="android"><svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true" fill="currentColor"><path d="M10.45.234l1.44 2.57C9.215 4.14 7.365 6.7 7.365 9.692h17.27c0-2.98-1.85-5.55-4.523-6.888l1.44-2.57s.103-.103-.103-.206c-.103-.103-.206.103-.206.103L19.7 2.702a9.35 9.35 0 0 0-3.804-.822 9.350 9.35 0 0 0-3.804.822l-1.54-2.57S10.450.03 10.346.03a.36.36 0 0 0 .103.206zM11.9 5.27c.4 0 .822.4.822.822s-.4.822-.822.822a.81.81 0 0 1-.822-.822.81.81 0 0 1 .822-.822zm8.224 0c.4 0 .822.4.822.822s-.4.822-.822.822a.81.81 0 0 1-.822-.822.81.81 0 0 1 .822-.822zM7.262 10.72v13.160c0 .617.822 1.542 1.440 1.542h2.056v4.523c0 1.13.822 2.056 1.850 2.056s1.850-.925 1.850-2.056V25.42h2.980v4.523c0 1.13.822 2.056 1.850 2.056s1.850-.925 1.850-2.056V25.42h2.056c.617 0 1.440-.822 1.440-1.542V10.72z"/><path d="M4.383 10.412c1.028 0 1.85.925 1.85 2.056v7.813c0 1.13-.822 2.056-1.85 2.056s-1.85-.925-1.85-2.056v-7.813c0-1.13.822-2.056 1.85-2.056z"/><path transform="translate(23.234 0)" d="M4.383 10.412c1.028 0 1.85.925 1.85 2.056v7.813c0 1.13-.822 2.056-1.85 2.056s-1.85-.925-1.85-2.056v-7.813c0-1.13.822-2.056 1.85-2.056z"/></svg>Android (Chrome)</button>
+        <button class="btn btn-line" type="button" data-howto="iphone"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>iPhone (Safari)</button>
+      </div>
+      <p class="howto" id="howto" aria-live="polite"></p>
+    </div>
+    <div class="phone" aria-hidden="true">
+      {Array.from({ length: 16 }, (_, i) => (i === 5 ? <i class="me">TAXI</i> : <i />))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { $ } from '@/scripts/ui';
+
+  interface InstallPromptEvent extends Event {
+    prompt(): Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+  }
+
+  const textos = {
+    android: 'En Chrome, abrí el menú ⋮ y tocá “Agregar a la pantalla principal”.',
+    iphone: 'En Safari, tocá el botón Compartir y elegí “Agregar a inicio”.',
+  } as const;
+
+  let aviso: InstallPromptEvent | null = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    aviso = e as InstallPromptEvent;
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-howto]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const so = b.dataset.howto === 'iphone' ? 'iphone' : 'android';
+      if (so === 'android' && aviso) {
+        await aviso.prompt();
+        aviso = null;
+        return;
+      }
+      $('howto').textContent = textos[so];
+    }),
+  );
+</script>
+
+<style>
+  .app { background: var(--ink); color: var(--paper); padding-block: clamp(64px, 9vw, 120px) 0; overflow: hidden; }
+  .app-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 48px; align-items: end; }
+  @media (max-width: 820px) { .app-grid { grid-template-columns: 1fr; } }
+  h2 { font-size: clamp(44px, 6.5vw, 92px); }
+  .app-copy { display: flex; flex-direction: column; gap: 22px; padding-bottom: clamp(48px, 7vw, 96px); }
+  .app-copy > p:not(.howto) { color: var(--muted-dark); font-size: 18px; max-width: 32em; }
+  .app .btn-line { color: var(--paper); border-color: var(--paper); }
+  @media (hover: hover) { .app .btn:hover { box-shadow: 4px 4px 0 var(--yellow); } }
+  .howto { font-size: 14px; color: var(--muted-dark); min-height: 1.4em; }
+  .phone {
+    justify-self: center; width: min(300px, 80vw); aspect-ratio: 300 / 560; max-width: 100%;
+    background: var(--ink-2); border: 9px solid var(--ink-3); border-bottom: 0; border-radius: 44px 44px 0 0;
+    padding: 56px 26px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-content: start;
+  }
+  @media (max-width: 820px) { .phone { aspect-ratio: 300 / 420; } }
+  .phone i { aspect-ratio: 1; border-radius: 14px; background: var(--ink-3); }
+  .phone .me {
+    background: var(--yellow); display: grid; place-items: center; font: 800 13px var(--f-display);
+    letter-spacing: 0.06em; color: var(--ink); box-shadow: 0 0 26px rgba(242, 183, 5, 0.55); font-style: normal;
+  }
+</style>

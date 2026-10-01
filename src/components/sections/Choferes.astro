@@ -1,0 +1,147 @@
+---
+import { SITE } from '@/config/site';
+---
+
+<section class="sec choferes on-yellow" id="choferes" aria-labelledby="choferes-title">
+  <div class="wrap chof-grid">
+    <div>
+      <header class="sec-head">
+        <span class="tag dark">Para choferes</span>
+        <h2 id="choferes-title">¿Manejás un taxi en Fray Bentos?</h2>
+        <p>
+          Sumá tu móvil al directorio de {SITE.domain}. Los pasajeros te llaman o te escriben directo a tu teléfono.
+        </p>
+      </header>
+      <ul class="perks">
+        <li>Registro sin costo</li>
+        <li>Llamadas y WhatsApp directo a vos, sin intermediarios</li>
+        <li>Tu parada marcada en el mapa</li>
+        <li>Verificamos tu permiso para que los pasajeros confíen</li>
+      </ul>
+      <div class="req">
+        <h3 class="mono">Para validar el alta</h3>
+        <ul>
+          <li>Chapa y matrícula de taxi habilitada por la Intendencia de Río Negro.</li>
+          <li>Libreta de conducir profesional categoría E.</li>
+          <li>Inspección técnica (SUCTA) y seguro de responsabilidad civil al día.</li>
+        </ul>
+      </div>
+    </div>
+
+    <form class="form" id="alta" method="post" action={SITE.altaEndpoint || undefined} data-endpoint={SITE.altaEndpoint} novalidate>
+      <div class="form-title"><b>SOLICITUD DE ALTA</b><span>Form. N.º 01</span></div>
+      <div class="stamp" id="stamp" aria-hidden="true">PERMISO<br />IRN<br />A VERIFICAR</div>
+      <div class="uf">
+        <label for="titular">Titular</label>
+        <input id="titular" name="titular" placeholder="Juan Pérez" autocomplete="name" required />
+      </div>
+      <div class="row2">
+        <div class="uf">
+          <label for="fantasia">Nombre del móvil</label>
+          <input id="fantasia" name="movil" placeholder="Taxi Express" autocomplete="organization" />
+        </div>
+        <div class="uf">
+          <label for="tel">Teléfono / WhatsApp</label>
+          <input id="tel" name="telefono" type="tel" inputmode="tel" placeholder="099 XXX XXX" autocomplete="tel" required />
+        </div>
+      </div>
+      <div class="uf">
+        <label for="permiso">N.º de permiso / chapa</label>
+        <input id="permiso" name="permiso" placeholder="JTX 0000" autocapitalize="characters" autocomplete="off" required />
+      </div>
+      <div class="uf">
+        <label for="parada">Parada habitual (opcional)</label>
+        <input id="parada" name="parada" placeholder="Plaza Constitución, 18 de Julio y 25 de Mayo" autocomplete="off" />
+      </div>
+      <div class="uf">
+        <label for="mail">Correo</label>
+        <input id="mail" name="correo" type="email" inputmode="email" placeholder="ejemplo@correo.com" autocomplete="email" />
+      </div>
+      <button class="btn btn-ink" type="submit">Enviar solicitud</button>
+      <p class="form-msg" id="formMsg" aria-live="polite">Te contactamos para validar el permiso antes de publicar tu móvil.</p>
+    </form>
+  </div>
+</section>
+
+<script>
+  import { $, replay } from '@/scripts/ui';
+
+  const form = $<HTMLFormElement>('alta');
+  const msg = $('formMsg');
+  const stamp = $('stamp');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const faltan = ['titular', 'tel', 'permiso']
+      .map((id) => $<HTMLInputElement>(id))
+      .filter((i) => !i.value.trim());
+    if (faltan.length) {
+      msg.textContent = 'Falta completar: ' + faltan.map((i) => i.labels?.[0]?.textContent?.toLowerCase()).join(', ') + '.';
+      faltan[0]!.focus();
+      return;
+    }
+
+    const endpoint = form.dataset.endpoint;
+    if (endpoint) {
+      try {
+        const r = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        if (!r.ok) throw new Error(String(r.status));
+      } catch {
+        msg.textContent = 'No pudimos enviar la solicitud. Probá de nuevo en un rato.';
+        return;
+      }
+      msg.textContent = 'Recibimos tu solicitud. Te contactamos para validar el permiso.';
+      form.reset();
+    } else {
+      msg.textContent = 'Vista de demostración: el envío todavía no está conectado.';
+    }
+    stamp.innerHTML = 'SOLICITUD<br>RECIBIDA';
+    replay(stamp, 'hit');
+  });
+</script>
+
+<style>
+  .choferes { background: var(--yellow); color: var(--ink); }
+  .chof-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+  @media (max-width: 900px) { .chof-grid { grid-template-columns: 1fr; } }
+  .choferes .sec-head { margin-bottom: 28px; }
+  .choferes .sec-head p { color: var(--ink-2); }
+  .perks { list-style: none; padding: 0; margin: 0 0 28px; display: flex; flex-direction: column; gap: 12px; font-size: 17px; }
+  .perks li { display: flex; gap: 12px; align-items: flex-start; }
+  .perks li::before {
+    content: ''; flex: none; width: 20px; height: 20px; margin-top: 3px; background: var(--ink);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 10.5l4.5 4.5L17 5.5' fill='none' stroke='black' stroke-width='3'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 10.5l4.5 4.5L17 5.5' fill='none' stroke='black' stroke-width='3'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .req { border-top: 2px solid var(--ink); padding-top: 16px; font-size: 14px; color: var(--ink-2); }
+  .req h3 { font-weight: 700; font-size: 12px; line-height: 1.4; color: var(--ink); margin-bottom: 6px; }
+  .req ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+
+  .form {
+    position: relative; background: var(--receipt); padding: clamp(22px, 4vw, 40px); border-radius: 3px;
+    box-shadow: 10px 10px 0 var(--ink); display: flex; flex-direction: column; gap: 18px;
+  }
+  @media (max-width: 520px) { .form { box-shadow: 6px 6px 0 var(--ink); margin-right: 6px; } }
+  .form-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-bottom: 3px solid var(--ink); padding-bottom: 12px; }
+  .form-title b { font-family: var(--f-mono); font-size: 15px; letter-spacing: 0.18em; }
+  .form-title span { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+  .uf { display: flex; flex-direction: column; gap: 2px; }
+  .uf label { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  .uf input {
+    font: 500 17px var(--f-body); color: var(--ink); background: transparent; border: 0;
+    border-bottom: 2px solid var(--ink); padding: 10px 0; border-radius: 0; width: 100%; min-height: 44px;
+  }
+  .uf input::placeholder { color: var(--placeholder); }
+  .uf input:focus { outline: none; border-bottom-color: var(--stamp); background: linear-gradient(transparent 85%, rgba(242, 183, 5, 0.35) 85%); }
+  .form .row2 { gap: 18px; }
+  .form-msg { font-size: 13px; color: var(--muted); min-height: 1.3em; }
+  .stamp {
+    position: absolute; right: clamp(14px, 4vw, 34px); top: 62px; width: 116px; height: 116px;
+    border: 4px double var(--stamp); border-radius: 50%; display: grid; place-items: center; text-align: center;
+    color: var(--stamp); font: 700 12px/1.25 var(--f-mono); letter-spacing: 0.08em;
+    transform: rotate(-14deg) scale(1); opacity: 0.75; pointer-events: none;
+  }
+  @media (max-width: 520px) { .stamp { width: 92px; height: 92px; font-size: 10px; top: 56px; } }
+  .stamp:global(.hit) { animation: stamp 0.45s cubic-bezier(0.2, 1.6, 0.4, 1); }
+  @keyframes stamp { 0% { transform: rotate(-14deg) scale(2.2); opacity: 0; } 100% { transform: rotate(-14deg) scale(1); opacity: 0.9; } }
+</style>

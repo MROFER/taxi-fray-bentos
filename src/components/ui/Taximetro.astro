@@ -1,0 +1,274 @@
+---
+/**
+ * Taxímetro: la calculadora real (calculadora/src) con el diseño de la landing.
+ * El HTML sale listo del build; el motor, las calles y el mapa se cargan recién al usarlo
+ * (ver src/scripts/taximetro/index.ts).
+ */
+import { CONFIG } from '@calc/config.js';
+import { pesos } from '@/data/tarifa';
+import { pesos as pesosRedondo } from '@/scripts/taximetro/textos';
+
+const pin = `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.6" fill="currentColor"/></svg>`;
+const ayudaValijas =
+  CONFIG.valijas_incluidas > 0
+    ? `${CONFIG.valijas_incluidas === 1 ? 'La primera no se cobra' : `Las primeras ${CONFIG.valijas_incluidas} no se cobran`}; las demás, hasta ${pesosRedondo(CONFIG.valija_adicional, 2)} cada una`
+    : `Hasta ${pesosRedondo(CONFIG.valija_adicional, 2)} cada una`;
+const vigencia = CONFIG.vigencia.split('-').reverse().join('/');
+
+const campos = [
+  { clave: 'origen', letra: 'A', etiqueta: 'Desde', ejemplo: 'Ej.: 18 de Julio 1033', tecla: 'next' },
+  { clave: 'destino', letra: 'B', etiqueta: 'Hasta', ejemplo: 'Ej.: 25 de Mayo y Rincón', tecla: 'go' },
+] as const;
+---
+
+<form class="meter" id="pedir" aria-labelledby="meter-title" autocomplete="off" novalidate>
+  <div class="meter-head mono">
+    <span class="led" id="modo">Libre</span><h2 id="meter-title" class="meter-title">Taxímetro</h2>
+  </div>
+
+  <div class="display" aria-live="polite">
+    <span class="display-top"><span id="tarifaTipo">SIN VIAJE</span><span id="kmShow">— KM</span></span>
+    <span class="amount" id="amount">{pesos(0)}</span>
+    <dl class="rangos" id="rangos" hidden></dl>
+    <dl class="breakdown" id="breakdown"><dt>Elegí de dónde salís y a dónde vas</dt><dd></dd></dl>
+  </div>
+  <ul class="avisos" id="avisos" hidden></ul>
+  <div id="error-config" class="error-config" role="alert" hidden></div>
+
+  {
+    campos.map((c) => (
+      <div class="field" data-punto={c.clave}>
+        <div class="field-top">
+          <label for={`${c.clave}-direccion`}>
+            <span class:list={['letra', `letra-${c.letra.toLowerCase()}`]} aria-hidden="true">{c.letra}</span>
+            {c.etiqueta}
+          </label>
+          <button type="button" class="map-link" aria-label={`Marcar en el mapa el punto ${c.clave === 'origen' ? 'de salida' : 'de llegada'}`}>
+            <Fragment set:html={pin} />Marcar en el mapa
+          </button>
+        </div>
+        <div class="campo-calle">
+          <input
+            id={`${c.clave}-direccion`}
+            type="text"
+            placeholder={c.ejemplo}
+            autocomplete="off"
+            enterkeyhint={c.tecla}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls={`${c.clave}-sugerencias`}
+            aria-describedby={`${c.clave}-estado`}
+          />
+          <ul id={`${c.clave}-sugerencias`} class="sugerencias" role="listbox" hidden />
+        </div>
+        <p class="estado" id={`${c.clave}-estado`} aria-live="polite">{c.clave === 'origen' && 'Calle y número, o calle y esquina.'}</p>
+      </div>
+    ))
+  }
+
+  <div class="valijas">
+    <div>
+      <span id="valijas-titulo" class="valijas-titulo">Valijas</span>
+      <span id="valijas-ayuda" class="valijas-ayuda">{ayudaValijas}</span>
+    </div>
+    <div class="stepper" role="group" aria-labelledby="valijas-titulo" aria-describedby="valijas-ayuda">
+      <button id="valijas-menos" type="button" aria-label="Una valija menos" disabled>−</button>
+      <output id="valijas-cantidad" aria-live="polite">0</output>
+      <button id="valijas-mas" type="button" aria-label="Una valija más">+</button>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-yellow" id="calcBtn" disabled>Calcular tarifa</button>
+  <p class="falta" id="falta">Falta elegir el punto de salida y el de llegada.</p>
+
+  <div class="resultado-extra" id="resultadoExtra" hidden>
+    <button type="button" class="map-link" id="verRuta"><Fragment set:html={pin} />Ver el recorrido en el mapa</button>
+    <details id="detalle">
+      <summary>Cómo se calcula</summary>
+      <div class="tecnico" id="detalleCuerpo"></div>
+    </details>
+  </div>
+
+  <p class="copy-note">
+    Estimación aproximada de cuánto apartar. El valor a pagar es el que indica el reloj taxímetro a bordo. Tarifas vigentes
+    desde {vigencia}.
+  </p>
+</form>
+
+<dialog class="mapa" id="mapa" aria-labelledby="mapaTit">
+  <div class="mapa-box">
+    <div class="mapa-head">
+      <h2 id="mapaTit">Marcá el punto de salida</h2>
+      <button type="button" class="mapa-close" id="mapaCerrar" aria-label="Cerrar mapa">×</button>
+    </div>
+    <div class="mapa-lienzo" id="mapaLeaflet" role="region" aria-label="Mapa de Fray Bentos"></div>
+    <p class="mapa-foot" id="mapaAyuda">Tocá el mapa en el punto de salida. La línea punteada marca el área urbana.</p>
+    <p class="mapa-foot creditos">
+      Calles y mapa: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>.
+      Rutas: <a href="https://project-osrm.org/" target="_blank" rel="noopener">OSRM</a>.
+    </p>
+  </div>
+</dialog>
+
+<script>
+  import { cargarTaximetro } from '@/scripts/taximetro/index';
+
+  // El motor y los datos de calles se descargan con la primera intención de uso (no en la carga de la página).
+  const form = document.getElementById('pedir')!;
+  const iniciar = () => void cargarTaximetro();
+  for (const ev of ['pointerenter', 'touchstart', 'focusin'] as const) form.addEventListener(ev, iniciar, { once: true, passive: true });
+
+  // Si alguien escribe o toca un botón antes de que termine de cargar, se repite cuando está listo.
+  form.addEventListener('click', async (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('button.map-link');
+    if (!b || form.dataset.listo !== undefined) return;
+    await cargarTaximetro();
+    b.click();
+  });
+  form.addEventListener('input', async (e) => {
+    if (form.dataset.listo !== undefined) return;
+    await cargarTaximetro();
+    (e.target as HTMLElement).dispatchEvent(new Event('input'));
+  }, { once: true });
+</script>
+
+<style>
+  .meter {
+    background: var(--ink); color: var(--paper); border-radius: 22px;
+    padding: clamp(18px, 3vw, 30px); box-shadow: 12px 12px 0 var(--yellow);
+    display: flex; flex-direction: column; gap: 16px; min-width: 0;
+  }
+  @media (max-width: 520px) { .meter { box-shadow: 8px 8px 0 var(--yellow); border-radius: 18px; margin-right: 8px; } }
+  .meter-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: var(--muted-dark); font-size: 11px; }
+  .meter-title { font: inherit; letter-spacing: inherit; }
+  .led { display: inline-flex; align-items: center; gap: 8px; color: var(--yellow); }
+  .led::before {
+    content: ''; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--yellow); box-shadow: 0 0 10px var(--yellow); animation: blink 2.4s infinite;
+  }
+  @keyframes blink { 50% { opacity: 0.25; } }
+
+  .display { display: block; container-type: inline-size; background: var(--ink-deep); border: 2px solid var(--ink-3); border-radius: 12px; padding: 16px 20px 14px; }
+  .display-top { display: flex; justify-content: space-between; gap: 10px; color: var(--muted-dark); font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.16em; }
+  .amount {
+    display: block; font: 700 clamp(30px, 12.5cqi, 68px)/1.1 var(--f-mono); color: var(--yellow);
+    text-shadow: 0 0 18px rgba(242, 183, 5, 0.45); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden;
+  }
+  .rangos { margin: 8px 0 0; display: flex; flex-direction: column; gap: 10px; }
+  .rangos :global(.rango) { display: flex; flex-direction: column; gap: 2px; padding-top: 10px; border-top: 1px dashed var(--ink-3); }
+  .rangos :global(.rango:first-child) { padding-top: 0; border-top: 0; }
+  .rangos :global(dt) { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--muted-dark); line-height: 1.4; }
+  .rangos :global(.cod) { color: var(--paper); font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; }
+  .rangos :global(dd) { margin: 0; font-family: var(--f-mono); font-size: 14px; color: var(--muted-dark); white-space: nowrap; }
+  .rangos :global(strong) {
+    font-size: clamp(22px, 8.5cqi, 34px); color: var(--yellow); text-shadow: 0 0 14px rgba(242, 183, 5, 0.4);
+    font-variant-numeric: tabular-nums;
+  }
+  .rangos:global(.encendido) { animation: encender 0.5s ease; }
+  @keyframes encender { from { opacity: 0.2; filter: blur(2px); } }
+  .breakdown {
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 6px 0 0;
+    font-family: var(--f-mono); font-size: 12px; color: var(--muted-dark); font-variant-numeric: tabular-nums;
+  }
+  .breakdown :global(dt), .breakdown :global(dd) { min-width: 0; }
+  .breakdown :global(dd) { margin: 0; text-align: right; white-space: nowrap; }
+  .breakdown :global(dt.nota) { grid-column: 1 / -1; font-family: var(--f-body); font-size: 12.5px; }
+  .avisos { margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 1.45; color: var(--yellow); }
+  .error-config { background: #3d1d1c; border: 2px solid var(--stamp); border-radius: 8px; padding: 12px 14px; font-size: 13px; }
+  .error-config :global(p), .error-config :global(ul) { margin: 6px 0 0; }
+
+  .field { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .field-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .field label, .valijas-titulo {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-dark);
+  }
+  .letra { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font: 700 11px/1 var(--f-mono); letter-spacing: 0; color: var(--ink); }
+  .letra-a { background: var(--yellow); }
+  .letra-b { background: var(--paper); }
+  .map-link {
+    display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 8px 0; cursor: pointer;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--yellow);
+  }
+  .map-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .campo-calle { position: relative; }
+  input[type='text'] {
+    font: 500 16px var(--f-body); color: var(--paper); background: var(--ink-2);
+    border: 1.5px solid var(--ink-3); border-radius: 6px; padding: 12px 14px; width: 100%; min-height: 48px;
+  }
+  input[type='text']::placeholder { color: var(--placeholder); }
+  input[type='text']:global(.flash) { animation: flash 1s ease; }
+  @keyframes flash { 0% { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(242, 183, 5, 0.35); } }
+  .sugerencias {
+    position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none;
+    max-height: 264px; overflow-y: auto; overscroll-behavior: contain;
+    background: var(--ink-2); border: 1.5px solid var(--yellow); border-radius: 6px; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  }
+  .sugerencias :global(li) { padding: 11px 12px; border-radius: 4px; cursor: pointer; font-size: 15px; line-height: 1.3; }
+  .sugerencias :global(li:hover), .sugerencias :global(li[aria-selected='true']) { background: var(--yellow); color: var(--ink); }
+  .estado { font-size: 12.5px; line-height: 1.4; color: var(--muted-dark); }
+  .estado:empty { display: none; }
+  .estado:global(.alerta) { color: var(--yellow); }
+
+  .valijas { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .valijas > div:first-child { display: flex; flex-direction: column; gap: 2px; }
+  .valijas-ayuda { font-size: 12px; color: var(--muted-dark); line-height: 1.35; }
+  .stepper { display: inline-flex; flex: none; align-items: center; border: 1.5px solid var(--ink-3); border-radius: 6px; overflow: hidden; }
+  .stepper button {
+    background: var(--ink-2); color: var(--paper); border: 0; width: 44px; height: 44px;
+    font: 700 16px var(--f-mono); cursor: pointer; touch-action: manipulation;
+  }
+  .stepper button:disabled { color: var(--ink-3); cursor: default; }
+  .stepper output { min-width: 34px; text-align: center; font: 700 14px var(--f-mono); color: var(--paper); }
+
+  .meter .btn-yellow { width: 100%; font-size: 17px; }
+  .meter .btn-yellow:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+  @media (hover: hover) { .meter .btn-yellow:not(:disabled):hover { box-shadow: 4px 4px 0 var(--paper); } }
+  .falta { font-size: 13px; color: var(--muted-dark); text-align: center; margin-top: -6px; }
+  .resultado-extra { display: flex; flex-direction: column; gap: 6px; }
+  .resultado-extra:not([hidden]) { display: flex; }
+  details { border-top: 1px dashed var(--ink-3); }
+  summary { cursor: pointer; padding: 12px 0 4px; font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-dark); }
+  .tecnico { font-size: 13px; line-height: 1.5; color: var(--muted-dark); display: flex; flex-direction: column; gap: 10px; padding-top: 8px; }
+  .tecnico :global(em) { color: var(--paper); }
+  .tecnico :global(.tabla-scroll) { overflow-x: auto; }
+  .tecnico :global(table) { width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .tecnico :global(th), .tecnico :global(td) { padding: 6px 8px; border-bottom: 1px solid var(--ink-3); text-align: right; white-space: nowrap; font-weight: 400; }
+  .tecnico :global(th[scope='row']) { text-align: left; white-space: normal; }
+  .tecnico :global(thead th) { color: var(--yellow); }
+  .copy-note { font-size: 12.5px; line-height: 1.5; color: var(--muted-dark); text-align: center; }
+
+  /* Mapa */
+  .mapa {
+    width: min(760px, calc(100% - 24px)); max-width: none; max-height: calc(100dvh - 24px);
+    padding: 0; border: 2px solid var(--yellow); border-radius: 16px; background: var(--ink); color: var(--paper);
+    overflow: auto; overscroll-behavior: contain;
+  }
+  .mapa::backdrop { background: rgba(15, 14, 11, 0.72); }
+  .mapa-box { padding: clamp(14px, 3vw, 24px); display: flex; flex-direction: column; gap: 12px; }
+  .mapa-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .mapa-head h2 { font-size: clamp(26px, 4vw, 34px); }
+  .mapa-close {
+    background: var(--ink-2); color: var(--paper); border: 1.5px solid var(--ink-3); border-radius: 6px;
+    width: 44px; height: 44px; font: 700 20px var(--f-mono); cursor: pointer; flex: none;
+  }
+  .mapa-lienzo { height: min(62dvh, 520px); border-radius: 10px; background: #24221c; }
+  .mapa-lienzo:global(.marcando) { cursor: crosshair; }
+  .mapa-foot { font-size: 12.5px; color: var(--muted-dark); }
+  .creditos { font-size: 11.5px; }
+
+  :global(.calle-nombre span) {
+    position: absolute; transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none;
+    font: 600 11px/1 var(--f-body); color: var(--paper); text-shadow: 0 0 3px var(--ink), 0 0 3px var(--ink);
+  }
+
+  /* Marcadores A y B (los crea Leaflet fuera del componente) */
+  :global(.pin) {
+    width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+    display: grid; place-items: center; border: 2px solid var(--ink); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+  :global(.pin span) { transform: rotate(45deg); font: 700 14px/1 var(--f-mono); color: var(--ink); }
+  :global(.pin-a) { background: var(--yellow); }
+  :global(.pin-b) { background: var(--paper); }
+</style>

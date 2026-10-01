@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es-UY">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tarifa de taxi · Fray Bentos</title>
+  <meta name="description" content="Estimación aproximada de cuánto apartar para un viaje en taxi en Fray Bentos y Río Negro.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="estilos.css">
+  <script>
+    // Si src/config.js (u otro archivo) tiene un error de escritura, la página no llega a arrancar.
+    // En ese caso se avisa en lugar de dejar la calculadora sin funcionar en silencio.
+    window.addEventListener('error', function (e) {
+      if (window.calculadoraLista || !(e.error instanceof SyntaxError || /Syntax/.test(e.message || ''))) return;
+      var caja = document.getElementById('error-config');
+      if (!caja) return;
+      caja.innerHTML = '<strong>La calculadora no está disponible por un error de escritura en la configuración.</strong>' +
+        '<p>Para quien mantiene la página: revisar <code>src/config.js</code>. Lo más común es usar coma decimal ' +
+        '(<code>2,93</code>) en lugar de punto (<code>2.93</code>), o borrar una coma al final de una línea.</p>';
+      caja.hidden = false;
+      document.getElementById('calcular').disabled = true;
+    });
+  </script>
+</head>
+<body>
+  <header class="cabecera">
+    <h1>¿Cuánto sale el taxi?</h1>
+    <p>Fray Bentos y Río Negro. Elegí de dónde salís y a dónde vas.</p>
+  </header>
+
+  <main class="contenido">
+    <div class="columna-form">
+      <div id="error-config" class="error-config" hidden></div>
+
+      <form id="formulario" autocomplete="off" novalidate>
+        <fieldset class="punto" data-punto="origen">
+          <legend><span class="letra letra-a">A</span> Desde</legend>
+          <div class="campo-calle">
+            <label for="origen-direccion">Dirección <span class="opcional">(calle y número, o calle y esquina)</span></label>
+            <input id="origen-direccion" class="direccion" type="text" placeholder="Ej.: 18 de Julio 1033"
+                   role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="origen-sugerencias">
+            <ul id="origen-sugerencias" class="sugerencias" role="listbox" hidden></ul>
+          </div>
+          <p class="estado" aria-live="polite"></p>
+          <button type="button" class="marcar">Marcar en el mapa</button>
+        </fieldset>
+
+        <fieldset class="punto" data-punto="destino">
+          <legend><span class="letra letra-b">B</span> Hasta</legend>
+          <div class="campo-calle">
+            <label for="destino-direccion">Dirección <span class="opcional">(calle y número, o calle y esquina)</span></label>
+            <input id="destino-direccion" class="direccion" type="text" placeholder="Ej.: 25 de Mayo y Rincón"
+                   role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="destino-sugerencias">
+            <ul id="destino-sugerencias" class="sugerencias" role="listbox" hidden></ul>
+          </div>
+          <p class="estado" aria-live="polite"></p>
+          <button type="button" class="marcar">Marcar en el mapa</button>
+        </fieldset>
+
+        <div class="valijas">
+          <div>
+            <span id="valijas-titulo" class="valijas-titulo">Valijas</span>
+            <span id="valijas-ayuda" class="valijas-ayuda"></span>
+          </div>
+          <div class="contador" role="group" aria-labelledby="valijas-titulo" aria-describedby="valijas-ayuda">
+            <button id="valijas-menos" type="button" aria-label="Una valija menos" disabled>−</button>
+            <output id="valijas-cantidad" aria-live="polite">0</output>
+            <button id="valijas-mas" type="button" aria-label="Una valija más">+</button>
+          </div>
+        </div>
+
+        <button id="calcular" type="submit" class="calcular" disabled>Calcular</button>
+        <p id="falta" class="falta">Falta elegir el punto de salida y el de llegada.</p>
+      </form>
+
+      <section id="resultado" class="resultado" aria-live="polite" hidden></section>
+
+      <p class="aviso-permanente">Estimación aproximada. El monto a pagar es el que indique el taxímetro del vehículo.</p>
+    </div>
+
+    <div class="columna-mapa">
+      <div id="mapa" class="mapa" role="region" aria-label="Mapa"></div>
+      <p id="ayuda-mapa" class="ayuda-mapa">Podés arrastrar los puntos A y B para ajustarlos. La línea punteada marca el área urbana.</p>
+    </div>
+  </main>
+
+  <footer class="pie">
+    <p id="vigencia"></p>
+    <p>Calles y mapa: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">colaboradores de OpenStreetMap</a>.
+       Rutas: <a href="https://project-osrm.org/" target="_blank" rel="noopener">OSRM</a>.</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

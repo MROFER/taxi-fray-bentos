@@ -1,0 +1,71 @@
+---
+import Logo from './Logo.astro';
+import { SITE } from '@/config/site';
+import { SERVICIOS, COBERTURA } from '@/data/cobertura';
+
+const anio = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="checker" aria-hidden="true"></div>
+  <div class="wrap foot-grid">
+    <div>
+      <Logo />
+      <p class="foot-claim">Taxis habilitados y traslados en Fray Bentos y Río Negro, las 24 horas.</p>
+    </div>
+    <div>
+      <h2 class="foot-h">Servicios</h2>
+      <ul>{SERVICIOS.map((s) => <li>{s}</li>)}</ul>
+    </div>
+    <div>
+      <h2 class="foot-h">Cobertura</h2>
+      <ul>{COBERTURA.map((c) => <li>{c}</li>)}</ul>
+    </div>
+    <div>
+      <h2 class="foot-h">Contacto</h2>
+      <address>
+        <ul>
+          <li class="num">
+            {SITE.phone ? <a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay || SITE.phone}</a> : '[099 XXX XXX]'}
+          </li>
+          {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
+          <li>{SITE.domain}</li>
+          <li><a href="#choferes">Soy chofer</a></li>
+        </ul>
+      </address>
+    </div>
+  </div>
+  <div class="wrap legal">
+    <small>
+      © {anio} {SITE.name} · El robot de Android se reproduce a partir de una obra creada y compartida por Google, bajo
+      licencia Creative Commons 3.0 Atribución.
+    </small>
+    <nav aria-label="Legal">
+      <!-- PENDIENTE: páginas legales. -->
+      <a href="#inicio">Aviso legal</a><a href="#inicio">Privacidad</a><a href="#inicio">Cookies</a><a href="#inicio">Condiciones</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .footer { background: var(--ink); color: var(--muted-dark); border-top: 1px solid var(--ink-3); }
+  .foot-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; padding-block: 44px; }
+  @media (max-width: 820px) { .foot-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 460px) { .foot-grid { grid-template-columns: 1fr; } }
+  .foot-claim { margin-top: 14px; font-size: 14px; max-width: 24em; }
+  .foot-h {
+    margin: 0 0 10px; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.16em;
+    color: var(--yellow); font-weight: 700; line-height: 1.3;
+  }
+  ul { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.9; }
+  address { font-style: normal; }
+  .num { font-family: var(--f-mono); color: var(--paper); }
+  a { text-decoration: none; }
+  a:hover { color: var(--paper); }
+  .legal {
+    border-top: 1px solid var(--ink-3); padding-block: 18px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13px;
+  }
+  .legal small { font-size: inherit; }
+  .legal nav { display: flex; gap: 18px; flex-wrap: wrap; }
+</style>

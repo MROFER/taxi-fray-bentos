@@ -1,0 +1,54 @@
+---
+/**
+ * Preguntas frecuentes: respuestas cortas con el dato primero.
+ * El mismo texto alimenta el JSON-LD FAQPage (ver src/lib/schema.ts).
+ */
+import { FAQ } from '@/data/faq';
+---
+
+<section class="sec preguntas" id="preguntas" aria-labelledby="preguntas-title">
+  <div class="wrap faq-grid">
+    <header class="sec-head">
+      <span class="tag dark">Preguntas</span>
+      <h2 id="preguntas-title">Lo que más nos preguntan</h2>
+      <p>Tarifas, horarios, valijas y viajes fuera de la ciudad, en dos líneas.</p>
+    </header>
+    <div class="faq">
+      {
+        FAQ.map((f, i) => (
+          <details open={i === 0}>
+            <summary>
+              <h3>{f.pregunta}</h3>
+            </summary>
+            <p>{f.respuesta}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .preguntas { background: var(--paper-2); }
+  .faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+  @media (max-width: 900px) { .faq-grid { grid-template-columns: 1fr; } }
+  .faq-grid .sec-head { margin-bottom: 0; }
+  .faq-grid .sec-head h2 { font-size: clamp(44px, 5.5vw, 76px); }
+  @media (min-width: 901px) { .faq-grid .sec-head { position: sticky; top: calc(var(--nav-h) + 32px); } }
+
+  .faq { border-top: 3px dashed var(--ink); }
+  details { border-bottom: 3px dashed var(--ink); }
+  summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding-block: 20px; min-height: 48px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: '+'; flex: none; display: grid; place-items: center; width: 32px; height: 32px;
+    background: var(--ink); color: var(--yellow); border-radius: 50%; font: 700 20px/1 var(--f-mono);
+    transition: transform 0.15s ease;
+  }
+  details[open] summary::after { transform: rotate(45deg); }
+  h3 { font-size: clamp(24px, 2.6vw, 30px); line-height: 1; }
+  details p { padding-bottom: 22px; color: var(--text-2); max-width: 38em; }
+</style>

@@ -1,0 +1,57 @@
+---
+import Fonts from './Fonts.astro';
+import { SITE } from '@/config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Ruta de la página, para el canonical (ej. "/"). */
+  path?: string;
+  /** Objeto JSON-LD (schema.org). */
+  schema?: object;
+  noindex?: boolean;
+}
+
+const { title = SITE.title, description = SITE.description, path = '/', schema, noindex = false } = Astro.props;
+const canonical = new URL(path, SITE.url).href;
+const ogImage = new URL('/og.png', SITE.url).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+
+<Fonts />
+
+<meta name="theme-color" content={SITE.themeColor} />
+<meta name="color-scheme" content="light" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<!-- Señales locales -->
+<meta name="geo.region" content={SITE.geo.region} />
+<meta name="geo.placename" content={SITE.geo.placename} />
+<meta name="geo.position" content={`${SITE.geo.lat};${SITE.geo.lon}`} />
+<meta name="ICBM" content={`${SITE.geo.lat}, ${SITE.geo.lon}`} />
+
+<!-- Open Graph / redes -->
+<meta property="og:type" content="website" />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Taxi Fray Bentos: taxis habilitados las 24 horas en Fray Bentos, Río Negro." />
+<meta name="twitter:card" content="summary_large_image" />
+
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}

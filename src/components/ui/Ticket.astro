@@ -1,0 +1,75 @@
+---
+import { TARIFA, pesos } from '@/data/tarifa';
+
+const n = TARIFA.horarioNocturno;
+const lineas = [
+  { concepto: 'Bajada', nota: `incluye ${TARIFA.metrosBandera} m`, valor: pesos(TARIFA.bandera) },
+  { concepto: 'Ficha c/ 100 m', valor: pesos(TARIFA.ficha) },
+  { concepto: 'Hora de espera', valor: pesos(TARIFA.horaEspera) },
+  { concepto: 'Km extra urbano', valor: pesos(TARIFA.kmExtra) },
+  {
+    concepto: 'Nocturno',
+    nota: `${String(n.desde).padStart(2, '0')}:00 a ${String(n.hasta).padStart(2, '0')}:00`,
+    valor: `+ ${Math.round(TARIFA.nocturno * 100)} %`,
+  },
+  { concepto: 'Valija extra', nota: 'la 1.ª va gratis', valor: pesos(TARIFA.valija) },
+];
+---
+
+<article class="ticket" aria-labelledby="ticket-title">
+  <h3 id="ticket-title">TAXI FRAY BENTOS</h3>
+  <p class="sub">Tarifa vigente · Río Negro</p>
+  <dl>
+    {
+      lineas.map((l) => (
+        <div class="line">
+          <dt>
+            {l.concepto}
+            {l.nota && <small>{l.nota}</small>}
+          </dt>
+          <dd>{l.valor}</dd>
+        </div>
+      ))
+    }
+  </dl>
+  <p class="foot">{TARIFA.fuente}. Vigente desde {TARIFA.vigencia}.</p>
+  <div class="barcode" aria-hidden="true"></div>
+</article>
+
+<style>
+  .ticket {
+    --z: 10px;
+    position: relative; background: var(--receipt); padding: 34px 30px 30px;
+    font-family: var(--f-mono); font-size: 14px; transform: rotate(-1.4deg);
+    box-shadow: 0 22px 50px rgba(27, 26, 23, 0.18);
+    -webkit-mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--z) 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--z) 51% repeat-x;
+    mask:
+      conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--z) 51% repeat-x,
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--z) 51% repeat-x;
+  }
+  h3 { font-family: var(--f-mono); font-size: 16px; letter-spacing: 0.2em; text-align: center; line-height: 1.3; }
+  .sub { text-align: center; color: var(--muted); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 0 16px; border-bottom: 2px dashed var(--ink); }
+  dl { margin: 0; }
+  .line { display: flex; align-items: baseline; gap: 8px; padding: 11px 0; }
+  dt { flex: 0 1 auto; min-width: 0; }
+  /* Línea de puntos entre concepto e importe, sin elementos extra dentro del <dl>. */
+  dd { flex: 1; display: flex; align-items: baseline; gap: 8px; margin: 0; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  dd::before { content: ''; flex: 1; min-width: 12px; border-bottom: 2px dotted #a39c8c; transform: translateY(-4px); }
+  small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+  .foot { border-top: 2px dashed var(--ink); padding-top: 14px; margin-top: 6px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .barcode {
+    height: 38px; margin-top: 16px;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 9px, var(--ink) 9px 12px, transparent 12px 14px);
+  }
+  @media (max-width: 900px) { .ticket { width: 100%; max-width: 520px; justify-self: center; } }
+  @media (max-width: 560px) {
+    .ticket { --z: 8px; transform: none; padding: 28px 18px 24px; font-size: 13px; }
+    h3 { font-size: 14px; letter-spacing: 0.12em; }
+    .sub { font-size: 11px; letter-spacing: 0.08em; }
+    .line { gap: 6px; padding: 10px 0; }
+    dd { gap: 6px; }
+    dd::before { min-width: 8px; }
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+interface Props {
+  href?: string;
+}
+const { href = '#inicio' } = Astro.props;
+---
+
+<a class="logo" href={href}>
+  <span class="logo-sign">TAXI</span> <span class="logo-name">Fray Bentos</span>
+</a>
+
+<style>
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-sign {
+    background: var(--yellow); color: var(--ink);
+    font: 800 18px/1 var(--f-display); letter-spacing: 0.12em;
+    padding: 6px 10px 5px; border-radius: 10px 10px 3px 3px;
+  }
+  .logo-name { font: 700 22px/1 var(--f-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--paper); white-space: nowrap; }
+</style>

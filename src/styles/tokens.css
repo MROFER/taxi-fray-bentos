@@ -1,0 +1,27 @@
+/* Paleta y tipografía. Un solo look deliberado: amarillo taxi, asfalto y papel de ticket. */
+:root {
+  --ink: #1b1a17;       /* asfalto */
+  --ink-2: #2a2822;
+  --ink-3: #3a372f;
+  --ink-deep: #0f0e0b;
+  --paper: #f2ecdf;     /* papel de ticket */
+  --paper-2: #e8e0ce;
+  --receipt: #fbf8f1;
+  --yellow: #f2b705;    /* amarillo taxi */
+  --river: #2f5d7c;     /* río Uruguay */
+  --stamp: #b3261e;
+  --text-2: #4a463d;
+  --muted: #5a554a;
+  --muted-dark: #b9b2a3;
+  --placeholder: #8c8576;
+
+  --f-display: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  --f-body: 'Instrument Sans', Arial, sans-serif;
+  --f-mono: 'Space Mono', 'Courier New', monospace;
+
+  --gutter: clamp(16px, 5vw, 72px);
+  --max: 1240px;
+  --nav-h: 68px;
+
+  color-scheme: light;
+}

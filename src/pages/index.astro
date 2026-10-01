@@ -1,0 +1,21 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import Tarifas from '@/components/sections/Tarifas.astro';
+import Flota from '@/components/sections/Flota.astro';
+import Paradas from '@/components/sections/Paradas.astro';
+import Preguntas from '@/components/sections/Preguntas.astro';
+import Choferes from '@/components/sections/Choferes.astro';
+import InstalarApp from '@/components/sections/InstalarApp.astro';
+import { buildSchema } from '@/lib/schema';
+---
+
+<BaseLayout path="/" schema={buildSchema()}>
+  <Hero />
+  <Tarifas />
+  <Flota />
+  <Paradas />
+  <Preguntas />
+  <Choferes />
+  <InstalarApp />
+</BaseLayout>

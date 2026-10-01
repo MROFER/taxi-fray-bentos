@@ -1,0 +1,69 @@
+---
+import Taximetro from '@/components/ui/Taximetro.astro';
+---
+
+<section class="hero" id="inicio" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="h1-box">
+        <h1 id="hero-title">
+          <span class="mono kicker">Taxi en Fray Bentos · Río Negro · Las 24 horas</span>
+          <span class="l">Desde donde necesites,</span>
+          <span class="l">a donde quieras,</span>
+          <span class="l"><span class="hl">a la hora que sea.</span></span>
+        </h1>
+      </div>
+      <p class="hero-lead">
+        Conectamos pasajeros con servicios de taxi habilitados en Fray Bentos. Pedí un taxi cuando lo necesites o reservá
+        tu traslado en la ciudad, Las Cañas, Puente Internacional San Martín y otros destinos.
+      </p>
+      <div class="ctas">
+        <a class="btn btn-ink" href="#taxis">Pedir por WhatsApp</a>
+        <a class="btn btn-line" href="#taxis">Reservar para más tarde</a>
+      </div>
+      <ul class="hero-facts mono">
+        <li>Choferes con permiso IRN</li>
+        <li>Viajes a frontera</li>
+        <li>Tarifa reglamentada</li>
+      </ul>
+    </div>
+
+    <Taximetro />
+  </div>
+</section>
+
+<style>
+  .hero { padding-block: clamp(32px, 7vw, 96px) clamp(56px, 8vw, 112px); }
+  .hero-grid {
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(32px, 6vw, 88px); align-items: center;
+  }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } }
+  .hero-copy { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
+  @media (max-width: 520px) { .hero-copy { gap: 20px; } }
+  .kicker {
+    display: block; margin-bottom: 26px; color: var(--muted);
+    font-weight: 400; line-height: 1.55; text-wrap: wrap;
+  }
+  @media (max-width: 520px) { .kicker { margin-bottom: 20px; font-size: 12px; } }
+  .h1-box { container-type: inline-size; }
+  h1 { font-size: min(112px, 10.2cqi); }
+  .l { display: block; white-space: nowrap; }
+  .hl {
+    background: linear-gradient(transparent 58%, var(--yellow) 58%, var(--yellow) 92%, transparent 92%);
+    padding-inline: 0.04em;
+  }
+  .hero-lead { font-size: clamp(17px, 1.6vw, 20px); max-width: 34em; color: var(--text-2); }
+  .hero-facts {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 8px; color: var(--muted); font-size: 12px;
+  }
+  .hero-facts li::before {
+    content: ''; display: inline-block; width: 8px; height: 8px;
+    background: var(--yellow); border: 1.5px solid var(--ink); margin-right: 8px; vertical-align: 1px;
+  }
+  @media (min-width: 1200px) {
+    .hero-facts { flex-direction: row; flex-wrap: nowrap; gap: 18px; justify-content: space-between; }
+    .hero-facts li { white-space: nowrap; letter-spacing: 0.06em; }
+  }
+</style>
