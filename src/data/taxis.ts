@@ -13,6 +13,8 @@ export interface Taxi {
   aBordo: readonly string[];
   /** Número con código de país, sin + ni espacios (ej. "59899123456"). Vacío = a definir. */
   whatsapp: string;
+  /** Tarjeta de muestra del diseño (no es un taxi real): se ve en la página pero no se informa a buscadores ni IAs. */
+  ejemplo?: boolean;
 }
 
 /** Un taxi por fila del tablero. PENDIENTE: placas JTX, WhatsApp, plazas de la Van XL y fotos reales. */
@@ -30,6 +32,7 @@ export const TAXIS: readonly Taxi[] = [
   },
   {
     id: 'confort',
+    ejemplo: true,
     servicio: 'Confort',
     nota: 'Ejecutivo y aeropuerto',
     placa: 'JTX ____',
@@ -41,6 +44,7 @@ export const TAXIS: readonly Taxi[] = [
   },
   {
     id: 'van-xl',
+    ejemplo: true,
     servicio: 'Van XL',
     nota: 'Familias y grupos',
     placa: 'JTX ____',
@@ -51,6 +55,9 @@ export const TAXIS: readonly Taxi[] = [
     whatsapp: '',
   },
 ];
+
+/** Taxis reales (sin las tarjetas de muestra). */
+export const TAXIS_REALES = TAXIS.filter((t) => !t.ejemplo);
 
 export const mensajeAhora = (t: Taxi) => `Hola ${t.servicio}, necesito un taxi ahora. Estoy en: `;
 export const mensajeReserva = (t: Taxi) =>
