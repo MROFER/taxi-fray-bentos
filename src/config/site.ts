@@ -7,7 +7,8 @@ export const SITE = {
   name: 'Taxi Fray Bentos',
   /** Dirección pública sin barra final (sale de `site` + `base` en astro.config.mjs). */
   url: new URL(import.meta.env.BASE_URL, import.meta.env.SITE).href.replace(/\/$/, ''),
-  domain: new URL(import.meta.env.SITE).host,
+  /** Dominio propio del sitio (se muestra en textos; no depende de dónde esté publicado). */
+  domain: 'www.taxifraybentos.com.uy',
   locale: 'es_UY',
   lang: 'es-UY',
   title: 'Taxi en Fray Bentos las 24 horas · Tarifas y WhatsApp',
@@ -19,8 +20,8 @@ export const SITE = {
   phone: '',
   /** Cómo se muestra el teléfono (ej. "099 123 456"). PENDIENTE. */
   phoneDisplay: '',
-  /** Correo de contacto. PENDIENTE (opcional). */
-  email: '',
+  /** Correo de contacto. */
+  email: 'contacto@taxifraybentos.com.uy',
 
   /**
    * Endpoint que recibe el formulario de alta de choferes (Formspree, Netlify Forms, API propia…).
@@ -41,6 +42,6 @@ export const NAV = [
   { href: '#taxis', label: 'Taxis' },
   { href: '#paradas', label: 'Paradas' },
   { href: '#tarifas', label: 'Tarifas' },
-  { href: '#choferes', label: 'Choferes' },
+  { href: '#choferes', label: 'Para choferes' },
   { href: '#preguntas', label: 'Preguntas' },
 ] as const;

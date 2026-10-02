@@ -4,7 +4,7 @@
 
 export const CONFIG = {
   vigencia: "2026-07-06",                 // fecha de vigencia de estos valores (AAAA-MM-DD)
-  fuente: "Valores Intendencia de Río Negro + cortesía nacional (Res. MEF 111/026)",
+  fuente: "Resolución MEF 111/026 · Resolución Departamental del 28/07/2026, pág. 46-47",
 
   bajada: 100.56,            // $ bajada de bandera
   distancia_incluida_m: 250, // m incluidos en la bajada (Res. MEF 111/026; la Intendencia no fijó otra)

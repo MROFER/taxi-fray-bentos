@@ -25,11 +25,8 @@ const anio = new Date().getFullYear();
       <h2 class="foot-h">Contacto</h2>
       <address>
         <ul>
-          <li class="num">
-            {SITE.phone ? <a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay || SITE.phone}</a> : '[099 XXX XXX]'}
-          </li>
+          {SITE.phone && <li class="num"><a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay || SITE.phone}</a></li>}
           {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
-          <li>{SITE.domain}</li>
           <li><a href="#choferes">Soy chofer</a></li>
         </ul>
       </address>
