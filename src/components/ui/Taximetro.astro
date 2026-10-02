@@ -174,7 +174,7 @@ const campos = [
   .field-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .field label, .valijas-titulo {
     display: inline-flex; align-items: center; gap: 8px;
-    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-dark);
+    font-family: var(--f-mono); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-dark);
   }
   .letra { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font: 700 11px/1 var(--f-mono); letter-spacing: 0; color: var(--ink); }
   .letra-a { background: var(--yellow); }
@@ -184,6 +184,10 @@ const campos = [
     font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--yellow);
   }
   .map-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 359px) {
+    .field label, .valijas-titulo { font-size: 12px; letter-spacing: 0.1em; }
+    .map-link { letter-spacing: 0.06em; }
+  }
   .campo-calle { position: relative; }
   input[type='text'] {
     font: 500 16px var(--f-body); color: var(--paper); background: var(--ink-2);
