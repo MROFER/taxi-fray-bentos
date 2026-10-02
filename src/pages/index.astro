@@ -11,13 +11,13 @@ import { buildSchema } from '@/lib/schema';
 ---
 
 <BaseLayout path="/" schema={buildSchema()}>
-  <!-- Orden: primero lo que resuelve el viaje (pedir, dónde tomarlo, cuánto sale), después las dudas
-       del pasajero y al final lo que es para otro público (choferes) o para quien vuelve (la app). -->
+  <!-- Orden: primero lo que resuelve el viaje (pedir, dónde tomarlo, cuánto sale), después choferes,
+       las preguntas frecuentes (para pasajeros, choferes, Google y asistentes de IA) y la app. -->
   <Hero />
   <Flota />
   <Paradas />
   <Tarifas />
-  <Preguntas />
   <Choferes />
+  <Preguntas />
   <InstalarApp />
 </BaseLayout>

@@ -41,6 +41,6 @@ export const NAV = [
   { href: '#taxis', label: 'Taxis' },
   { href: '#paradas', label: 'Paradas' },
   { href: '#tarifas', label: 'Tarifas' },
-  { href: '#preguntas', label: 'Preguntas' },
   { href: '#choferes', label: 'Choferes' },
+  { href: '#preguntas', label: 'Preguntas' },
 ] as const;
