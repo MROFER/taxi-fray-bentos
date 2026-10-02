@@ -1,0 +1,31 @@
+name: Relevamiento OSM
+on:
+  push:
+    branches: [relevamiento-osm]
+jobs:
+  lugares:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Lugares con nombre en Fray Bentos
+        run: |
+          cat > q.mjs <<'JS'
+          const BBOX = '-33.20,-58.40,-33.05,-58.15';
+          const T = ['amenity','leisure','tourism','historic','office','healthcare','shop','landuse','building','man_made','public_transport','club','sport','place','craft','aeroway','natural','waterway','bridge','government'];
+          const q = `[out:json][timeout:120];(${T.map(t=>`nwr["name"]["${t}"](${BBOX});`).join('')});out center tags;`;
+          let els;
+          for (const url of ['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter']) {
+            try { const r = await fetch(url,{method:'POST',headers:{'User-Agent':'tarifa-fray-bentos/1.0','Content-Type':'application/x-www-form-urlencoded'},body:'data='+encodeURIComponent(q)}); if(!r.ok) throw new Error(r.status); els=(await r.json()).elements; break; } catch(e){ console.log('error', url, e.message); }
+          }
+          const fil = els.map(e => {
+            const t = e.tags, c = e.center ?? e;
+            const tipo = T.filter(k=>t[k]).map(k=>`${k}=${t[k]}`).join(',');
+            const dir = [t['addr:street'], t['addr:housenumber']].filter(Boolean).join(' ');
+            return `${e.type[0]}${e.id}|${c.lat?.toFixed(5)}|${c.lon?.toFixed(5)}|${t.name}|${t.alt_name??''}|${t.official_name??''}|${tipo}|${dir}`;
+          }).sort((a,b)=>a.split('|')[3].localeCompare(b.split('|')[3]));
+          console.log('TOTAL', fil.length);
+          for (const l of fil) console.log('L|'+l);
+          JS
+          node q.mjs
