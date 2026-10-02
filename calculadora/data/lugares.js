@@ -1,0 +1,73 @@
+// Lugares de referencia: n = nombre, a = otros nombres con los que se busca, p = punto [lat, lon], osm = elemento de origen.
+// Relevados de OpenStreetMap el 2026-10-02 y revisados a mano. Para agregar uno, copiar su punto desde
+// https://www.openstreetmap.org (no usar Google Maps ni otras fuentes con condiciones incompatibles).
+// Datos © colaboradores de OpenStreetMap, licencia ODbL (https://www.openstreetmap.org/copyright).
+export default [
+  // Estudio
+  { n: 'UTEC Fray Bentos', a: ['Universidad Tecnológica', 'Universidad Tecnologica del Uruguay'], p: [-33.11782, -58.33032], osm: 'n7918215780' },
+  { n: 'Universidad de la República (CenUR Litoral Norte)', a: ['Udelar', 'CenUR', 'Facultad'], p: [-33.11761, -58.32946], osm: 'n7124849483' },
+  { n: 'IAE Fray Bentos (Instituto de Alta Especialización)', a: ['IAE', 'UTU agraria'], p: [-33.13246, -58.31328], osm: 'n11362182872' },
+  { n: 'Instituto de Formación Docente (IFD)', a: ['IFD', 'Magisterio', 'Formación Docente'], p: [-33.11577, -58.31181], osm: 'n11481531187' },
+  { n: 'Escuela Técnica Fray Bentos (UTU)', a: ['UTU'], p: [-33.11960, -58.31155], osm: 'n11481509753' },
+  { n: 'Escuela Agraria Fray Bentos', a: ['Agraria'], p: [-33.13227, -58.31319], osm: 'n11481531685' },
+  { n: 'Liceo N° 1 Eugenio Capdevielle', a: ['Liceo 1', 'Liceo Departamental'], p: [-33.12027, -58.30514], osm: 'w625803387' },
+  { n: 'Liceo N° 2 Alfonso Requiterena Vogt', a: ['Liceo 2'], p: [-33.11607, -58.30098], osm: 'n11481531186' },
+  { n: 'Liceo N° 3 Dr. Crottogini', a: ['Liceo 3'], p: [-33.13096, -58.29051], osm: 'n11481531743' },
+  { n: 'Escuela N° 1 José Artigas', a: ['Escuela 1'], p: [-33.11455, -58.31199], osm: 'n11481522608' },
+  { n: 'Escuela N° 2', a: ['Escuela 2'], p: [-33.12900, -58.29201], osm: 'n11481522609' },
+  { n: 'Escuela N° 3', a: ['Escuela 3'], p: [-33.11934, -58.32666], osm: 'n11481518422' },
+  { n: 'Escuela N° 5 José Enrique Rodó', a: ['Escuela 5'], p: [-33.12722, -58.29946], osm: 'n11481531323' },
+  { n: 'Escuela N° 6 Agustín Ferreiro', a: ['Escuela 6'], p: [-33.14543, -58.28363], osm: 'n11481522607' },
+  { n: 'Escuela N° 7 República Argentina', a: ['Escuela 7'], p: [-33.13146, -58.29110], osm: 'n11481531326' },
+  { n: 'Escuela N° 27 Juan Antonio Lavalleja', a: ['Escuela 27'], p: [-33.11535, -58.31489], osm: 'n11481518424' },
+  { n: 'Escuela N° 53 Italia', a: ['Escuela 53'], p: [-33.12681, -58.29026], osm: 'n11481531327' },
+  { n: 'Escuela N° 60 Dr. Mario Carminatti', a: ['Escuela 60'], p: [-33.12745, -58.30084], osm: 'n11481531322' },
+  { n: 'Escuela N° 62 Fructuoso Rivera', a: ['Escuela 62'], p: [-33.12551, -58.31011], osm: 'n11481522610' },
+  { n: 'Escuela N° 64', a: ['Escuela 64'], p: [-33.11558, -58.31207], osm: 'n11481522612' },
+  { n: 'Escuela N° 66 Juana de Ibarbourou', a: ['Escuela 66'], p: [-33.12156, -58.30043], osm: 'n11481518423' },
+  { n: 'Escuela N° 69', a: ['Escuela 69'], p: [-33.13452, -58.28487], osm: 'n11481522611' },
+  { n: 'Escuela N° 73', a: ['Escuela 73'], p: [-33.11981, -58.29842], osm: 'n11481531324' },
+  { n: 'Escuela N° 81', a: ['Escuela 81'], p: [-33.12056, -58.29417], osm: 'n11481531581' },
+  // Salud
+  { n: 'Hospital Dr. Ángel M. Cuervo', a: ['Hospital', 'ASSE'], p: [-33.11826, -58.30449], osm: 'w431491921' },
+  { n: 'Sanatorio Amedrin', a: ['Amedrin', 'Sanatorio', 'Mutualista'], p: [-33.11479, -58.31104], osm: 'n11510019746' },
+  { n: 'Amedrin Policlínico', a: ['Policlínica Amedrin'], p: [-33.11529, -58.31526], osm: 'n7120487210' },
+  // Plazas, paseos y cultura
+  { n: 'Plaza Constitución', a: ['Plaza principal'], p: [-33.11657, -58.31304], osm: 'w186713675' },
+  { n: 'Plaza Artigas', a: [], p: [-33.12036, -58.30834], osm: 'w186713674' },
+  { n: 'Plaza Rivera', a: [], p: [-33.13085, -58.29575], osm: 'w625800502' },
+  { n: 'Parque Roosevelt', a: [], p: [-33.11381, -58.31602], osm: 'w625738235' },
+  { n: 'Teatro Miguel Young', a: ['Teatro Young'], p: [-33.11587, -58.31125], osm: 'n6611257386' },
+  { n: 'Teatro de Verano', a: [], p: [-33.11350, -58.31598], osm: 'n3018599473' },
+  { n: 'Museo Luis Solari', a: ['Museo Solari'], p: [-33.11613, -58.31367], osm: 'n6611254086' },
+  { n: 'Parroquia Nuestra Señora del Pilar', a: ['Iglesia', 'Iglesia del Pilar'], p: [-33.11711, -58.31235], osm: 'w456090074' },
+  { n: 'Ex Frigorífico Anglo (Museo de la Revolución Industrial)', a: ['Anglo', 'Frigorífico Anglo', 'Paisaje Industrial'], p: [-33.11664, -58.33212], osm: 'n4518863148' },
+  { n: 'Barrio Anglo', a: [], p: [-33.11928, -58.32702], osm: 'n1370564872' },
+  { n: 'Playa Ubici', a: ['Ubici'], p: [-33.11216, -58.28650], osm: 'n9887571083' },
+  { n: 'Balneario Las Cañas', a: ['Las Cañas'], p: [-33.16464, -58.35593], osm: 'n1370506418' },
+  { n: 'Bioparque M\'Bopicuá', a: ['Mbopicua', 'Bopicua'], p: [-33.11387, -58.20606], osm: 'n6527928913' },
+  { n: 'Cementerio de Fray Bentos', a: ['Cementerio'], p: [-33.12974, -58.29562], osm: 'n7923533444' },
+  // Oficinas públicas
+  { n: 'Intendencia de Río Negro (Palacio Municipal)', a: ['Intendencia', 'Municipio'], p: [-33.11682, -58.31221], osm: 'w456090289' },
+  { n: 'Jefatura de Policía', a: ['Policía', 'Comisaría'], p: [-33.11721, -58.31172], osm: 'n4284693917' },
+  { n: 'Correo Uruguayo', a: ['Correo'], p: [-33.11549, -58.31283], osm: 'n7111516948' },
+  { n: 'Batallón de Infantería N° 9', a: ['Batallón', 'Cuartel'], p: [-33.12445, -58.31541], osm: 'w297960049' },
+  // Transporte
+  { n: 'Terminal de Ómnibus', a: ['Terminal'], p: [-33.12342, -58.30450], osm: 'w255168570' },
+  { n: 'Puente Internacional San Martín', a: ['Puente', 'Puente Internacional', 'Frontera'], p: [-33.09246, -58.25022], osm: 'w26271171' },
+  // Deporte
+  { n: 'Fray Bentos Golf Club', a: ['Club de Golf', 'Golf'], p: [-33.12438, -58.32314], osm: 'w297960055' },
+  { n: 'Estadio Parque Liebig\'s', a: ['Estadio', 'Liebig'], p: [-33.11946, -58.31780], osm: 'w201589369' },
+  { n: 'Polideportivo Juan B. Tiscornia', a: ['Polideportivo'], p: [-33.11566, -58.30240], osm: 'w297960051' },
+  { n: 'Laureles FC', a: ['Club Laureles'], p: [-33.11818, -58.31270], osm: 'n12895934880' },
+  { n: 'Institución Atlética 18 de Julio', a: ['Club 18 de Julio'], p: [-33.12615, -58.29783], osm: 'w625801226' },
+  { n: 'Club Nacional de Basketball', a: ['Nacional'], p: [-33.12095, -58.30612], osm: 'w625861550' },
+  // Hoteles y comercios
+  { n: 'Gran Hotel Fray Bentos', a: ['Gran Hotel'], p: [-33.11371, -58.31495], osm: 'n2538237689' },
+  { n: 'Hotel Colonial', a: ['Colonial'], p: [-33.11594, -58.31178], osm: 'n4240195789' },
+  { n: 'Plaza Hotel', a: [], p: [-33.11639, -58.31229], osm: 'n2538237692' },
+  { n: 'La Posada del Frayle Bentos', a: ['Posada del Frayle'], p: [-33.11422, -58.30944], osm: 'n2538246490' },
+  { n: 'Hotel 25 de Mayo', a: [], p: [-33.11458, -58.31011], osm: 'n5534879848' },
+  { n: 'Supermercado Ta-Ta', a: ['Tata', 'Ta Ta'], p: [-33.12559, -58.30075], osm: 'n2608944939' },
+  { n: 'Planta UPM', a: ['UPM', 'Botnia', 'Planta de celulosa'], p: [-33.11576, -58.25804], osm: 'w119015899' },
+];

@@ -122,11 +122,16 @@ function teclasSugerencias(p: Punto, e: KeyboardEvent) {
 }
 
 /**
- * Cascada: número de puerta exacto → esquina → punto medio de la calle.
+ * Lugar de referencia, o cascada: número de puerta exacto → esquina → punto medio de la calle.
  * Si solo se eligió la calle, el campo queda abierto para seguir con el número o la esquina.
  */
 function elegirSugerencia(p: Punto, s: Sugerencia) {
-  const calle = calles[s.indice]!.n;
+  if (s.tipo === 'lugar') {
+    terminar(p, s.nombre);
+    fijarPunto(p, s.punto as LatLon, `Ubicado en ${s.nombre}. Si no es ahí, mové el punto en el mapa.`);
+    return;
+  }
+  const calle = calles[s.indice!]!.n;
   if (s.tipo === 'esquina') {
     terminar(p, s.nombre);
     fijarPunto(p, s.punto as LatLon, `Ubicado en la esquina de ${s.nombre}.`);

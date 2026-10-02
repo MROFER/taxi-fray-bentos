@@ -25,6 +25,8 @@ y búsqueda de calles, esquinas y números de OpenStreetMap. La landing solo apo
   taxímetro, y Leaflet (~45 KB gzip) recién al abrir el mapa. La carga inicial de la página no cambia.
 - **Paradas:** cada parada se ubica en el build con las mismas calles de OSM (`consulta` en `src/data/paradas.ts`);
   si una no se encuentra, el build falla.
+- **Lugares de referencia** (hospital, liceos, escuelas, terminal, hoteles…): `calculadora/data/lugares.js`, con puntos tomados
+  de OpenStreetMap. Aparecen en el autocompletado de Desde y Hasta. Para sumar uno, agregar una línea con su punto de OSM.
 - `calculadora/index.html` y `estilos.css` son la página original; quedan para el editor del cerco y como referencia.
 
 ### Cómo se calcula (no se muestra en la página)

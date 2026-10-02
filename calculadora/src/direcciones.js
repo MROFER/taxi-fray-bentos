@@ -1,10 +1,11 @@
-// Búsqueda de calles, esquinas y números de puerta sobre los datos embebidos de OpenStreetMap.
-// No usa ningún servicio externo.
+// Búsqueda de calles, esquinas, números de puerta y lugares de referencia sobre los datos embebidos
+// de OpenStreetMap. No usa ningún servicio externo.
 
 import { normalizar, palabras } from './texto.js';
 import CALLES from '../data/calles.js';
 import ESQUINAS from '../data/esquinas.js';
 import NUMEROS from '../data/numeros.js';
+import LUGARES from '../data/lugares.js';
 
 // Palabras que la gente agrega pero que pueden no estar en el nombre cargado:
 // "continuación colo" tiene que sugerir Colón.
@@ -52,6 +53,38 @@ export function buscarCalles(texto, limite = 8) {
   }
   resultados.sort((a, b) => b.aciertos - a.aciertos || b.empieza - a.empieza || a.nombre.localeCompare(b.nombre, 'es'));
   return resultados.slice(0, limite).map(({ indice, nombre }) => ({ indice, nombre }));
+}
+
+// Lugares de referencia ("Hospital", "Liceo 2", "Terminal"): mismas reglas que las calles,
+// pero los números tienen que coincidir enteros ("escuela 6" no es la 62) y "n°", "nro" se pueden omitir.
+const RELLENO_LUGAR = new Set([...RELLENO, 'n', 'no', 'nro', 'numero', 'num']);
+const INDICE_LUGARES = LUGARES.map((l) => ({
+  nombre: l.n,
+  normalizado: normalizar(l.n),
+  punto: l.p,
+  palabras: [...new Set([l.n, ...l.a].flatMap(palabras))],
+}));
+
+export const lugares = LUGARES;
+
+/** @returns [{ tipo: 'lugar', nombre, punto }] */
+export function buscarLugares(texto, limite = 8) {
+  const buscadas = palabras(texto);
+  if (!buscadas.length) return [];
+  const q = normalizar(texto);
+  const resultados = [];
+  for (const l of INDICE_LUGARES) {
+    let utiles = 0, valido = true;
+    for (const b of buscadas) {
+      const coincide = /^\d+$/.test(b) ? l.palabras.includes(b) : l.palabras.some((p) => p.startsWith(b));
+      if (coincide) { if (!RELLENO_LUGAR.has(b)) utiles++; }
+      else if (!RELLENO_LUGAR.has(b)) { valido = false; break; }
+    }
+    if (!valido || utiles === 0) continue;
+    resultados.push({ l, empieza: l.normalizado.startsWith(q) ? 1 : 0 });
+  }
+  resultados.sort((a, b) => b.empieza - a.empieza || a.l.nombre.localeCompare(b.l.nombre, 'es', { numeric: true }));
+  return resultados.slice(0, limite).map(({ l }) => ({ tipo: 'lugar', nombre: l.nombre, punto: l.punto }));
 }
 
 /** Calles que cruzan a la calle dada, ordenadas por nombre. */
@@ -115,7 +148,8 @@ export function calleSinCruce(texto) {
 /**
  * Sugerencias para una dirección escrita de corrido en el campo de la calle.
  * Entiende "calle", "calle número" y "calle y otra calle".
- * @returns [{ tipo: 'calle'|'numero'|'esquina', indice, nombre, numero?, encontrado?, otra?, punto? }]
+ * También ofrece lugares de referencia ("Hospital", "Terminal").
+ * @returns [{ tipo: 'calle'|'numero'|'esquina'|'lugar', indice?, nombre, numero?, encontrado?, otra?, punto? }]
  */
 export function sugerirDirecciones(texto, limite = 8) {
   const q = normalizar(texto);
@@ -160,9 +194,11 @@ export function sugerirDirecciones(texto, limite = 8) {
   // La calle escrita completa va primero; sus esquinas, después.
   const primero = exacta ? soloCalle.filter((c) => c.indice === exacta.i) : [];
   const resto = soloCalle.filter((c) => !primero.includes(c));
+  // Lugares de referencia: después de la calle escrita completa y de su número; antes de las esquinas.
+  const deReferencia = soloEsquinas ? [] : buscarLugares(texto, limite);
   // El número no cargado solo se ofrece si no hay otra interpretación ("Calle 1" es una calle, no "Calle" nº 1).
-  const todas = [...primero, ...conNumero, ...esquinas, ...resto,
-    ...(esquinas.length || conNumero.length || soloCalle.length ? [] : numeroSinCargar)];
+  const todas = [...primero, ...conNumero, ...deReferencia, ...esquinas, ...resto,
+    ...(esquinas.length || conNumero.length || soloCalle.length || deReferencia.length ? [] : numeroSinCargar)];
   const vistos = new Set();
   // Cuando se listan todas las esquinas de una calle, se muestran todas (la lista tiene barra de desplazamiento).
   return todas.filter((s) => !vistos.has(s.nombre) && vistos.add(s.nombre)).slice(0, exacta ? 60 : limite);

@@ -122,6 +122,12 @@ function teclasSugerencias(p, e) {
  * Si solo se eligió la calle, el campo queda abierto para seguir con el número o la esquina.
  */
 function elegirSugerencia(p, s) {
+  if (s.tipo === 'lugar') {
+    if (calleResaltada[p.clave]) { mapa.removeLayer(calleResaltada[p.clave]); calleResaltada[p.clave] = null; }
+    terminar(p, s.nombre);
+    fijarPunto(p, s.punto, `Ubicado en ${s.nombre}. Si no es ahí, mové el punto en el mapa.`);
+    return;
+  }
   const calle = calles[s.indice].n;
   resaltarCalle(p, s.indice);
 

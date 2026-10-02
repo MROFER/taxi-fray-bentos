@@ -93,3 +93,21 @@ test('calles que existen pero no se cruzan se distinguen de una calle inexistent
   assert.deepEqual(calleSinCruce('18 de Julio y rinc'), { calle: '18 de Julio', otra: 'Rincón' });
   assert.equal(calleSinCruce('25 de mayo y zzzz'), null);
 });
+
+test('lugares de referencia: por nombre, por otro nombre y con número exacto', async () => {
+  const { sugerirDirecciones, lugares } = await import('../src/direcciones.js');
+  assert.equal(sugerirDirecciones('hospital')[0].nombre, 'Hospital Dr. Ángel M. Cuervo');
+  assert.equal(sugerirDirecciones('terminal')[0].tipo, 'lugar');
+  assert.equal(sugerirDirecciones('liceo 2')[0].nombre, 'Liceo N° 2 Alfonso Requiterena Vogt');
+  assert.equal(sugerirDirecciones('escuela nro 3')[0].nombre, 'Escuela N° 3');
+  assert.deepEqual(sugerirDirecciones('escuela 6').map((s) => s.nombre), ['Escuela N° 6 Agustín Ferreiro']);
+  assert.ok(sugerirDirecciones('anglo').some((s) => s.nombre.startsWith('Ex Frigorífico Anglo')));
+  // La calle escrita completa sigue primero; el lugar con el mismo nombre va después.
+  const julio = sugerirDirecciones('18 de julio');
+  assert.equal(julio[0].tipo, 'calle');
+  assert.ok(julio.some((s) => s.tipo === 'lugar'));
+  // Todos los puntos caen en la zona de Fray Bentos y alrededores.
+  for (const l of lugares) {
+    assert.ok(l.p[0] > -33.2 && l.p[0] < -33.05 && l.p[1] > -58.4 && l.p[1] < -58.15, l.n);
+  }
+});
