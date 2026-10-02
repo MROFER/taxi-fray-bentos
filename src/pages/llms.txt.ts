@@ -32,7 +32,7 @@ Directorio de taxis habilitados por la Intendencia de Río Negro en Fray Bentos,
 
 ## Servicios
 
-${TAXIS.map((t) => `- ${t.servicio}: ${t.nota.toLowerCase()}. Vehículo: ${t.vehiculo.join(' ')}. Valijas: ${t.valijas}.`).join('\n')}
+${TAXIS.map((t) => `- ${t.servicio}: ${t.nota.replace(/\n/g, ' · ').toLowerCase()}. Vehículo: ${t.vehiculo.join(' ')}. Valijas: ${t.valijas}.`).join('\n')}
 ${SERVICIOS.map((s) => `- ${s}`).join('\n')}
 
 ## Cobertura

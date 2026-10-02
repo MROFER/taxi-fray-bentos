@@ -1,6 +1,7 @@
 export interface Taxi {
   id: string;
   servicio: string;
+  /** Se muestra bajo el nombre; \n parte el renglón. */
   nota: string;
   /** Placa municipal. PENDIENTE: "JTX ____" se muestra como a definir. */
   placa: string;
@@ -19,7 +20,7 @@ export const TAXIS: readonly Taxi[] = [
   {
     id: 'lechuzas',
     servicio: 'Taxi Lechuzas',
-    nota: 'Ciudad y otros destinos, 24 h',
+    nota: 'Todos los destinos · 24/7\nInmediatos · Reservas',
     placa: 'JTX 0212',
     vehiculo: ['Nissan Versa', 'Drive'],
     plazas: '4',
