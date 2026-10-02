@@ -63,7 +63,7 @@ calculadora/                # La calculadora real: src/ (motor, ruta, modalidad,
 ## Pendiente antes de publicar
 
 - `src/data/taxis.ts`: placas JTX, **WhatsApp de cada taxi**, plazas de la Van XL. Con el número cargado, los botones pasan a ser links `wa.me` (sin JS); mientras falte, muestran un aviso.
-- `src/config/site.ts`: teléfono (`phone`, `phoneDisplay`) y correo. Con teléfono, el botón del menú pasa a "llamar" y se agrega al JSON-LD.
+- `src/config/site.ts`: teléfono (`phone`, `phoneDisplay`) y correo. Con teléfono, aparece en el footer y se agrega al JSON-LD.
 - `src/config/site.ts` → `altaEndpoint`: a dónde se envía el formulario de choferes (Formspree, Netlify Forms, API propia). Vacío = modo demostración.
 - Páginas legales (aviso legal, privacidad, cookies, condiciones): hoy los links del footer apuntan al inicio.
 - Fotos reales de los autos.
