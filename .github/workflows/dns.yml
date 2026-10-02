@@ -1,0 +1,10 @@
+name: dns-check
+on: push
+jobs:
+  dns:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          for h in taxifraybentos.com.uy www.taxifraybentos.com.uy; do for t in NS SOA A AAAA CNAME MX TXT; do echo "== $h $t"; dig +short $h $t; done; done
+          echo "== whois"; whois taxifraybentos.com.uy | head -40 || true
+          echo "== http"; curl -sI --max-time 15 http://taxifraybentos.com.uy | head -5; curl -sI --max-time 15 https://www.taxifraybentos.com.uy | head -8
