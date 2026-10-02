@@ -9,7 +9,7 @@ import { detectarModalidad } from '@calc/modalidad.js';
 import { sugerirDirecciones, calleSinCruce, buscarNumero, puntoDeCalle, calles } from '@calc/direcciones.js';
 import * as mapa from './mapa';
 import type { Clave, LatLon } from './mapa';
-import { detalleTecnico, textoValijas, escapar, pesos } from './textos';
+import { textoValijas, escapar, pesos } from './textos';
 import { $, reduceMotion, replay } from '@/scripts/ui';
 import type { Rango } from './tipos';
 
@@ -322,7 +322,6 @@ function mostrarResultado(ruta: Ruta, modalidad: Modalidad) {
   ul.innerHTML = avisos.map((a) => `<li>${a}</li>`).join('');
   ul.hidden = !avisos.length;
 
-  $('detalleCuerpo').innerHTML = detalleTecnico(ruta, modalidad, rangos, valijas);
   $('resultadoExtra').hidden = false;
 }
 

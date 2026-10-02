@@ -27,6 +27,23 @@ y búsqueda de calles, esquinas y números de OpenStreetMap. La landing solo apo
   si una no se encuentra, el build falla.
 - `calculadora/index.html` y `estilos.css` son la página original; quedan para el editor del cerco y como referencia.
 
+### Cómo se calcula (no se muestra en la página)
+
+El resultado muestra solo los dos rangos (Tarifa 1 de día; Tarifa 2 de noche, domingos y feriados). El detalle del cálculo
+queda documentado acá y en `calculadora/src/motor.js`:
+
+- El reloj arranca con la **bajada de bandera**, que incluye los primeros `distancia_incluida_m` metros. Después suma una
+  **ficha** cada cierta distancia o cada cierto tiempo: si el auto va más rápido que la *velocidad de transición* cuenta
+  distancia; si va más lento (o está parado) cuenta tiempo. Nunca las dos cosas a la vez.
+- **Mínimo:** la ruta de OSRM sin demoras. **Máximo:** la misma ruta con espera extra (semáforos, tránsito); en viajes
+  urbanos, `espera_urbano_s_por_km` segundos por km.
+- La tarifa de noche, domingos y feriados lleva un recargo de `recargo_pct` % sobre la bajada, el precio por km y la hora de espera.
+- Si OSRM no responde se usa una **ruta de emergencia** (distancia estimada) y la página lo avisa.
+- Los montos se redondean al peso: el mínimo hacia abajo y el máximo hacia arriba.
+- **Valijas:** las primeras `valijas_incluidas` no se cobran; cada una de las demás suma el máximo `valija_adicional`
+  (sin recargo), para no quedarse corto.
+- Todos los valores salen de `calculadora/src/config.js` (fuente oficial en `CONFIG.fuente`).
+
 ## Estructura
 
 ```

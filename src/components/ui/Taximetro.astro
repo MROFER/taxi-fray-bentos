@@ -76,10 +76,6 @@ const campos = [
 
   <div class="resultado-extra" id="resultadoExtra" hidden>
     <button type="button" class="map-link" id="verRuta"><Fragment set:html={pin} />Ver el recorrido en el mapa</button>
-    <details id="detalle">
-      <summary>Cómo se calcula</summary>
-      <div class="tecnico" id="detalleCuerpo"></div>
-    </details>
   </div>
 
   <p class="copy-note">
@@ -223,15 +219,6 @@ const campos = [
   .falta { font-size: 13px; color: var(--muted-dark); text-align: center; margin-top: -6px; }
   .resultado-extra { display: flex; flex-direction: column; gap: 6px; }
   .resultado-extra:not([hidden]) { display: flex; }
-  details { border-top: 1px dashed var(--ink-3); }
-  summary { cursor: pointer; padding: 12px 0 4px; font-family: var(--f-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-dark); }
-  .tecnico { font-size: 13px; line-height: 1.5; color: var(--muted-dark); display: flex; flex-direction: column; gap: 10px; padding-top: 8px; }
-  .tecnico :global(em) { color: var(--paper); }
-  .tecnico :global(.tabla-scroll) { overflow-x: auto; }
-  .tecnico :global(table) { width: 100%; border-collapse: collapse; font-family: var(--f-mono); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .tecnico :global(th), .tecnico :global(td) { padding: 6px 8px; border-bottom: 1px solid var(--ink-3); text-align: right; white-space: nowrap; font-weight: 400; }
-  .tecnico :global(th[scope='row']) { text-align: left; white-space: normal; }
-  .tecnico :global(thead th) { color: var(--yellow); }
   .copy-note { font-size: 12.5px; line-height: 1.5; color: var(--muted-dark); text-align: center; }
 
   /* Mapa */
