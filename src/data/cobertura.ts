@@ -1,16 +1,16 @@
 /** Servicios y zonas de cobertura: footer y JSON-LD (areaServed). */
 export const SERVICIOS = [
   'Viajes urbanos 24 h',
-  'Las Cañas y frontera',
   'Cruce a Gualeguaychú',
-  'Reservas a la terminal',
+  'Reservas',
+  'Viajes extraurbanos',
 ] as const;
 
 export const COBERTURA = [
-  'Fray Bentos y Rambla',
+  'Fray Bentos',
   'Balneario Las Cañas',
   'Puente San Martín',
-  'Nuevo Berlín, San Javier, Young',
+  'Otros destinos',
 ] as const;
 
 /** Localidades para areaServed (una por entrada, sin agrupar). */
