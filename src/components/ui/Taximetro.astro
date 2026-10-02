@@ -13,7 +13,6 @@ const ayudaValijas =
   CONFIG.valijas_incluidas > 0
     ? `${CONFIG.valijas_incluidas === 1 ? 'La primera no se cobra' : `Las primeras ${CONFIG.valijas_incluidas} no se cobran`}; las demás, hasta ${pesosRedondo(CONFIG.valija_adicional, 2)} cada una`
     : `Hasta ${pesosRedondo(CONFIG.valija_adicional, 2)} cada una`;
-const vigencia = CONFIG.vigencia.split('-').reverse().join('/');
 
 const campos = [
   { clave: 'origen', letra: 'A', etiqueta: 'Desde', ejemplo: 'Ej.: 18 de Julio 1033', tecla: 'next' },
@@ -92,7 +91,7 @@ const campos = [
 
   <p class="copy-note">
     El precio puede variar por tiempo de espera, paradas o cambios de recorrido. El valor a pagar es el que indica el
-    reloj taxímetro a bordo de la unidad. Tarifas vigentes desde {vigencia}.
+    reloj taxímetro a bordo de la unidad.
   </p>
 </form>
 
