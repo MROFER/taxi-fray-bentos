@@ -11,8 +11,8 @@ import { pesos as pesosRedondo } from '@/scripts/taximetro/textos';
 const pin = `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.6" fill="currentColor"/></svg>`;
 const ayudaValijas =
   CONFIG.valijas_incluidas > 0
-    ? `${CONFIG.valijas_incluidas === 1 ? 'La primera no se cobra' : `Las primeras ${CONFIG.valijas_incluidas} no se cobran`}; las demás, hasta ${pesosRedondo(CONFIG.valija_adicional, 2)} cada una`
-    : `Hasta ${pesosRedondo(CONFIG.valija_adicional, 2)} cada una`;
+    ? `${CONFIG.valijas_incluidas === 1 ? 'Primera valija sin cargo' : `Primeras ${CONFIG.valijas_incluidas} valijas sin cargo`}; valija extra, hasta ${pesosRedondo(CONFIG.valija_adicional, 2)}.`
+    : `Cada valija, hasta ${pesosRedondo(CONFIG.valija_adicional, 2)}.`;
 
 const campos = [
   { clave: 'origen', letra: 'A', etiqueta: 'Desde', ejemplo: 'Ej.: 18 de Julio 1033', tecla: 'next' },
