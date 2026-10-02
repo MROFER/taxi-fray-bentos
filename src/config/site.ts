@@ -13,7 +13,7 @@ export const SITE = {
   lang: 'es-UY',
   title: 'Taxi en Fray Bentos las 24 horas · Tarifas y WhatsApp',
   description:
-    'Pedí un taxi habilitado en Fray Bentos por WhatsApp, las 24 horas. Calculá la tarifa oficial de Río Negro y reservá viajes a Las Cañas, la Terminal y el Puente San Martín.',
+    'Conectá con servicios de taxi habilitados en Fray Bentos. Pedí un taxi cuando lo necesites o reservá tu traslado en la ciudad, Las Cañas, Puente Internacional San Martín y otros destinos.',
   themeColor: '#1B1A17',
 
   /** Teléfono general en formato internacional, sin espacios (ej. "+59899123456"). PENDIENTE. */

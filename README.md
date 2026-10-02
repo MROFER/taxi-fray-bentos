@@ -88,7 +88,7 @@ calculadora/                # La calculadora real: src/ (motor, ruta, modalidad,
 - Páginas legales (`src/pages/aviso-legal`, `privacidad`, `cookies`, `condiciones`): revisarlas con quien corresponda y, si el sitio lo
   opera una empresa, sumar su razón social y RUT al aviso legal. Si se agrega analítica o cookies, actualizar privacidad y cookies.
 - Fotos reales de los autos.
-- `public/og.png` tiene el precio de la bajada escrito: regenerarla si cambia la tarifa.
+- `public/og.png` (imagen al compartir el enlace) no lleva precios. Si se cambia, subir el `?v=` en `src/components/seo/Head.astro`.
 - Dar de alta el sitio en Google Search Console y crear/actualizar el **Perfil de Empresa de Google** (pesa mucho en búsquedas locales y en las respuestas de Gemini).
 
 ## Decisiones de rendimiento

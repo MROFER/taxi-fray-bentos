@@ -15,7 +15,8 @@ interface Props {
 const { title = SITE.title, description = SITE.description, path = '/', schema, noindex = false } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const canonical = new URL(path.replace(/^\//, ''), `${SITE.url}/`).href;
-const ogImage = `${SITE.url}/og.png`;
+// ?v= obliga a WhatsApp y Facebook a bajar la imagen de nuevo cuando cambia (subir el número).
+const ogImage = `${SITE.url}/og.png?v=2`;
 ---
 
 <meta charset="utf-8" />
