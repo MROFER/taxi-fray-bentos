@@ -9,8 +9,10 @@ import { NAV } from '@/config/site';
     <nav class="nav-links" aria-label="Secciones">
       {NAV.map((item) => <a href={item.href}>{item.label}</a>)}
     </nav>
-    <!-- Solo en móvil: en el celular la calculadora queda debajo del primer pantallazo del hero. -->
-    <a class="nav-cta" href="#pedir">Calcular</a>
+    <!-- Volver a la calculadora. En móvil va directo al formulario (queda debajo del primer pantallazo);
+         en escritorio vuelve al hero, donde la calculadora se ve entera junto al título. -->
+    <a class="nav-cta solo-movil" href="#pedir">Calcular</a>
+    <a class="nav-cta solo-escritorio" href="#inicio">Calcular viaje</a>
     <button class="nav-menu" type="button" aria-expanded="false" aria-controls="menu-movil" aria-label="Menú">
       <span aria-hidden="true"></span>
     </button>
@@ -53,11 +55,12 @@ import { NAV } from '@/config/site';
   }
   .nav-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: var(--nav-h); }
   .nav-links { display: flex; gap: 28px; align-items: center; margin-left: auto; }
+  .nav-links + .nav-cta { margin-left: auto; }
+  .solo-escritorio { margin-left: 16px; }
   .nav-links a { text-decoration: none; font-size: 15px; color: var(--muted-dark); padding-block: 8px; }
   .nav-links a:hover { color: var(--paper); }
 
   .nav-cta {
-    margin-left: auto;
     font-family: var(--f-mono); font-weight: 700; font-size: 14px; letter-spacing: 0.04em; white-space: nowrap;
     background: var(--yellow); color: var(--ink); text-decoration: none;
     padding: 11px 14px; border-radius: 5px; min-height: 44px; display: inline-flex; align-items: center;
@@ -94,10 +97,10 @@ import { NAV } from '@/config/site';
   }
   .menu-movil a:active { color: var(--yellow); }
 
-  /* Escritorio: links a la vista y sin botón (la calculadora ya se ve en el hero). */
+  /* Escritorio: links a la vista y el botón vuelve al hero. Móvil: botón corto y hamburguesa. */
   @media (min-width: 921px) {
-    .nav-cta, .nav-menu, .menu-movil { display: none; }
+    .solo-movil, .nav-menu, .menu-movil { display: none; }
   }
-  @media (max-width: 920px) { .nav-links { display: none; } }
+  @media (max-width: 920px) { .nav-links, .solo-escritorio { display: none; } }
   @media (max-width: 360px) { .nav-cta { font-size: 13px; padding-inline: 10px; } }
 </style>
