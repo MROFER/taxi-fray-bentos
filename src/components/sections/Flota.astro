@@ -64,19 +64,19 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
                     {t.whatsapp ? (
                       <>
                         <a class="pedir solid" href={whatsappUrl(t.whatsapp, mensajeAhora(t))} target="_blank" rel="noopener">
-                          Pedir ahora<span class="sr-only"> un {t.servicio} por WhatsApp</span>
+                          Pedir ahora<span class="sr-only"> a {t.servicio} por WhatsApp</span>
                         </a>
                         <a class="pedir" href={whatsappUrl(t.whatsapp, mensajeReserva(t))} target="_blank" rel="noopener">
-                          Reservar<span class="sr-only"> un {t.servicio} por WhatsApp</span>
+                          Reservar<span class="sr-only"> a {t.servicio} por WhatsApp</span>
                         </a>
                       </>
                     ) : (
                       <>
                         <button type="button" class="pedir solid" data-sin-whatsapp={t.servicio}>
-                          Pedir ahora<span class="sr-only"> un {t.servicio}</span>
+                          Pedir ahora<span class="sr-only"> a {t.servicio}</span>
                         </button>
                         <button type="button" class="pedir" data-sin-whatsapp={t.servicio}>
-                          Reservar<span class="sr-only"> un {t.servicio}</span>
+                          Reservar<span class="sr-only"> a {t.servicio}</span>
                         </button>
                       </>
                     )}
@@ -96,7 +96,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
   import { toast } from '@/scripts/ui';
 
   document.querySelectorAll<HTMLElement>('[data-sin-whatsapp]').forEach((b) =>
-    b.addEventListener('click', () => toast(`El WhatsApp del taxi ${b.dataset.sinWhatsapp} todavía no está definido.`)),
+    b.addEventListener('click', () => toast(`El WhatsApp de ${b.dataset.sinWhatsapp} todavía no está definido.`)),
   );
 </script>
 

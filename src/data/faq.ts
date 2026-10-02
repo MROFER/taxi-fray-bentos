@@ -49,7 +49,7 @@ export const FAQ: readonly Pregunta[] = [
   {
     pregunta: '¿Cómo pido un taxi en Fray Bentos?',
     respuesta:
-      'Elegí el taxi según lo que lleves (Standard, Confort o Van XL) y escribile directo por WhatsApp: podés pedirlo ahora o reservarlo para más tarde. También podés tomarlo en una de las paradas de la ciudad.',
+      'Elegí el taxi según lo que lleves y escribile directo por WhatsApp: podés pedirlo ahora o reservarlo para más tarde. También podés tomarlo en una de las paradas de la ciudad.',
   },
   {
     pregunta: '¿Cuánto se paga por las valijas en el taxi?',

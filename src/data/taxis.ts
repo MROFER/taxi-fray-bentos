@@ -17,14 +17,14 @@ export interface Taxi {
 /** Un taxi por fila del tablero. PENDIENTE: placas JTX, WhatsApp, plazas de la Van XL y fotos reales. */
 export const TAXIS: readonly Taxi[] = [
   {
-    id: 'standard',
-    servicio: 'Standard',
-    nota: 'Ciudad, todos los días',
-    placa: 'JTX ____',
-    vehiculo: ['Toyota Prius o', 'Corolla Hybrid'],
+    id: 'lechuzas',
+    servicio: 'Taxi Lechuzas',
+    nota: 'Ciudad y otros destinos, 24 h',
+    placa: 'JTX 0212',
+    vehiculo: ['Nissan Versa', 'Drive'],
     plazas: '4',
-    valijas: '2 medianas',
-    aBordo: ['Wi-Fi'],
+    valijas: '3 grandes',
+    aBordo: ['USB-C', 'Mascotas'],
     whatsapp: '',
   },
   {
@@ -51,9 +51,9 @@ export const TAXIS: readonly Taxi[] = [
   },
 ];
 
-export const mensajeAhora = (t: Taxi) => `Hola, necesito un taxi ${t.servicio} ahora. Estoy en: `;
+export const mensajeAhora = (t: Taxi) => `Hola ${t.servicio}, necesito un taxi ahora. Estoy en: `;
 export const mensajeReserva = (t: Taxi) =>
-  `Hola, quiero reservar el taxi ${t.servicio} para más tarde.\nFecha y hora: \nDesde: \nHasta: `;
+  `Hola ${t.servicio}, quiero reservar un taxi para más tarde.\nFecha y hora: \nDesde: \nHasta: `;
 
 export const whatsappUrl = (numero: string, texto: string) =>
   `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
