@@ -4,15 +4,9 @@
  * El HTML sale listo del build; el motor, las calles y el mapa se cargan recién al usarlo
  * (ver src/scripts/taximetro/index.ts).
  */
-import { CONFIG } from '@calc/config.js';
 import { pesos } from '@/data/tarifa';
-import { pesos as pesosRedondo } from '@/scripts/taximetro/textos';
 
 const pin = `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.6" fill="currentColor"/></svg>`;
-const ayudaValijas =
-  CONFIG.valijas_incluidas > 0
-    ? `${CONFIG.valijas_incluidas === 1 ? 'Primera valija sin cargo' : `Primeras ${CONFIG.valijas_incluidas} valijas sin cargo`}; valija extra, hasta ${pesosRedondo(CONFIG.valija_adicional, 2)}.`
-    : `Cada valija, hasta ${pesosRedondo(CONFIG.valija_adicional, 2)}.`;
 
 const campos = [
   { clave: 'origen', letra: 'A', etiqueta: 'Desde', ejemplo: 'Ej.: 18 de Julio 1033', tecla: 'next' },
@@ -69,9 +63,8 @@ const campos = [
   <div class="valijas">
     <div>
       <span id="valijas-titulo" class="valijas-titulo">Valijas</span>
-      <span id="valijas-ayuda" class="valijas-ayuda">{ayudaValijas}</span>
     </div>
-    <div class="stepper" role="group" aria-labelledby="valijas-titulo" aria-describedby="valijas-ayuda">
+    <div class="stepper" role="group" aria-labelledby="valijas-titulo">
       <button id="valijas-menos" type="button" aria-label="Una valija menos" disabled>−</button>
       <output id="valijas-cantidad" aria-live="polite">0</output>
       <button id="valijas-mas" type="button" aria-label="Una valija más">+</button>
@@ -120,7 +113,7 @@ const campos = [
 
   // Si alguien escribe o toca un botón antes de que termine de cargar, se repite cuando está listo.
   form.addEventListener('click', async (e) => {
-    const b = (e.target as Element).closest<HTMLButtonElement>('button.map-link');
+    const b = (e.target as Element).closest<HTMLButtonElement>('button.map-link, .stepper button');
     if (!b || form.dataset.listo !== undefined) return;
     await cargarTaximetro();
     b.click();
@@ -212,7 +205,6 @@ const campos = [
 
   .valijas { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .valijas > div:first-child { display: flex; flex-direction: column; gap: 2px; }
-  .valijas-ayuda { font-size: 12px; color: var(--muted-dark); line-height: 1.35; }
   .stepper { display: inline-flex; flex: none; align-items: center; border: 1.5px solid var(--ink-3); border-radius: 6px; overflow: hidden; }
   .stepper button {
     background: var(--ink-2); color: var(--paper); border: 0; width: 44px; height: 44px;
