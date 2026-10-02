@@ -38,9 +38,9 @@ export const SITE = {
 } as const;
 
 export const NAV = [
-  { href: '#tarifas', label: 'Tarifas' },
   { href: '#taxis', label: 'Taxis' },
   { href: '#paradas', label: 'Paradas' },
+  { href: '#tarifas', label: 'Tarifas' },
   { href: '#preguntas', label: 'Preguntas' },
   { href: '#choferes', label: 'Choferes' },
 ] as const;
