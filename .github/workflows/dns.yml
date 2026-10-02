@@ -5,7 +5,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for s in 8.8.8.8 1.1.1.1 ns1.anteldata.com.uy; do
-          for h in taxifraybentos.com.uy www.taxifraybentos.com.uy; do for t in A CNAME MX TXT; do echo "== @$s $h $t"; dig +short @$s $h $t; done; done; done
-          for h in default._domainkey hostingermail-a._domainkey hostingermail-b._domainkey hostingermail-c._domainkey _dmarc; do echo "== $h"; dig +short @ns1.anteldata.com.uy $h.taxifraybentos.com.uy CNAME; dig +short @ns1.anteldata.com.uy $h.taxifraybentos.com.uy TXT; done
-          echo "== http"; curl -sI --max-time 15 http://www.taxifraybentos.com.uy | head -6
+          echo "== NS en .uy"; dig +short NS uy | head -3; dig +norec @$(dig +short NS uy | head -1) taxifraybentos.com.uy NS | sed -n '/AUTHORITY/,/^$/p'
+          for s in 8.8.8.8 1.1.1.1 athena.dns-parking.com; do
+          for h in taxifraybentos.com.uy www.taxifraybentos.com.uy; do for t in NS A CNAME MX TXT; do echo "== @$s $h $t"; dig +short @$s $h $t; done; done; done
