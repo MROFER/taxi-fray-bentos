@@ -38,10 +38,22 @@ export const SITE = {
   },
 } as const;
 
+/** Inicio del sitio (con la base de publicación) y enlaces a sus secciones, que funcionan desde cualquier página. */
+export const INICIO = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+export const enInicio = (seccion: string) => `${INICIO}#${seccion}`;
+
 export const NAV = [
-  { href: '#taxis', label: 'Taxis' },
-  { href: '#paradas', label: 'Paradas' },
-  { href: '#tarifas', label: 'Tarifas' },
-  { href: '#choferes', label: 'Para choferes' },
-  { href: '#preguntas', label: 'Preguntas' },
+  { href: enInicio('taxis'), label: 'Taxis' },
+  { href: enInicio('paradas'), label: 'Paradas' },
+  { href: enInicio('tarifas'), label: 'Tarifas' },
+  { href: enInicio('choferes'), label: 'Para choferes' },
+  { href: enInicio('preguntas'), label: 'Preguntas' },
+] as const;
+
+/** Páginas legales (enlazadas desde el footer). */
+export const LEGALES = [
+  { href: `${INICIO}aviso-legal/`, label: 'Aviso legal' },
+  { href: `${INICIO}privacidad/`, label: 'Privacidad' },
+  { href: `${INICIO}cookies/`, label: 'Cookies' },
+  { href: `${INICIO}condiciones/`, label: 'Condiciones' },
 ] as const;

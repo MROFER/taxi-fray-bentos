@@ -1,0 +1,64 @@
+---
+import PaginaLegal from '@/components/legal/PaginaLegal.astro';
+import { SITE, LEGALES } from '@/config/site';
+
+const privacidad = LEGALES.find((l) => l.label === 'Privacidad')!.href;
+---
+
+<PaginaLegal titulo="Condiciones de uso" path="/condiciones/" descripcion="Condiciones para usar Taxi Fray Bentos, su calculadora de tarifas y el directorio de taxis.">
+  <p>
+    Al usar {SITE.domain} aceptás estas condiciones. Si no estás de acuerdo con ellas, te pedimos que no uses el sitio.
+  </p>
+
+  <h2>El servicio</h2>
+  <p>
+    El sitio es gratuito y sirve para encontrar taxis habilitados de Fray Bentos, ver la tarifa oficial y estimar el precio
+    de un viaje. {SITE.name} no presta el transporte ni cobra los viajes: el acuerdo es entre vos y el chofer o permisario del
+    taxi que elegís.
+  </p>
+
+  <h2>Calculadora y precios</h2>
+  <ul>
+    <li>La calculadora da un rango estimado con la tarifa oficial vigente y una ruta aproximada.</li>
+    <li>
+      El precio final puede variar por tiempo de espera, paradas, cambios de recorrido o el tránsito. El valor a pagar es
+      siempre el que marca el reloj taxímetro a bordo de la unidad.
+    </li>
+    <li>Las tarifas las fija la autoridad competente y pueden cambiar. Actualizamos el sitio cuando cambian.</li>
+  </ul>
+
+  <h2>Pedidos y disponibilidad</h2>
+  <p>
+    Los pedidos y las reservas se hacen directo con cada chofer, por WhatsApp o en las paradas. No garantizamos que haya un
+    taxi disponible en un momento determinado.
+  </p>
+
+  <h2>Choferes del directorio</h2>
+  <ul>
+    <li>Solo se publican taxis con permiso vigente de la Intendencia de Río Negro.</li>
+    <li>El chofer o permisario es responsable de que sus datos sean verdaderos y de mantenerlos al día.</li>
+    <li>Podemos quitar del directorio un taxi que deje de estar habilitado o que dé datos falsos.</li>
+  </ul>
+
+  <h2>Uso correcto del sitio</h2>
+  <p>
+    No está permitido usar el sitio para fines ilegales, para mandar información falsa o para intentar dañar su
+    funcionamiento.
+  </p>
+
+  <h2>Responsabilidad</h2>
+  <p>
+    Trabajamos para que la información sea correcta y esté al día, pero puede haber errores o demoras en actualizarla.
+    {SITE.name} no se hace responsable por el servicio de transporte que presta cada chofer ni por diferencias entre una
+    estimación y lo que marca el taxímetro.
+  </p>
+
+  <h2>Datos personales</h2>
+  <p>El uso de tus datos se explica en la <a href={privacidad}>política de privacidad</a>.</p>
+
+  <h2>Cambios y ley aplicable</h2>
+  <p>
+    Podemos actualizar estas condiciones; la fecha de arriba indica la última versión. Se rigen por las leyes de la República
+    Oriental del Uruguay. Consultas: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+  </p>
+</PaginaLegal>

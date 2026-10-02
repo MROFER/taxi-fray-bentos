@@ -56,6 +56,7 @@ src/
 │   ├── taxis.ts            #   Tablero de taxis (placas, WhatsApp, plazas)            ← EDITAR
 │   ├── paradas.ts          #   Paradas de taxi (y cómo ubicarlas en el mapa)
 │   ├── faq.ts              #   Preguntas frecuentes (se arman con los datos de arriba)
+│   ├── viajes.ts           #   Precios de ejemplo (Las Cañas, Puente, UTEC) calculados con la calculadora
 │   └── cobertura.ts        #   Servicios y zonas
 ├── lib/
 │   └── schema.ts           # JSON-LD (TaxiService, TaxiStand, FAQPage, Organization…)
@@ -84,7 +85,8 @@ calculadora/                # La calculadora real: src/ (motor, ruta, modalidad,
 - `src/data/taxis.ts`: placas JTX, **WhatsApp de cada taxi**, plazas de la Van XL. Con el número cargado, los botones pasan a ser links `wa.me` (sin JS); mientras falte, muestran un aviso.
 - `src/config/site.ts`: teléfono (`phone`, `phoneDisplay`). Con teléfono, aparece en el footer y se agrega al JSON-LD.
 - `src/config/site.ts` → `altaEndpoint`: a dónde se envía el formulario de choferes (Formspree, Netlify Forms, API propia). Vacío = modo demostración.
-- Páginas legales (aviso legal, privacidad, cookies, condiciones): hoy los links del footer apuntan al inicio.
+- Páginas legales (`src/pages/aviso-legal`, `privacidad`, `cookies`, `condiciones`): revisarlas con quien corresponda y, si el sitio lo
+  opera una empresa, sumar su razón social y RUT al aviso legal. Si se agrega analítica o cookies, actualizar privacidad y cookies.
 - Fotos reales de los autos.
 - `public/og.png` tiene el precio de la bajada escrito: regenerarla si cambia la tarifa.
 - Dar de alta el sitio en Google Search Console y crear/actualizar el **Perfil de Empresa de Google** (pesa mucho en búsquedas locales y en las respuestas de Gemini).

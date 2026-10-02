@@ -2,7 +2,9 @@
 interface Props {
   href?: string;
 }
-const { href = '#inicio' } = Astro.props;
+import { enInicio } from '@/config/site';
+
+const { href = enInicio('inicio') } = Astro.props;
 ---
 
 <a class="logo" href={href}>

@@ -1,0 +1,49 @@
+---
+/** Marco común de las páginas legales: título, fecha de actualización y texto con estilo de lectura. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { LEGALES, INICIO } from '@/config/site';
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  /** Ruta de la página, para el canonical (ej. "/privacidad/"). */
+  path: string;
+}
+
+const { titulo, descripcion, path } = Astro.props;
+const ACTUALIZADO = '2 de octubre de 2026';
+---
+
+<BaseLayout title={`${titulo} · Taxi Fray Bentos`} description={descripcion} path={path}>
+  <article class="sec legal">
+    <div class="wrap">
+      <header class="legal-head">
+        <span class="tag">Legal</span>
+        <h1>{titulo}</h1>
+        <p class="actualizado">Última actualización: {ACTUALIZADO}</p>
+      </header>
+      <div class="texto">
+        <slot />
+      </div>
+      <nav class="otras" aria-label="Otras páginas legales">
+        {LEGALES.map((l) => <a href={l.href} aria-current={l.href.endsWith(path) ? 'page' : undefined}>{l.label}</a>)}
+        <a href={INICIO}>Volver al inicio</a>
+      </nav>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal-head { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+  h1 { font-size: clamp(44px, 7vw, 88px); }
+  .actualizado { font-family: var(--f-mono); font-size: 13px; color: var(--text-2); }
+  .texto { max-width: 46em; font-size: 17px; line-height: 1.65; }
+  .texto :global(h2) { font-family: var(--f-body); font-size: 22px; font-weight: 700; text-transform: none; letter-spacing: 0; margin: 36px 0 10px; }
+  .texto :global(p), .texto :global(ul) { margin: 0 0 14px; }
+  .texto :global(ul) { padding-left: 22px; }
+  .texto :global(li) { margin-bottom: 6px; }
+  .texto :global(a) { color: inherit; text-underline-offset: 3px; }
+  .otras { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 48px; padding-top: 24px; border-top: 2px dashed var(--ink); }
+  .otras a { color: var(--ink); font-weight: 600; text-underline-offset: 3px; }
+  .otras a[aria-current='page'] { text-decoration: none; opacity: 0.55; }
+</style>

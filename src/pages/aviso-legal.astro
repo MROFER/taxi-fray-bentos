@@ -1,0 +1,48 @@
+---
+import PaginaLegal from '@/components/legal/PaginaLegal.astro';
+import { SITE } from '@/config/site';
+---
+
+<PaginaLegal titulo="Aviso legal" path="/aviso-legal/" descripcion="Quién está detrás de Taxi Fray Bentos, qué es el sitio y bajo qué leyes funciona.">
+  <h2>Quiénes somos</h2>
+  <p>
+    {SITE.domain} es el sitio de <strong>{SITE.name}</strong>, un directorio de taxis habilitados de Fray Bentos (Río Negro,
+    Uruguay). Podés escribirnos a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+  </p>
+
+  <h2>Qué es este sitio</h2>
+  <p>
+    El sitio reúne información para pedir un taxi en Fray Bentos: los taxis del directorio y cómo contactarlos, las paradas,
+    la tarifa oficial y una calculadora que estima cuánto puede costar un viaje.
+  </p>
+  <p>
+    {SITE.name} no presta el servicio de transporte. Cada viaje lo hace el chofer o permisario del taxi que elegís, que
+    responde por el servicio de acuerdo con su habilitación y las normas de la Intendencia de Río Negro.
+  </p>
+
+  <h2>Precios</h2>
+  <p>
+    Los precios del sitio son estimaciones calculadas con la tarifa oficial vigente. El valor a pagar es siempre el que marca
+    el reloj taxímetro a bordo de la unidad.
+  </p>
+
+  <h2>Propiedad intelectual</h2>
+  <ul>
+    <li>El diseño, los textos y el código del sitio pertenecen a {SITE.name}. No se pueden copiar ni reutilizar sin permiso.</li>
+    <li>Los datos de calles, lugares y el mapa son © colaboradores de OpenStreetMap, con licencia ODbL.</li>
+    <li>El robot de Android se reproduce a partir de una obra creada y compartida por Google, con licencia Creative Commons 3.0 Atribución.</li>
+    <li>Las marcas mencionadas (WhatsApp, Android, iPhone, Chrome, Safari) son de sus respectivos dueños.</li>
+  </ul>
+
+  <h2>Enlaces a otros sitios</h2>
+  <p>
+    Algunos botones llevan a servicios de terceros, como WhatsApp. Al usarlos se aplican sus propias condiciones y políticas
+    de privacidad.
+  </p>
+
+  <h2>Ley aplicable</h2>
+  <p>
+    Este sitio se rige por las leyes de la República Oriental del Uruguay. Ante cualquier conflicto, son competentes los
+    tribunales de Uruguay.
+  </p>
+</PaginaLegal>

@@ -38,7 +38,7 @@ const paradas = PARADAS.map((p) => {
   </div>
   <div class="river" aria-hidden="true">
     <div class="wrap">
-      <span class="mono">Río Uruguay</span><span class="mono puente">→ Puente Libertador Gral. San Martín</span>
+      <span class="mono">Río Uruguay</span>
     </div>
   </div>
 </section>
@@ -107,7 +107,6 @@ const paradas = PARADAS.map((p) => {
   @keyframes drift { to { background-position: 100px 0; } }
   .river .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .river .mono { letter-spacing: 0.5em; }
-  .river .puente { letter-spacing: 0.2em; opacity: 0.7; }
 
   /* Celular: la línea pasa a vertical y cada parada es una fila tocable. */
   @media (max-width: 820px) {

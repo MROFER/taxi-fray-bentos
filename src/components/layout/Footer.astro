@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { SITE } from '@/config/site';
+import { SITE, LEGALES, enInicio } from '@/config/site';
 import { SERVICIOS, COBERTURA } from '@/data/cobertura';
 
 const anio = new Date().getFullYear();
@@ -27,7 +27,7 @@ const anio = new Date().getFullYear();
         <ul>
           {SITE.phone && <li class="num"><a href={`tel:${SITE.phone}`}>{SITE.phoneDisplay || SITE.phone}</a></li>}
           {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
-          <li><a href="#choferes">Soy chofer</a></li>
+          <li><a href={enInicio('choferes')}>Soy chofer</a></li>
         </ul>
       </address>
     </div>
@@ -38,8 +38,7 @@ const anio = new Date().getFullYear();
       licencia Creative Commons 3.0 Atribución.
     </small>
     <nav aria-label="Legal">
-      <!-- PENDIENTE: páginas legales. -->
-      <a href="#inicio">Aviso legal</a><a href="#inicio">Privacidad</a><a href="#inicio">Cookies</a><a href="#inicio">Condiciones</a>
+      {LEGALES.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>
   </div>
 </footer>

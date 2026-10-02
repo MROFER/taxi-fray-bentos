@@ -1,6 +1,6 @@
 ---
 import Logo from './Logo.astro';
-import { NAV } from '@/config/site';
+import { NAV, enInicio } from '@/config/site';
 ---
 
 <header class="nav">
@@ -11,8 +11,8 @@ import { NAV } from '@/config/site';
     </nav>
     <!-- Volver a la calculadora. En móvil va directo al formulario (queda debajo del primer pantallazo);
          en escritorio vuelve al hero, donde la calculadora se ve entera junto al título. -->
-    <a class="nav-cta solo-movil" href="#pedir">Calcular</a>
-    <a class="nav-cta solo-escritorio" href="#inicio">Calcular viaje</a>
+    <a class="nav-cta solo-movil" href={enInicio('pedir')}>Calcular</a>
+    <a class="nav-cta solo-escritorio" href={enInicio('inicio')}>Calcular viaje</a>
     <button class="nav-menu" type="button" aria-expanded="false" aria-controls="menu-movil" aria-label="Menú">
       <span aria-hidden="true"></span>
     </button>
