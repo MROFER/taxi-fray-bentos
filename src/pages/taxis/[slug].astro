@@ -78,12 +78,13 @@ const schema = {
 ---
 
 <BaseLayout title={titulo} description={descripcion} path={path} schema={schema}>
+  <PortadaTaxi slug={s.slug} alt={`${nombre} en Fray Bentos`}>
+    <nav class="migas mono" aria-label="Estás en">
+      <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span>
+    </nav>
+  </PortadaTaxi>
   <section class="taxi-top">
     <div class="wrap">
-      <nav class="migas mono" aria-label="Estás en">
-        <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span>
-      </nav>
-      <PortadaTaxi slug={s.slug} alt={`${nombre} en Fray Bentos`} />
       <span class="tag">Taxi en Fray Bentos</span>
       <h1>{nombre}</h1>
       <p class="nota mono">{s.nota.replace(/\n/g, ' · ')}</p>
@@ -146,9 +147,9 @@ const schema = {
 </BaseLayout>
 
 <style>
-  .taxi-top { background: var(--ink); color: var(--paper); padding-block: clamp(32px, 5vw, 64px) clamp(56px, 8vw, 96px); }
-  .migas { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--muted-dark); margin-bottom: 28px; }
-  .migas a { color: var(--muted-dark); }
+  .taxi-top { background: var(--ink); color: var(--paper); padding-block: clamp(28px, 4vw, 48px) clamp(56px, 8vw, 96px); }
+  .migas { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--paper); }
+  .migas a { color: var(--paper); }
   .migas a:hover { color: var(--yellow); }
   .migas [aria-current] { color: var(--paper); }
   h1 { font-size: clamp(56px, 10vw, 128px); color: var(--yellow); margin: 18px 0 10px; }
