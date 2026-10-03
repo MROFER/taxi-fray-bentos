@@ -22,6 +22,8 @@ before(async () => {
   dir = mkdtempSync(join(tmpdir(), 'alta-'));
   const config = join(dir, 'taxi-config.php');
   writeFileSync(config, `<?php return ['db' => ['dsn' => 'sqlite:${join(dir, 'taxi.db')}'], 'sal' => 'prueba'];`);
+  // Tabla como la crearon las versiones anteriores (sin la columna "acepto"), para probar que se agrega sola.
+  spawnSync('php', ['-r', `(new PDO('sqlite:${join(dir, 'taxi.db')}'))->exec("CREATE TABLE solicitudes_alta (id INTEGER PRIMARY KEY AUTOINCREMENT, creado TEXT NOT NULL, titular TEXT NOT NULL, movil TEXT NOT NULL DEFAULT '', telefono TEXT NOT NULL, permiso TEXT NOT NULL, parada TEXT NOT NULL DEFAULT '', correo TEXT NOT NULL DEFAULT '', ip TEXT NOT NULL, estado TEXT NOT NULL DEFAULT 'pendiente')");`]);
   servidor = spawn('php', ['-S', `127.0.0.1:${PUERTO}`, '-t', join(raiz, 'public')], {
     env: { ...process.env, TAXI_CONFIG: config },
     stdio: 'ignore',
@@ -43,7 +45,10 @@ after(() => {
 });
 
 const enviar = (campos) => fetch(URL_ALTA, { method: 'POST', body: new URLSearchParams(campos) });
-const valida = { titular: 'Juan Pérez', telefono: '099 123 456', permiso: 'jtx 0212', movil: 'Taxi Lechuzas' };
+const valida = {
+  titular: 'Juan Pérez', telefono: '099 123 456', permiso: 'jtx 0212', movil: 'Taxi Lechuzas',
+  consentimiento: 'si', declaracion: 'si',
+};
 
 test('alta.php', { skip: !hayPhp && 'PHP con pdo_sqlite no está instalado' }, async (t) => {
   await t.test('solo acepta POST', async () => {
@@ -56,12 +61,21 @@ test('alta.php', { skip: !hayPhp && 'PHP con pdo_sqlite no está instalado' }, a
     const j = await r.json();
     assert.equal(j.ok, true);
     assert.equal(j.id, 1);
+    const fila = spawnSync('php', ['-r', `echo (new PDO('sqlite:${join(dir, 'taxi.db')}'))->query('SELECT acepto FROM solicitudes_alta')->fetchColumn();`], { encoding: 'utf8' });
+    assert.match(fila.stdout, /^privacidad\+declaracion \d{4}-\d{2}-\d{2}$/);
   });
 
   await t.test('rechaza datos incompletos y dice cuáles', async () => {
     const r = await enviar({ titular: 'Jo', telefono: '123', permiso: '', correo: 'no-es-correo' });
     assert.equal(r.status, 422);
-    assert.deepEqual((await r.json()).campos, ['titular', 'telefono', 'permiso', 'correo']);
+    assert.deepEqual((await r.json()).campos, ['titular', 'telefono', 'permiso', 'correo', 'consentimiento', 'declaracion']);
+  });
+
+  await t.test('exige las dos casillas', async () => {
+    const { declaracion, ...sinDeclaracion } = valida;
+    const r = await enviar(sinDeclaracion);
+    assert.equal(r.status, 422);
+    assert.deepEqual((await r.json()).campos, ['declaracion']);
   });
 
   await t.test('el campo trampa descarta el envío sin guardarlo', async () => {

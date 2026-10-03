@@ -1,5 +1,8 @@
 ---
-import { SITE } from '@/config/site';
+import { SITE, LEGALES } from '@/config/site';
+
+const privacidad = LEGALES.find((l) => l.label === 'Privacidad')!.href;
+const condiciones = LEGALES.find((l) => l.label === 'Condiciones')!.href;
 ---
 
 <section class="sec choferes on-yellow" id="choferes" aria-labelledby="choferes-title">
@@ -57,6 +60,22 @@ import { SITE } from '@/config/site';
         <label for="mail">Correo</label>
         <input id="mail" name="correo" type="email" inputmode="email" placeholder="ejemplo@correo.com" autocomplete="email" />
       </div>
+      <div class="checks">
+        <label class="check">
+          <input type="checkbox" id="consentimiento" name="consentimiento" value="si" required />
+          <span>
+            Acepto que se usen mis datos para revisar esta solicitud y, si se aprueba, publicar mi taxi en el sitio, según la
+            <a href={privacidad} target="_blank">política de privacidad</a>.
+          </span>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="declaracion" name="declaracion" value="si" required />
+          <span>
+            Declaro que los datos son verdaderos, que el taxi tiene permiso, inspección y seguro vigentes, y que soy responsable
+            del servicio que presto, según las <a href={condiciones} target="_blank">condiciones de uso</a>.
+          </span>
+        </label>
+      </div>
       <div class="trampa" aria-hidden="true">
         <label for="web">No completar</label>
         <input id="web" name="web" tabindex="-1" autocomplete="off" />
@@ -85,6 +104,17 @@ import { SITE } from '@/config/site';
       faltan[0]!.focus();
       return;
     }
+    const sinMarcar = ['consentimiento', 'declaracion'].map((id) => $<HTMLInputElement>(id)).filter((c) => !c.checked);
+    if (sinMarcar.length) {
+      msg.textContent =
+        sinMarcar.length === 2
+          ? 'Para enviar la solicitud tenés que marcar las dos casillas.'
+          : sinMarcar[0]!.id === 'consentimiento'
+            ? 'Para enviar la solicitud tenés que aceptar el uso de tus datos.'
+            : 'Para enviar la solicitud tenés que marcar la declaración de responsabilidad.';
+      sinMarcar[0]!.focus();
+      return;
+    }
 
     const endpoint = form.dataset.endpoint;
     if (endpoint) {
@@ -94,7 +124,7 @@ import { SITE } from '@/config/site';
         if (!r.ok) {
           msg.textContent =
             r.status === 422
-              ? 'Revisá los datos: el teléfono y el permiso tienen que estar completos.'
+              ? 'Revisá los datos: el teléfono y el permiso tienen que estar completos y las dos casillas marcadas.'
               : r.status === 429
                 ? 'Ya recibimos varias solicitudes desde esta conexión. Probá de nuevo más tarde.'
                 : 'No pudimos enviar la solicitud. Probá de nuevo en un rato.';
@@ -150,6 +180,20 @@ import { SITE } from '@/config/site';
   .uf input::placeholder { color: var(--placeholder); }
   .uf input:focus { outline: none; border-bottom-color: var(--stamp); background: linear-gradient(transparent 85%, rgba(242, 183, 5, 0.35) 85%); }
   .form .row2 { gap: 18px; }
+  .checks { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+  .check { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.45; color: var(--ink-2); cursor: pointer; }
+  .check input {
+    appearance: none; flex: none; width: 22px; height: 22px; margin: 0; border: 2px solid var(--ink); border-radius: 3px;
+    background: transparent; display: grid; place-items: center; cursor: pointer;
+  }
+  .check input::after {
+    content: ''; width: 12px; height: 7px; border: solid var(--ink); border-width: 0 0 3px 3px;
+    transform: translate(0, -2px) rotate(-45deg) scale(0); transition: transform 0.12s ease;
+  }
+  .check input:checked { background: var(--yellow); }
+  .check input:checked::after { transform: translate(0, -2px) rotate(-45deg) scale(1); }
+  .check input:focus-visible { outline: 3px solid var(--stamp); outline-offset: 2px; }
+  .check a { color: var(--ink); font-weight: 600; }
   /* Campo trampa para robots: fuera de la vista y del teclado. */
   .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .form-msg { font-size: 13px; color: var(--muted); min-height: 1.3em; }
