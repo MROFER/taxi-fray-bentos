@@ -22,6 +22,8 @@ export const SITE = {
   phoneDisplay: '',
   /** Correo de contacto. */
   email: 'contacto@taxifraybentos.com.uy',
+  /** Persona responsable de los datos personales (Ley 18.331), en la política de privacidad. */
+  responsable: 'Maximiliano Rovelli',
 
   /**
    * Endpoint que recibe el formulario de alta de choferes. En Hostinger es api/alta.php (PHP + MySQL),
