@@ -78,7 +78,7 @@ const schema = {
 ---
 
 <BaseLayout title={titulo} description={descripcion} path={path} schema={schema}>
-  <PortadaTaxi slug={s.slug} alt={`${nombre} en Fray Bentos`}>
+  <PortadaTaxi slug={s.slug} alt={`${nombre} en Fray Bentos`} y={s.portadaY}>
     <nav class="migas mono" aria-label="Estás en">
       <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span>
     </nav>

@@ -18,6 +18,8 @@ export interface Servicio {
   nota: string;
   /** Texto de presentación de su página. Vacío = se arma uno con los datos del servicio. */
   descripcion: string;
+  /** Encuadre vertical de la foto de portada: 0 = se ve la parte de arriba, 100 = la de abajo. Sin valor = 50. */
+  portadaY?: number;
   /** WhatsApp del servicio, con código de país, sin + ni espacios (ej. "59899123456"). Vacío = a definir. */
   whatsapp: string;
   /** Tarjeta de muestra del diseño (no es un taxi real): no tiene página y no se informa a buscadores ni IAs. */
@@ -44,6 +46,7 @@ const LECHUZAS: Servicio = {
   nombre: 'Taxi Lechuzas',
   nombrePagina: '',
   empresa: 'Lechuzas Viajes Uruguay',
+  portadaY: 48,
   nota: 'Todos los destinos · 24/7\nInmediatos · Reservas',
   descripcion: '',
   whatsapp: '',
