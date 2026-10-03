@@ -22,6 +22,8 @@ jobs:
     env:
       SITE_URL: https://mrofer.github.io
       BASE_PATH: /taxi-fray-bentos
+      # La copia de GitHub Pages muestra el recordatorio de datos pendientes; el dominio real no.
+      PUBLIC_MOSTRAR_PENDIENTES: 'si'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

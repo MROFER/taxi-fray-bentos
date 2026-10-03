@@ -2,6 +2,8 @@
 import Placa from '@/components/ui/Placa.astro';
 import { TAXIS, mensajeAhora, mensajeReserva, whatsappUrl } from '@/data/taxis';
 
+// Solo en la copia de prueba (GitHub Pages) o en local; en www.taxifraybentos.com.uy no se muestra.
+const mostrarPendientes = import.meta.env.DEV || import.meta.env.PUBLIC_MOSTRAR_PENDIENTES === 'si';
 const pendientes = [
   TAXIS.some((t) => t.placa.includes('_')) && 'placas JTX',
   TAXIS.some((t) => !t.whatsapp) && 'WhatsApp de cada taxi',
@@ -88,7 +90,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
         </tbody>
       </table>
     </div>
-    {pendientes.length > 1 && <p class="flota-note">[Pendiente: {pendientes.join(', ')}.]</p>}
+    {mostrarPendientes && pendientes.length > 1 && <p class="flota-note">[Pendiente: {pendientes.join(', ')}.]</p>}
   </div>
 </section>
 
