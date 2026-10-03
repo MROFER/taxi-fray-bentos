@@ -34,8 +34,9 @@ const numero = vehiculos.map(numeroDe).find(Boolean);
 const nombre = nombrePaginaDe(s);
 const empresa = empresaDe(s);
 const alias = otrosNombresDe(s);
-// Lo que Google muestra como título: la empresa primero; el nombre de la página entre paréntesis si es otro.
-const titulo = `${empresa}${nombre !== empresa ? ` (${nombre})` : ''} · Taxi en Fray Bentos`;
+// Título para Google, corto para que no lo corte ni en los resultados ni debajo del inicio:
+// el nombre conocido y, si es otro, el de la empresa.
+const titulo = nombre !== empresa ? `${nombre} · ${empresa}` : `${nombre} · Taxi en Fray Bentos`;
 
 const schema = {
   '@context': 'https://schema.org',
