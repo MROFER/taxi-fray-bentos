@@ -8,7 +8,7 @@
     "build": "astro check && node scripts/validar-tarifas.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --test \"calculadora/tests/*.test.mjs\"",
+    "test": "node --test \"calculadora/tests/*.test.mjs\" \"servidor/tests/*.test.mjs\"",
     "extraer-osm": "node calculadora/scripts/extraer-osm.mjs",
     "editar-cerco": "node calculadora/scripts/servir.mjs",
     "vista-previa": "node scripts/vista-previa.mjs"

@@ -1,7 +1,8 @@
-# Publica la landing en GitHub Pages en cada push a main: https://mrofer.github.io/taxi-fray-bentos/
-# Arma el sitio y lo sube a la rama gh-pages (Pages sirve esa rama).
-# Con dominio propio, cambiar SITE_URL por el dominio y BASE_PATH por "/".
-name: Publicar en GitHub Pages
+# En cada push a main arma el sitio dos veces:
+# - Rama hostinger: el sitio para www.taxifraybentos.com.uy con el formulario conectado (api/alta.php).
+#   Hostinger (hPanel → Avanzado → GIT) baja esa rama a public_html cada vez que cambia.
+# - Rama gh-pages: copia en https://mrofer.github.io/taxi-fray-bentos/ (sin PHP: el formulario queda en demostración).
+name: Publicar
 
 on:
   push:
@@ -33,9 +34,37 @@ jobs:
       - name: Subir dist/ a gh-pages
         run: |
           cd dist
-          rm -f _headers
+          rm -rf _headers .htaccess api
           touch .nojekyll
           git init -q -b gh-pages
           git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Publicar ${GITHUB_SHA::7}"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+
+  hostinger:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://www.taxifraybentos.com.uy
+      BASE_PATH: /
+      PUBLIC_ALTA_ENDPOINT: /api/alta.php
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      # Historia lineal (sin force-push) para que el "git pull" de Hostinger siempre avance.
+      - name: Subir dist/ a la rama hostinger
+        run: |
+          rm -f dist/_headers
+          REPO="https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git"
+          git clone -q --depth 1 --branch hostinger "$REPO" publicar || { mkdir publicar && git -C publicar init -q -b hostinger; }
+          rsync -a --delete --exclude .git dist/ publicar/
+          cd publicar
+          git add -A
+          if git diff --cached --quiet; then echo "Sin cambios"; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Publicar ${GITHUB_SHA::7}"
+          git push -q "$REPO" HEAD:hostinger

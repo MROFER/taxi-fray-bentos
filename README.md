@@ -84,7 +84,6 @@ calculadora/                # La calculadora real: src/ (motor, ruta, modalidad,
 
 - `src/data/taxis.ts`: placas JTX, **WhatsApp de cada taxi**, plazas de la Van XL. Con el número cargado, los botones pasan a ser links `wa.me` (sin JS); mientras falte, muestran un aviso.
 - `src/config/site.ts`: teléfono (`phone`, `phoneDisplay`). Con teléfono, aparece en el footer y se agrega al JSON-LD.
-- `src/config/site.ts` → `altaEndpoint`: a dónde se envía el formulario de choferes (Formspree, Netlify Forms, API propia). Vacío = modo demostración.
 - Páginas legales (`src/pages/aviso-legal`, `privacidad`, `cookies`, `condiciones`): revisarlas con quien corresponda y, si el sitio lo
   opera una empresa, sumar su razón social y RUT al aviso legal. Si se agrega analítica o cookies, actualizar privacidad y cookies.
 - Fotos reales de los autos.
@@ -115,6 +114,18 @@ calculadora/                # La calculadora real: src/ (motor, ruta, modalidad,
 
 ## Deploy
 
-Cada push a `main` se publica solo en GitHub Pages (`.github/workflows/deploy.yml`): https://mrofer.github.io/taxi-fray-bentos/
+Cada push a `main` corre `.github/workflows/deploy.yml`, que arma el sitio dos veces:
 
-Con dominio propio, cambiar en el workflow `SITE_URL` por el dominio y `BASE_PATH` por `/`. También sale como sitio estático en `dist/` para Netlify, Cloudflare Pages, Vercel o cualquier hosting (`public/_headers` trae el cacheo para Netlify/Cloudflare).
+- **Rama `hostinger`** → www.taxifraybentos.com.uy. Hostinger (hPanel → Avanzado → GIT, rama `hostinger`, carpeta `public_html`)
+  la baja con un webhook en cada cambio. Incluye `.htaccess` (redirección a https://www, 404, caché) y `api/alta.php`.
+- **Rama `gh-pages`** → copia en https://mrofer.github.io/taxi-fray-bentos/ (sin PHP: el formulario queda en modo demostración).
+
+## Formulario de alta de choferes
+
+`public/api/alta.php` recibe el formulario, lo guarda en MySQL (tabla `solicitudes_alta`, se crea sola) y avisa por correo.
+Tiene campo trampa para robots y un tope de 5 solicitudes por hora por conexión. Las pruebas están en `servidor/tests/`
+(usan PHP con SQLite; se saltean si no hay PHP).
+
+La configuración (base de datos, correo) **no va en el repositorio**: copiar `servidor/taxi-config.ejemplo.php` como
+`taxi-config.php` un nivel arriba de `public_html` (en Hostinger: `domains/taxifraybentos.com.uy/taxi-config.php`) y completarlo.
+Requiere PHP 8.1 o más nuevo.

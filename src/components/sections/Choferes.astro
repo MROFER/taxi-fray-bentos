@@ -57,6 +57,10 @@ import { SITE } from '@/config/site';
         <label for="mail">Correo</label>
         <input id="mail" name="correo" type="email" inputmode="email" placeholder="ejemplo@correo.com" autocomplete="email" />
       </div>
+      <div class="trampa" aria-hidden="true">
+        <label for="web">No completar</label>
+        <input id="web" name="web" tabindex="-1" autocomplete="off" />
+      </div>
       <button class="btn btn-ink" type="submit">Enviar solicitud</button>
       <p class="form-msg" id="formMsg" aria-live="polite">Te contactamos para validar el permiso antes de publicar tu móvil.</p>
     </form>
@@ -69,6 +73,7 @@ import { SITE } from '@/config/site';
   const form = $<HTMLFormElement>('alta');
   const msg = $('formMsg');
   const stamp = $('stamp');
+  const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -83,12 +88,23 @@ import { SITE } from '@/config/site';
 
     const endpoint = form.dataset.endpoint;
     if (endpoint) {
+      boton.disabled = true;
       try {
         const r = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-        if (!r.ok) throw new Error(String(r.status));
+        if (!r.ok) {
+          msg.textContent =
+            r.status === 422
+              ? 'Revisá los datos: el teléfono y el permiso tienen que estar completos.'
+              : r.status === 429
+                ? 'Ya recibimos varias solicitudes desde esta conexión. Probá de nuevo más tarde.'
+                : 'No pudimos enviar la solicitud. Probá de nuevo en un rato.';
+          return;
+        }
       } catch {
-        msg.textContent = 'No pudimos enviar la solicitud. Probá de nuevo en un rato.';
+        msg.textContent = 'No pudimos enviar la solicitud. Revisá tu conexión y probá de nuevo.';
         return;
+      } finally {
+        boton.disabled = false;
       }
       msg.textContent = 'Recibimos tu solicitud. Te contactamos para validar el permiso.';
       form.reset();
@@ -134,6 +150,8 @@ import { SITE } from '@/config/site';
   .uf input::placeholder { color: var(--placeholder); }
   .uf input:focus { outline: none; border-bottom-color: var(--stamp); background: linear-gradient(transparent 85%, rgba(242, 183, 5, 0.35) 85%); }
   .form .row2 { gap: 18px; }
+  /* Campo trampa para robots: fuera de la vista y del teclado. */
+  .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .form-msg { font-size: 13px; color: var(--muted); min-height: 1.3em; }
   .stamp {
     position: absolute; right: clamp(14px, 4vw, 34px); top: 62px; width: 116px; height: 116px;

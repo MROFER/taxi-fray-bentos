@@ -24,10 +24,11 @@ export const SITE = {
   email: 'contacto@taxifraybentos.com.uy',
 
   /**
-   * Endpoint que recibe el formulario de alta de choferes (Formspree, Netlify Forms, API propia…).
-   * Vacío = modo demostración: el formulario valida pero no envía nada.
+   * Endpoint que recibe el formulario de alta de choferes. En Hostinger es api/alta.php (PHP + MySQL),
+   * se activa con la variable PUBLIC_ALTA_ENDPOINT en el build (ver .github/workflows/deploy.yml).
+   * Vacío = modo demostración: el formulario valida pero no envía nada (así queda en GitHub Pages, que no corre PHP).
    */
-  altaEndpoint: '',
+  altaEndpoint: (import.meta.env.PUBLIC_ALTA_ENDPOINT as string | undefined) ?? '',
 
   geo: {
     region: 'UY-RN',
