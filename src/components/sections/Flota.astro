@@ -4,10 +4,12 @@ import { TAXIS, mensajeAhora, mensajeReserva, whatsappUrl } from '@/data/taxis';
 
 // Solo en la copia de prueba (GitHub Pages) o en local; en www.taxifraybentos.com.uy no se muestra.
 const mostrarPendientes = import.meta.env.DEV || import.meta.env.PUBLIC_MOSTRAR_PENDIENTES === 'si';
+// Las tarjetas de ejemplo no cuentan: sus datos quedan a propósito sin completar.
+const reales = TAXIS.filter((t) => !t.ejemplo);
 const pendientes = [
-  TAXIS.some((t) => t.placa.includes('_')) && 'placas JTX',
-  TAXIS.some((t) => !t.whatsapp) && 'WhatsApp de cada taxi',
-  ...TAXIS.filter((t) => !t.plazas).map((t) => `plazas de la ${t.servicio}`),
+  reales.some((t) => t.placa.includes('_')) && 'placas JTX',
+  reales.some((t) => !t.whatsapp) && 'WhatsApp de cada taxi',
+  ...reales.filter((t) => !t.plazas).map((t) => `plazas de ${t.servicio}`),
   'fotos reales',
 ].filter(Boolean);
 

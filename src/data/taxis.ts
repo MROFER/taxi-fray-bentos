@@ -17,7 +17,7 @@ export interface Taxi {
   ejemplo?: boolean;
 }
 
-/** Un taxi por fila del tablero. PENDIENTE: placas JTX, WhatsApp, plazas de la Van XL y fotos reales. */
+/** Un taxi por fila del tablero. Las tarjetas de ejemplo muestran textos entre corchetes. PENDIENTE: WhatsApp y fotos reales. */
 export const TAXIS: readonly Taxi[] = [
   {
     id: 'lechuzas',
@@ -33,10 +33,10 @@ export const TAXIS: readonly Taxi[] = [
   {
     id: 'confort',
     ejemplo: true,
-    servicio: 'Confort',
+    servicio: '[Nombre del servicio]',
     nota: 'Ejecutivo y aeropuerto',
     placa: 'JTX ____',
-    vehiculo: ['Mercedes-Benz Clase E', 'o Tesla Model 3'],
+    vehiculo: ['[Marca y modelo]'],
     plazas: '4',
     valijas: '3 grandes',
     aBordo: ['Mascotas', 'USB-C', 'Agua'],
@@ -45,10 +45,10 @@ export const TAXIS: readonly Taxi[] = [
   {
     id: 'van-xl',
     ejemplo: true,
-    servicio: 'Van XL',
+    servicio: '[Nombre del servicio]',
     nota: 'Familias y grupos',
     placa: 'JTX ____',
-    vehiculo: ['Mercedes-Benz Vito o', 'Toyota Proace Verso'],
+    vehiculo: ['[Marca y modelo]'],
     plazas: '',
     valijas: '3 grandes',
     aBordo: ['Sillas infantiles'],
