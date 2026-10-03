@@ -5,6 +5,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "== NS en .uy"; dig +short NS uy | head -3; dig +norec @$(dig +short NS uy | head -1) taxifraybentos.com.uy NS | sed -n '/AUTHORITY/,/^$/p'
-          for s in 8.8.8.8 1.1.1.1 athena.dns-parking.com; do
-          for h in taxifraybentos.com.uy www.taxifraybentos.com.uy; do for t in NS A CNAME MX TXT; do echo "== @$s $h $t"; dig +short @$s $h $t; done; done; done
+          for u in https://www.taxifraybentos.com.uy/ https://taxifraybentos.com.uy/ https://www.taxifraybentos.com.uy/robots.txt https://www.taxifraybentos.com.uy/api/alta.php; do
+            echo "== $u"; curl -s -o /tmp/b -w "%{http_code} %{redirect_url}\n" --max-time 20 "$u"; head -c 300 /tmp/b | tr '\n' ' '; echo; grep -o '<title>[^<]*' /tmp/b || true; done
