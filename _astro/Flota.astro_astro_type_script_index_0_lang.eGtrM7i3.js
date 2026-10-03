@@ -1,0 +1,1 @@
+import{i as e}from"./ui.C44PYYNg.js";document.querySelectorAll(`[data-sin-whatsapp]`).forEach(t=>t.addEventListener(`click`,()=>e(`El WhatsApp de ${t.dataset.sinWhatsapp} todavía no está definido.`)));
