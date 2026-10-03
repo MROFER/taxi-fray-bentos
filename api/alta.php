@@ -13,6 +13,9 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
 
+/** Fecha de los textos de las casillas del formulario: cambiarla si cambia la redacción. */
+const ACEPTO_VERSION = '2026-10-03';
+
 function responder(int $codigo, array $cuerpo): never
 {
     http_response_code($codigo);
@@ -59,6 +62,10 @@ $digitos = preg_replace('/\D/', '', $datos['telefono']) ?? '';
 if (strlen($digitos) < 8 || strlen($digitos) > 15) $errores[] = 'telefono';
 if (mb_strlen($datos['permiso']) < 3) $errores[] = 'permiso';
 if ($datos['correo'] !== '' && !filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) $errores[] = 'correo';
+// Las dos casillas son obligatorias: consentimiento (Ley 18.331) y declaración de responsabilidad.
+foreach (['consentimiento', 'declaracion'] as $casilla) {
+    if (($_POST[$casilla] ?? '') !== 'si') $errores[] = $casilla;
+}
 if ($errores) {
     responder(422, ['ok' => false, 'error' => 'datos', 'campos' => $errores]);
 }
@@ -80,14 +87,21 @@ try {
              correo VARCHAR(120) NOT NULL DEFAULT \'\',
              ip CHAR(64) NOT NULL,
              estado VARCHAR(20) NOT NULL DEFAULT \'pendiente\',
+             acepto VARCHAR(60) NOT NULL DEFAULT \'\',
              INDEX (ip, creado)
            ) DEFAULT CHARSET=utf8mb4'
         : 'CREATE TABLE IF NOT EXISTS solicitudes_alta (
              id INTEGER PRIMARY KEY AUTOINCREMENT, creado TEXT NOT NULL, titular TEXT NOT NULL,
              movil TEXT NOT NULL DEFAULT \'\', telefono TEXT NOT NULL, permiso TEXT NOT NULL,
              parada TEXT NOT NULL DEFAULT \'\', correo TEXT NOT NULL DEFAULT \'\', ip TEXT NOT NULL,
-             estado TEXT NOT NULL DEFAULT \'pendiente\'
+             estado TEXT NOT NULL DEFAULT \'pendiente\', acepto TEXT NOT NULL DEFAULT \'\'
            )');
+    // Tablas creadas antes de las casillas no tienen la columna "acepto": se agrega una sola vez.
+    try {
+        $db->query('SELECT acepto FROM solicitudes_alta LIMIT 0');
+    } catch (PDOException) {
+        $db->exec('ALTER TABLE solicitudes_alta ADD COLUMN acepto ' . ($mysql ? 'VARCHAR(60)' : 'TEXT') . ' NOT NULL DEFAULT \'\'');
+    }
 
     // La IP se guarda cifrada (hash): alcanza para frenar envíos repetidos sin guardar el dato personal.
     $ip = hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . ($config['sal'] ?? 'taxi'));
@@ -100,10 +114,12 @@ try {
         responder(429, ['ok' => false, 'error' => 'demasiadas']);
     }
 
-    $db->prepare('INSERT INTO solicitudes_alta (creado, titular, movil, telefono, permiso, parada, correo, ip)
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    // Qué aceptó el chofer: las dos casillas, con la versión de los textos legales.
+    $acepto = 'privacidad+declaracion ' . ACEPTO_VERSION;
+    $db->prepare('INSERT INTO solicitudes_alta (creado, titular, movil, telefono, permiso, parada, correo, ip, acepto)
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
        ->execute([$ahora, $datos['titular'], $datos['movil'], $datos['telefono'], $datos['permiso'],
-                  $datos['parada'], $datos['correo'], $ip]);
+                  $datos['parada'], $datos['correo'], $ip, $acepto]);
     $id = (int) $db->lastInsertId();
 } catch (Throwable $e) {
     error_log('alta.php: ' . $e->getMessage());
@@ -121,6 +137,7 @@ if (!empty($config['correo']['para'])) {
         "Permiso / chapa: {$datos['permiso']}",
         'Parada habitual: ' . ($datos['parada'] ?: '-'),
         'Correo: ' . ($datos['correo'] ?: '-'),
+        'Aceptó la política de privacidad y la declaración de responsabilidad (textos del ' . ACEPTO_VERSION . ').',
     ];
     $de = $config['correo']['de'] ?? $config['correo']['para'];
     $cabeceras = [
