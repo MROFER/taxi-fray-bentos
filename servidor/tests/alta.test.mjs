@@ -68,7 +68,7 @@ test('alta.php', { skip: !hayPhp && 'PHP con pdo_sqlite no está instalado' }, a
   await t.test('rechaza datos incompletos y dice cuáles', async () => {
     const r = await enviar({ titular: 'Jo', telefono: '123', permiso: '', correo: 'no-es-correo' });
     assert.equal(r.status, 422);
-    assert.deepEqual((await r.json()).campos, ['titular', 'telefono', 'permiso', 'correo', 'consentimiento', 'declaracion']);
+    assert.deepEqual((await r.json()).campos, ['titular', 'movil', 'telefono', 'permiso', 'correo', 'consentimiento', 'declaracion']);
   });
 
   await t.test('exige las dos casillas', async () => {

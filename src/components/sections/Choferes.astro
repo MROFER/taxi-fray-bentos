@@ -41,7 +41,7 @@ const condiciones = LEGALES.find((l) => l.label === 'Condiciones')!.href;
       <div class="row2">
         <div class="uf">
           <label for="fantasia">Nombre del móvil</label>
-          <input id="fantasia" name="movil" placeholder="Taxi Express" autocomplete="organization" />
+          <input id="fantasia" name="movil" placeholder="Taxi Express" autocomplete="organization" required />
         </div>
         <div class="uf">
           <label for="tel">Teléfono / WhatsApp</label>
@@ -96,7 +96,7 @@ const condiciones = LEGALES.find((l) => l.label === 'Condiciones')!.href;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const faltan = ['titular', 'tel', 'permiso']
+    const faltan = ['titular', 'fantasia', 'tel', 'permiso']
       .map((id) => $<HTMLInputElement>(id))
       .filter((i) => !i.value.trim());
     if (faltan.length) {
@@ -124,7 +124,7 @@ const condiciones = LEGALES.find((l) => l.label === 'Condiciones')!.href;
         if (!r.ok) {
           msg.textContent =
             r.status === 422
-              ? 'Revisá los datos: el teléfono y el permiso tienen que estar completos y las dos casillas marcadas.'
+              ? 'Revisá los datos: titular, nombre del móvil, teléfono y permiso tienen que estar completos y las dos casillas marcadas.'
               : r.status === 429
                 ? 'Ya recibimos varias solicitudes desde esta conexión. Probá de nuevo más tarde.'
                 : 'No pudimos enviar la solicitud. Probá de nuevo en un rato.';

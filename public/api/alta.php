@@ -58,6 +58,7 @@ $datos = [
 
 $errores = [];
 if (mb_strlen($datos['titular']) < 3) $errores[] = 'titular';
+if (mb_strlen($datos['movil']) < 2) $errores[] = 'movil';
 $digitos = preg_replace('/\D/', '', $datos['telefono']) ?? '';
 if (strlen($digitos) < 8 || strlen($digitos) > 15) $errores[] = 'telefono';
 if (mb_strlen($datos['permiso']) < 3) $errores[] = 'permiso';
