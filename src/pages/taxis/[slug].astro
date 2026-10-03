@@ -82,14 +82,10 @@ const schema = {
       <nav class="migas mono" aria-label="Estás en">
         <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span>
       </nav>
-      <header class="portada">
-        <PortadaTaxi slug={s.slug} alt={`${nombre} en Fray Bentos`} />
-        <div class="portada-texto">
-          <span class="tag">Taxi en Fray Bentos</span>
-          <h1>{nombre}</h1>
-          <p class="nota mono">{s.nota.replace(/\n/g, ' · ')}</p>
-        </div>
-      </header>
+      <PortadaTaxi slug={s.slug} alt={`${nombre} en Fray Bentos`} />
+      <span class="tag">Taxi en Fray Bentos</span>
+      <h1>{nombre}</h1>
+      <p class="nota mono">{s.nota.replace(/\n/g, ' · ')}</p>
       <p class="desc">{descripcion}</p>
 
       <h2 class="mono sub">{vehiculos.length === 1 ? 'El auto' : `Los autos (${vehiculos.length})`}</h2>
@@ -154,16 +150,8 @@ const schema = {
   .migas a { color: var(--muted-dark); }
   .migas a:hover { color: var(--yellow); }
   .migas [aria-current] { color: var(--paper); }
-  .portada {
-    position: relative; overflow: hidden; border-radius: 16px; border: 2px solid var(--ink-3);
-    aspect-ratio: 12 / 5; min-height: 340px; display: flex; align-items: flex-end;
-  }
-  .portada::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15, 14, 11, 0) 45%, rgba(15, 14, 11, 0.95) 85%); }
-  .portada-texto { position: relative; z-index: 1; width: 100%; padding: clamp(20px, 3.5vw, 40px); container-type: inline-size; }
-  /* El nombre entra siempre en un renglón: el tamaño sigue al ancho de la portada. */
-  h1 { font-size: min(104px, 9.6cqi); white-space: nowrap; color: var(--yellow); margin: 14px 0 10px; }
-  .nota { color: var(--paper); font-size: 12px; }
-  @media (max-width: 640px) { .portada { aspect-ratio: auto; min-height: 300px; } }
+  h1 { font-size: clamp(56px, 10vw, 128px); color: var(--yellow); margin: 18px 0 10px; }
+  .nota { color: var(--muted-dark); font-size: 12px; }
   .desc { max-width: 40em; font-size: clamp(17px, 1.6vw, 20px); color: var(--paper); margin: 22px 0 48px; }
   .sub { font-size: 12px; color: var(--muted-dark); margin-bottom: 16px; font-weight: 400; }
   .autos { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; }

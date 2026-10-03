@@ -42,7 +42,7 @@ export interface Taxi {
 const LECHUZAS: Servicio = {
   slug: 'taxi-lechuzas',
   nombre: 'Taxi Lechuzas',
-  nombrePagina: 'Taxi Lechuzas Viajes UY',
+  nombrePagina: '',
   empresa: 'Lechuzas Viajes Uruguay',
   nota: 'Todos los destinos · 24/7\nInmediatos · Reservas',
   descripcion: '',
