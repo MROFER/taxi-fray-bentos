@@ -1,3 +1,5 @@
+import { SITE } from '@/config/site';
+
 export interface Taxi {
   id: string;
   servicio: string;
@@ -59,10 +61,12 @@ export const TAXIS: readonly Taxi[] = [
 /** Taxis reales (sin las tarjetas de muestra). */
 export const TAXIS_REALES = TAXIS.filter((t) => !t.ejemplo);
 
-export const mensajeAhora = (t: Taxi) => `Hola ${t.servicio}, necesito un taxi ahora. Estoy en: `;
+// Mensajes que se abren en WhatsApp. En WhatsApp *texto* se ve en negrita: "reservar" va así para que el chofer
+// distinga de un vistazo una reserva de un pedido inmediato.
+export const mensajeAhora = (t: Taxi) =>
+  `Hola ${t.servicio}, te escribo desde ${SITE.domain}. Necesito un taxi ahora.\n📍 Estoy en: \n🏁 Voy a: `;
 export const mensajeReserva = (t: Taxi) =>
-  `Hola ${t.servicio}, quiero reservar un taxi para más tarde.\nFecha y hora: \nDesde: \nHasta: `;
-
+  `Hola ${t.servicio}, te escribo desde ${SITE.domain}. Quiero *reservar* un viaje.\n📅 Día y hora: \n📍 Desde: \n🏁 Hasta: \n👥 Pasajeros: \n🧳 Valijas: `;
 export const whatsappUrl = (numero: string, texto: string) =>
   `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
 
