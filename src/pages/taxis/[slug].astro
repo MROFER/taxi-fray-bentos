@@ -1,0 +1,157 @@
+---
+/** Página propia de cada servicio de taxi: /taxis/<slug>/. Si el servicio tiene varios vehículos, se muestran todos acá. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Placa from '@/components/ui/Placa.astro';
+import BotonesPedir from '@/components/ui/BotonesPedir.astro';
+import { SITE, INICIO, enInicio } from '@/config/site';
+import { TARIFA } from '@/data/tarifa';
+import { type Servicio, SERVICIOS_TAXI, vehiculosDe, paginaDe, numeroDe, descripcionDe } from '@/data/taxis';
+
+export function getStaticPaths() {
+  return SERVICIOS_TAXI.map((servicio) => ({ params: { slug: servicio.slug }, props: { servicio } }));
+}
+
+interface Props {
+  servicio: Servicio;
+}
+const { servicio: s } = Astro.props;
+const vehiculos = vehiculosDe(s);
+const descripcion = descripcionDe(s);
+const path = `/taxis/${s.slug}/`;
+const url = new URL(paginaDe(s), `${SITE.url}/`).href;
+const numero = vehiculos.map(numeroDe).find(Boolean);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': url,
+      url,
+      name: `${s.nombre} · Taxi en Fray Bentos`,
+      description: descripcion,
+      inLanguage: SITE.lang,
+      isPartOf: { '@id': `${SITE.url}/#sitio` },
+      breadcrumb: { '@id': `${url}#migas` },
+      mainEntity: { '@id': `${url}#servicio` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${url}#migas`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+        { '@type': 'ListItem', position: 2, name: 'Taxis', item: `${SITE.url}/#taxis` },
+        { '@type': 'ListItem', position: 3, name: s.nombre, item: url },
+      ],
+    },
+    {
+      '@type': 'TaxiService',
+      '@id': `${url}#servicio`,
+      name: s.nombre,
+      url,
+      description: descripcion,
+      provider: { '@type': 'LocalBusiness', name: s.nombre, address: { '@type': 'PostalAddress', addressLocality: 'Fray Bentos', addressRegion: 'Río Negro', addressCountry: 'UY' } },
+      areaServed: { '@id': `${SITE.url}/#fray-bentos` },
+      isRelatedTo: { '@id': `${SITE.url}/#servicio` },
+      ...(numero ? { telephone: `+${numero}` } : {}),
+    },
+  ],
+};
+---
+
+<BaseLayout title={`${s.nombre} · Taxi en Fray Bentos por WhatsApp`} description={descripcion} path={path} schema={schema}>
+  <section class="taxi-top">
+    <div class="wrap">
+      <nav class="migas mono" aria-label="Estás en">
+        <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{s.nombre}</span>
+      </nav>
+      <span class="tag">Taxi en Fray Bentos</span>
+      <h1>{s.nombre}</h1>
+      <p class="nota mono">{s.nota.replace(/\n/g, ' · ')}</p>
+      <p class="desc">{descripcion}</p>
+
+      <h2 class="mono sub">{vehiculos.length === 1 ? 'El auto' : `Los autos (${vehiculos.length})`}</h2>
+      <ul class="autos">
+        {
+          vehiculos.map((t) => (
+            <li class="auto">
+              <div class="auto-head">
+                <span class="modelo">{t.vehiculo.join(' ')}</span>
+                <Placa numero={t.placa} />
+              </div>
+              <dl>
+                <div><dt>Plazas</dt><dd>{t.plazas || 'A confirmar'}</dd></div>
+                <div><dt>Valijas</dt><dd>{t.valijas}</dd></div>
+                <div><dt>A bordo</dt><dd>{t.aBordo.join(' · ')}</dd></div>
+              </dl>
+              <div class="acciones"><BotonesPedir taxi={t} /></div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec datos">
+    <div class="wrap grid">
+      <div class="bloque">
+        <h2>Cómo pedirlo</h2>
+        <ol>
+          <li>Tocá <b>Pedir ahora</b> para un viaje inmediato o <b>Reservar</b> para otro día u hora.</li>
+          <li>Se abre WhatsApp con el mensaje listo para {s.nombre}.</li>
+          <li>Completá desde dónde salís y a dónde vas, y envialo.</li>
+        </ol>
+      </div>
+      <div class="bloque">
+        <h2>Dónde y cuándo</h2>
+        <ul>
+          <li><b>Sale desde</b> Fray Bentos, Balneario Las Cañas y el Puente Internacional San Martín.</li>
+          <li><b>Te lleva</b> a cualquier destino del país o de la región.</li>
+          <li><b>Servicio:</b> {s.nota.replace(/\n/g, ' · ')}.</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <h2>Cuánto sale</h2>
+        <p>
+          Cobra la tarifa oficial de la Intendencia de Río Negro: lo que marca el taxímetro a bordo. Con la calculadora del sitio
+          sabés el precio estimado antes de subir.
+        </p>
+        <a class="btn btn-ink" href={enInicio('pedir')}>Calcular mi viaje</a>
+        <p class="fuente mono">{TARIFA.fuente}</p>
+      </div>
+    </div>
+    <div class="wrap volver">
+      <a class="btn btn-line" href={enInicio('taxis')}>← Ver todos los taxis de Fray Bentos</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .taxi-top { background: var(--ink); color: var(--paper); padding-block: clamp(32px, 5vw, 64px) clamp(56px, 8vw, 96px); }
+  .migas { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: var(--muted-dark); margin-bottom: 28px; }
+  .migas a { color: var(--muted-dark); }
+  .migas a:hover { color: var(--yellow); }
+  .migas [aria-current] { color: var(--paper); }
+  h1 { font-size: clamp(56px, 10vw, 128px); color: var(--yellow); margin: 18px 0 10px; }
+  .nota { color: var(--muted-dark); font-size: 12px; }
+  .desc { max-width: 40em; font-size: clamp(17px, 1.6vw, 20px); color: var(--paper); margin: 22px 0 48px; }
+  .sub { font-size: 12px; color: var(--muted-dark); margin-bottom: 16px; font-weight: 400; }
+  .autos { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 16px; }
+  .auto { background: var(--ink-deep); border: 2px solid var(--ink-3); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px; }
+  .auto-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .modelo { font: 800 30px/1 var(--f-display); text-transform: uppercase; letter-spacing: 0.04em; }
+  dl { display: flex; flex-direction: column; margin: 0; font-family: var(--f-mono); font-size: 14px; }
+  dl div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px dashed var(--ink-3); }
+  dt { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-dark); }
+  dd { margin: 0; text-align: right; }
+  .acciones { display: flex; gap: 10px; }
+  .acciones :global(.pedir) { flex: 1; min-height: 48px; font-size: 15px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 4vw, 48px); }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .bloque { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; font-size: 17px; line-height: 1.55; }
+  .bloque h2 { font-size: clamp(32px, 4vw, 44px); }
+  .bloque ol, .bloque ul { padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; margin: 0; }
+  .fuente { font-size: 10px; color: var(--text-2); letter-spacing: 0.08em; text-transform: none; }
+  .volver { margin-top: clamp(40px, 6vw, 72px); }
+</style>

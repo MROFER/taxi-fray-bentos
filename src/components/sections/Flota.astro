@@ -1,15 +1,16 @@
 ---
 import Placa from '@/components/ui/Placa.astro';
-import { TAXIS, mensajeAhora, mensajeReserva, whatsappUrl } from '@/data/taxis';
+import BotonesPedir from '@/components/ui/BotonesPedir.astro';
+import { TAXIS, TAXIS_REALES, SERVICIOS_TAXI, numeroDe, paginaDe } from '@/data/taxis';
 
 // Solo en la copia de prueba (GitHub Pages) o en local; en www.taxifraybentos.com.uy no se muestra.
 const mostrarPendientes = import.meta.env.DEV || import.meta.env.PUBLIC_MOSTRAR_PENDIENTES === 'si';
 // Las tarjetas de ejemplo no cuentan: sus datos quedan a propósito sin completar.
-const reales = TAXIS.filter((t) => !t.ejemplo);
+const reales = TAXIS_REALES;
 const pendientes = [
   reales.some((t) => t.placa.includes('_')) && 'placas JTX',
-  reales.some((t) => !t.whatsapp) && 'WhatsApp de cada taxi',
-  ...reales.filter((t) => !t.plazas).map((t) => `plazas de ${t.servicio}`),
+  reales.some((t) => !numeroDe(t)) && 'WhatsApp de cada taxi',
+  ...reales.filter((t) => !t.plazas).map((t) => `plazas de ${t.servicio.nombre}`),
   'fotos reales',
 ].filter(Boolean);
 
@@ -19,7 +20,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
 <section class="sec flota" id="taxis" aria-labelledby="taxis-title">
   <div class="wrap">
     <header class="sec-head">
-      <span class="tag">Taxis · {reales.length} {reales.length === 1 ? 'servicio' : 'servicios'}</span>
+      <span class="tag">Taxis · {SERVICIOS_TAXI.length} {SERVICIOS_TAXI.length === 1 ? 'servicio' : 'servicios'}</span>
       <h2 id="taxis-title">Elegí el taxi que necesitás</h2>
       <p>
         Todos con chofer habilitado y taxímetro a la vista. Cada taxi tiene su propio WhatsApp: pedilo ahora o reservalo
@@ -41,8 +42,15 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
             TAXIS.map((t) => (
               <tr role="row">
                 <th scope="row" role="rowheader" class="svc">
-                  <span class="nombre">{t.servicio}</span>
-                  <small>{t.nota}</small>
+                  {t.servicio.ejemplo ? (
+                    <span class="nombre">{t.servicio.nombre}</span>
+                  ) : (
+                    <a class="nombre" href={paginaDe(t.servicio)}>
+                      {t.servicio.nombre}
+                      <span class="ver mono" aria-hidden="true">Ver página →</span>
+                    </a>
+                  )}
+                  <small>{t.servicio.nota}</small>
                 </th>
                 <td role="cell" data-label="Placa">
                   <Placa numero={t.placa} />
@@ -65,25 +73,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
                 </td>
                 <td role="cell" class="acciones-td">
                   <div class="acciones">
-                    {t.whatsapp ? (
-                      <>
-                        <a class="pedir solid" href={whatsappUrl(t.whatsapp, mensajeAhora(t))} target="_blank" rel="noopener">
-                          Pedir ahora<span class="sr-only"> a {t.servicio} por WhatsApp</span>
-                        </a>
-                        <a class="pedir" href={whatsappUrl(t.whatsapp, mensajeReserva(t))} target="_blank" rel="noopener">
-                          Reservar<span class="sr-only"> a {t.servicio} por WhatsApp</span>
-                        </a>
-                      </>
-                    ) : (
-                      <>
-                        <button type="button" class="pedir solid" data-sin-whatsapp={t.servicio}>
-                          Pedir ahora<span class="sr-only"> a {t.servicio}</span>
-                        </button>
-                        <button type="button" class="pedir" data-sin-whatsapp={t.servicio}>
-                          Reservar<span class="sr-only"> a {t.servicio}</span>
-                        </button>
-                      </>
-                    )}
+                    <BotonesPedir taxi={t} />
                   </div>
                 </td>
               </tr>
@@ -96,14 +86,6 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
   </div>
 </section>
 
-<script>
-  import { toast } from '@/scripts/ui';
-
-  document.querySelectorAll<HTMLElement>('[data-sin-whatsapp]').forEach((b) =>
-    b.addEventListener('click', () => toast(`El WhatsApp de ${b.dataset.sinWhatsapp} todavía no está definido.`)),
-  );
-</script>
-
 <style>
   .flota { background: var(--ink); color: var(--paper); }
   .flota .sec-head p { color: var(--muted-dark); }
@@ -113,6 +95,9 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
   td, .svc { padding: 20px 18px; border-top: 1px solid var(--ink-3); vertical-align: middle; text-align: left; }
   tbody tr:hover { background: #17160f; }
   .svc { font: 800 26px/1 var(--f-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--yellow); }
+  a.nombre { color: inherit; text-decoration: none; display: inline-flex; flex-direction: column; gap: 6px; }
+  a.nombre:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .ver { font-size: 10px; letter-spacing: 0.16em; color: var(--paper); font-weight: 700; }
   .svc small { display: block; font: 400 11px var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-dark); margin-top: 6px; white-space: pre; }
   .flip { display: inline-flex; gap: 3px; }
   .flip i {
@@ -122,14 +107,6 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
   .flip i.todo { color: var(--yellow); }
   .pill { display: inline-block; border: 1px solid var(--ink-3); border-radius: 4px; padding: 3px 8px; margin: 2px 4px 2px 0; font-size: 12px; color: var(--muted-dark); }
   .acciones { display: flex; flex-direction: column; gap: 8px; }
-  .pedir {
-    display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
-    font: 700 14px var(--f-body); text-decoration: none; text-align: center; white-space: nowrap;
-    background: transparent; color: var(--yellow); border: 1.5px solid var(--yellow); border-radius: 5px; padding: 9px 14px; cursor: pointer;
-  }
-  .pedir:hover { background: var(--yellow); color: var(--ink); }
-  .pedir.solid { background: var(--yellow); color: var(--ink); }
-  .pedir.solid:hover { background: var(--paper); border-color: var(--paper); }
   .flota-note { margin-top: 18px; color: var(--muted-dark); font-size: 14px; }
 
   /* Celular: cada taxi pasa a ser una tarjeta (sin scroll horizontal). Los role explícitos mantienen la semántica de tabla para lectores de pantalla. */
@@ -146,7 +123,10 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
     /* El nombre queda al lado de la placa y la nota abajo, a todo el ancho. */
     .board .svc { display: contents; font-size: 30px; }
     .svc .nombre { grid-column: 1; grid-row: 1; padding-bottom: 8px; }
-    .svc small { grid-column: 1 / -1; grid-row: 2; margin: 0; padding-bottom: 14px; }
+    a.nombre { color: inherit; text-decoration: none; display: inline-flex; flex-direction: column; gap: 6px; }
+  a.nombre:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .ver { font-size: 10px; letter-spacing: 0.16em; color: var(--paper); font-weight: 700; }
+  .svc small { grid-column: 1 / -1; grid-row: 2; margin: 0; padding-bottom: 14px; }
     .board td { display: flex; justify-content: space-between; align-items: center; gap: 12px; grid-column: 1 / -1; padding: 10px 0; border-top: 1px dashed var(--ink-3); }
     .board td[data-label]::before { content: attr(data-label); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-dark); flex: none; }
     .board td[data-label='Placa'] { grid-column: 2; grid-row: 1; border: 0; padding: 0 0 8px; align-items: flex-start; }
@@ -156,6 +136,5 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
     .pills .pill { margin: 0; }
     .board .acciones-td { border-top: 0; padding-top: 14px; }
     .acciones { flex-direction: row; width: 100%; }
-    .pedir { flex: 1; min-height: 48px; font-size: 15px; }
   }
 </style>

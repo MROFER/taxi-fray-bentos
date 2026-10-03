@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { SITE, NAV } from '@/config/site';
 import { TARIFA, pesos } from '@/data/tarifa';
-import { TAXIS_REALES } from '@/data/taxis';
+import { SERVICIOS_TAXI, vehiculosDe, paginaDe } from '@/data/taxis';
 import { PARADAS } from '@/data/paradas';
 import { FAQ } from '@/data/faq';
 import { COBERTURA, SERVICIOS } from '@/data/cobertura';
@@ -32,7 +32,7 @@ Directorio de taxis habilitados por la Intendencia de Río Negro en Fray Bentos,
 
 ## Servicios
 
-${TAXIS_REALES.map((t) => `- ${t.servicio}: ${t.nota.replace(/\n/g, ' · ').toLowerCase()}. Vehículo: ${t.vehiculo.join(' ')}. Valijas: ${t.valijas}.`).join('\n')}
+${SERVICIOS_TAXI.map((s) => `- [${s.nombre}](${new URL(paginaDe(s), SITE.url + '/').href}): ${s.nota.replace(/\n/g, ' · ').toLowerCase()}. ${vehiculosDe(s).map((t) => `Vehículo: ${t.vehiculo.join(' ')}, valijas: ${t.valijas}.`).join(' ')}`).join('\n')}
 ${SERVICIOS.map((s) => `- ${s}`).join('\n')}
 
 ## Cobertura

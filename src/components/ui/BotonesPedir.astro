@@ -1,0 +1,55 @@
+---
+/** Botones "Pedir ahora" y "Reservar" de un vehículo: abren WhatsApp con el mensaje armado, o avisan si falta el número. */
+import { type Taxi, numeroDe, mensajeAhora, mensajeReserva, whatsappUrl } from '@/data/taxis';
+
+interface Props {
+  taxi: Taxi;
+}
+const { taxi: t } = Astro.props;
+const numero = numeroDe(t);
+const nombre = t.servicio.nombre;
+---
+
+{
+  numero ? (
+    <>
+      <a class="pedir solid" href={whatsappUrl(numero, mensajeAhora(t))} target="_blank" rel="noopener">
+        Pedir ahora<span class="sr-only"> a {nombre} por WhatsApp</span>
+      </a>
+      <a class="pedir" href={whatsappUrl(numero, mensajeReserva(t))} target="_blank" rel="noopener">
+        Reservar<span class="sr-only"> a {nombre} por WhatsApp</span>
+      </a>
+    </>
+  ) : (
+    <>
+      <button type="button" class="pedir solid" data-sin-whatsapp={nombre}>
+        Pedir ahora<span class="sr-only"> a {nombre}</span>
+      </button>
+      <button type="button" class="pedir" data-sin-whatsapp={nombre}>
+        Reservar<span class="sr-only"> a {nombre}</span>
+      </button>
+    </>
+  )
+}
+
+<script>
+  import { toast } from '@/scripts/ui';
+
+  document.querySelectorAll<HTMLElement>('[data-sin-whatsapp]').forEach((b) =>
+    b.addEventListener('click', () => toast(`El WhatsApp de ${b.dataset.sinWhatsapp} todavía no está definido.`)),
+  );
+</script>
+
+<style>
+  .pedir {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+    font: 700 14px var(--f-body); text-decoration: none; text-align: center; white-space: nowrap;
+    background: transparent; color: var(--yellow); border: 1.5px solid var(--yellow); border-radius: 5px; padding: 9px 14px; cursor: pointer;
+  }
+  .pedir:hover { background: var(--yellow); color: var(--ink); }
+  .pedir.solid { background: var(--yellow); color: var(--ink); }
+  .pedir.solid:hover { background: var(--paper); border-color: var(--paper); }
+  @media (max-width: 760px) {
+    .pedir { flex: 1; min-height: 48px; font-size: 15px; }
+  }
+</style>

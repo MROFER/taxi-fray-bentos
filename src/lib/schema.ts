@@ -7,6 +7,7 @@ import { TARIFA } from '@/data/tarifa';
 import { FAQ } from '@/data/faq';
 import { PARADAS } from '@/data/paradas';
 import { LOCALIDADES, SERVICIOS } from '@/data/cobertura';
+import { SERVICIOS_TAXI, paginaDe } from '@/data/taxis';
 
 const id = (frag: string) => `${SITE.url}/#${frag}`;
 
@@ -99,6 +100,19 @@ export function buildSchema() {
     })),
   };
 
+  // Cada taxi tiene su página: la lista le muestra a Google cuáles son y dónde están.
+  const taxis = {
+    '@type': 'ItemList',
+    '@id': id('taxis'),
+    name: 'Taxis en Fray Bentos',
+    itemListElement: SERVICIOS_TAXI.map((t, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: t.nombre,
+      url: new URL(paginaDe(t), `${SITE.url}/`).href,
+    })),
+  };
+
   const sitio = {
     '@type': 'WebSite',
     '@id': id('sitio'),
@@ -122,6 +136,6 @@ export function buildSchema() {
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [sitio, pagina, organizacion, ciudad, servicio, ...paradas, preguntas],
+    '@graph': [sitio, pagina, organizacion, ciudad, servicio, taxis, ...paradas, preguntas],
   };
 }
