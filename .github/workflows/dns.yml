@@ -5,5 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for u in https://www.taxifraybentos.com.uy/ https://taxifraybentos.com.uy/ https://www.taxifraybentos.com.uy/robots.txt https://www.taxifraybentos.com.uy/api/alta.php; do
-            echo "== $u"; curl -s -o /tmp/b -w "%{http_code} %{redirect_url}\n" --max-time 20 "$u"; head -c 300 /tmp/b | tr '\n' ' '; echo; grep -o '<title>[^<]*' /tmp/b || true; done
+          S=https://www.taxifraybentos.com.uy
+          for u in $S/ https://taxifraybentos.com.uy/ http://www.taxifraybentos.com.uy/ $S/no-existe; do
+            echo "== $u"; curl -s -o /tmp/b -w "%{http_code} %{redirect_url}\n" --max-time 20 "$u"; done
+          echo "== pendientes en home:"; curl -s $S/ | grep -c "Pendiente:" || true
+          echo "== GET alta"; curl -s -w " %{http_code}\n" $S/api/alta.php
+          echo "== POST incompleto"; curl -s -w " %{http_code}\n" -d "titular=x" $S/api/alta.php
+          echo "== POST prueba"; curl -s -w " %{http_code}\n" --data-urlencode "titular=PRUEBA Claude (borrar)" --data-urlencode "telefono=099 000 000" --data-urlencode "permiso=JTX 0000" --data-urlencode "movil=Prueba del formulario" $S/api/alta.php
+          echo "== config expuesto?"; curl -s -o /dev/null -w "%{http_code}\n" $S/taxi-config.php
