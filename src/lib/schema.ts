@@ -7,7 +7,7 @@ import { TARIFA } from '@/data/tarifa';
 import { FAQ } from '@/data/faq';
 import { PARADAS } from '@/data/paradas';
 import { LOCALIDADES, SERVICIOS } from '@/data/cobertura';
-import { SERVICIOS_TAXI, paginaDe } from '@/data/taxis';
+import { SERVICIOS_TAXI, paginaDe, nombrePaginaDe } from '@/data/taxis';
 
 const id = (frag: string) => `${SITE.url}/#${frag}`;
 
@@ -108,7 +108,7 @@ export function buildSchema() {
     itemListElement: SERVICIOS_TAXI.map((t, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      name: t.nombre,
+      name: nombrePaginaDe(t),
       url: new URL(paginaDe(t), `${SITE.url}/`).href,
     })),
   };

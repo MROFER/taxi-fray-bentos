@@ -5,7 +5,17 @@ import Placa from '@/components/ui/Placa.astro';
 import BotonesPedir from '@/components/ui/BotonesPedir.astro';
 import { SITE, INICIO, enInicio } from '@/config/site';
 import { TARIFA } from '@/data/tarifa';
-import { type Servicio, SERVICIOS_TAXI, vehiculosDe, paginaDe, numeroDe, descripcionDe } from '@/data/taxis';
+import {
+  type Servicio,
+  SERVICIOS_TAXI,
+  vehiculosDe,
+  paginaDe,
+  numeroDe,
+  descripcionDe,
+  nombrePaginaDe,
+  empresaDe,
+  otrosNombresDe,
+} from '@/data/taxis';
 
 export function getStaticPaths() {
   return SERVICIOS_TAXI.map((servicio) => ({ params: { slug: servicio.slug }, props: { servicio } }));
@@ -20,6 +30,11 @@ const descripcion = descripcionDe(s);
 const path = `/taxis/${s.slug}/`;
 const url = new URL(paginaDe(s), `${SITE.url}/`).href;
 const numero = vehiculos.map(numeroDe).find(Boolean);
+const nombre = nombrePaginaDe(s);
+const empresa = empresaDe(s);
+const alias = otrosNombresDe(s);
+// Lo que Google muestra como título: la empresa primero; el nombre de la página entre paréntesis si es otro.
+const titulo = `${empresa}${nombre !== empresa ? ` (${nombre})` : ''} · Taxi en Fray Bentos`;
 
 const schema = {
   '@context': 'https://schema.org',
@@ -28,7 +43,7 @@ const schema = {
       '@type': 'WebPage',
       '@id': url,
       url,
-      name: `${s.nombre} · Taxi en Fray Bentos`,
+      name: titulo,
       description: descripcion,
       inLanguage: SITE.lang,
       isPartOf: { '@id': `${SITE.url}/#sitio` },
@@ -41,16 +56,17 @@ const schema = {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
         { '@type': 'ListItem', position: 2, name: 'Taxis', item: `${SITE.url}/#taxis` },
-        { '@type': 'ListItem', position: 3, name: s.nombre, item: url },
+        { '@type': 'ListItem', position: 3, name: nombre, item: url },
       ],
     },
     {
       '@type': 'TaxiService',
       '@id': `${url}#servicio`,
-      name: s.nombre,
+      name: empresa,
+      ...(alias.length ? { alternateName: alias } : {}),
       url,
       description: descripcion,
-      provider: { '@type': 'LocalBusiness', name: s.nombre, address: { '@type': 'PostalAddress', addressLocality: 'Fray Bentos', addressRegion: 'Río Negro', addressCountry: 'UY' } },
+      provider: { '@type': 'LocalBusiness', name: empresa, ...(alias.length ? { alternateName: alias } : {}), address: { '@type': 'PostalAddress', addressLocality: 'Fray Bentos', addressRegion: 'Río Negro', addressCountry: 'UY' } },
       areaServed: { '@id': `${SITE.url}/#fray-bentos` },
       isRelatedTo: { '@id': `${SITE.url}/#servicio` },
       ...(numero ? { telephone: `+${numero}` } : {}),
@@ -59,14 +75,14 @@ const schema = {
 };
 ---
 
-<BaseLayout title={`${s.nombre} · Taxi en Fray Bentos por WhatsApp`} description={descripcion} path={path} schema={schema}>
+<BaseLayout title={titulo} description={descripcion} path={path} schema={schema}>
   <section class="taxi-top">
     <div class="wrap">
       <nav class="migas mono" aria-label="Estás en">
-        <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{s.nombre}</span>
+        <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span>
       </nav>
       <span class="tag">Taxi en Fray Bentos</span>
-      <h1>{s.nombre}</h1>
+      <h1>{nombre}</h1>
       <p class="nota mono">{s.nota.replace(/\n/g, ' · ')}</p>
       <p class="desc">{descripcion}</p>
 
@@ -98,7 +114,7 @@ const schema = {
         <h2>Cómo pedirlo</h2>
         <ol>
           <li>Tocá <b>Pedir ahora</b> para un viaje inmediato o <b>Reservar</b> para otro día u hora.</li>
-          <li>Se abre WhatsApp con el mensaje listo para {s.nombre}.</li>
+          <li>Se abre WhatsApp con el mensaje listo para {nombre}.</li>
           <li>Completá desde dónde salís y a dónde vas, y envialo.</li>
         </ol>
       </div>

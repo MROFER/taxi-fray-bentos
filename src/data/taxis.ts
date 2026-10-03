@@ -8,7 +8,12 @@ import { SITE, INICIO } from '@/config/site';
 export interface Servicio {
   /** Parte de la dirección de su página: /taxis/<slug>/. No cambiarla una vez publicada (Google ya la conoce). */
   slug: string;
+  /** Nombre corto: el de la tarjeta y el saludo de WhatsApp. */
   nombre: string;
+  /** Nombre que se ve en su página (título grande y migas). Vacío = el nombre corto. */
+  nombrePagina: string;
+  /** Nombre comercial de la empresa: el que se le da a Google (título de la página y datos estructurados). Vacío = nombrePagina. */
+  empresa: string;
   /** Se muestra bajo el nombre; \n parte el renglón. */
   nota: string;
   /** Texto de presentación de su página. Vacío = se arma uno con los datos del servicio. */
@@ -37,6 +42,8 @@ export interface Taxi {
 const LECHUZAS: Servicio = {
   slug: 'taxi-lechuzas',
   nombre: 'Taxi Lechuzas',
+  nombrePagina: 'Taxi Lechuzas Viajes UY',
+  empresa: 'Lechuzas Viajes Uruguay',
   nota: 'Todos los destinos · 24/7\nInmediatos · Reservas',
   descripcion: '',
   whatsapp: '',
@@ -45,6 +52,8 @@ const LECHUZAS: Servicio = {
 const MUESTRA = (slug: string): Servicio => ({
   slug,
   nombre: '[Nombre del servicio]',
+  nombrePagina: '',
+  empresa: '',
   nota: '[Destinos · Horario]',
   descripcion: '',
   whatsapp: '',
@@ -93,10 +102,16 @@ export const paginaDe = (s: Servicio) => `${INICIO}taxis/${s.slug}/`;
 /** Número al que escribir: el del vehículo, o si no tiene, el del servicio. */
 export const numeroDe = (t: Taxi) => t.whatsapp || t.servicio.whatsapp;
 
+export const nombrePaginaDe = (s: Servicio) => s.nombrePagina || s.nombre;
+export const empresaDe = (s: Servicio) => s.empresa || nombrePaginaDe(s);
+/** Todos los nombres con los que se conoce al servicio, sin repetir (para Google: alternateName). */
+export const otrosNombresDe = (s: Servicio) =>
+  [...new Set([nombrePaginaDe(s), s.nombre])].filter((n) => n !== empresaDe(s));
+
 /** Presentación del servicio en su página (y en su descripción para Google) cuando no tiene una propia. */
 export const descripcionDe = (s: Servicio) =>
   s.descripcion ||
-  `${s.nombre} es un servicio de taxi habilitado en Fray Bentos, Río Negro. Pedilo por WhatsApp para viajar ahora o reservá tu traslado: en la ciudad, a Las Cañas, al Puente San Martín y a cualquier destino.`;
+  `${nombrePaginaDe(s)}${s.empresa ? ` (${s.empresa})` : ''} es un servicio de taxi habilitado en Fray Bentos, Río Negro. Pedilo por WhatsApp para viajar ahora o reservá tu traslado: en la ciudad, a Las Cañas, al Puente San Martín y a cualquier destino.`;
 
 // Mensajes que se abren en WhatsApp. En WhatsApp *texto* se ve en negrita: "reservar" va así para que el chofer
 // distinga de un vistazo una reserva de un pedido inmediato.
