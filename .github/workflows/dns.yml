@@ -6,10 +6,7 @@ jobs:
     steps:
       - run: |
           S=https://www.taxifraybentos.com.uy
-          for u in $S/ https://taxifraybentos.com.uy/ http://www.taxifraybentos.com.uy/ $S/no-existe; do
-            echo "== $u"; curl -s -o /tmp/b -w "%{http_code} %{redirect_url}\n" --max-time 20 "$u"; done
-          echo "== pendientes en home:"; curl -s $S/ | grep -c "Pendiente:" || true
-          echo "== GET alta"; curl -s -w " %{http_code}\n" $S/api/alta.php
-          echo "== POST incompleto"; curl -s -w " %{http_code}\n" -d "titular=x" $S/api/alta.php
-          echo "== POST prueba"; curl -s -w " %{http_code}\n" --data-urlencode "titular=PRUEBA Claude (borrar)" --data-urlencode "telefono=099 000 000" --data-urlencode "permiso=JTX 0000" --data-urlencode "movil=Prueba del formulario" $S/api/alta.php
-          echo "== config expuesto?"; curl -s -o /dev/null -w "%{http_code}\n" $S/taxi-config.php
+          for i in $(seq 1 30); do curl -s $S/ | grep -q 'name="consentimiento"' && break; sleep 10; done
+          echo "== casillas en la home:"; curl -s $S/ | grep -c 'name="declaracion"' || true
+          echo "== POST sin casillas"; curl -s -w " %{http_code}\n" --data-urlencode "titular=PRUEBA Claude (borrar)" --data-urlencode "telefono=099 000 000" --data-urlencode "permiso=JTX 0000" $S/api/alta.php
+          echo "== POST con casillas"; curl -s -w " %{http_code}\n" --data-urlencode "titular=PRUEBA Claude 2 (borrar)" --data-urlencode "telefono=099 000 000" --data-urlencode "permiso=JTX 0000" -d consentimiento=si -d declaracion=si $S/api/alta.php
