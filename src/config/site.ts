@@ -50,7 +50,7 @@ export const NAV = [
   { href: enInicio('paradas'), label: 'Paradas' },
   { href: enInicio('tarifas'), label: 'Tarifas' },
   { href: enInicio('choferes'), label: 'Para choferes' },
-  { href: enInicio('preguntas'), label: 'Preguntas' },
+  { href: enInicio('preguntas'), label: 'Preguntas frecuentes' },
 ] as const;
 
 /** Páginas legales (enlazadas desde el footer). */
