@@ -34,6 +34,14 @@ const condiciones = LEGALES.find((l) => l.label === 'Condiciones')!.href;
     <form class="form" id="alta" method="post" action={SITE.altaEndpoint || undefined} data-endpoint={SITE.altaEndpoint} novalidate>
       <div class="form-title"><b>SOLICITUD DE ALTA</b><span>Form. N.º 01</span></div>
       <div class="stamp" id="stamp" aria-hidden="true">PERMISO<br />IRN<br />A VERIFICAR</div>
+      <div class="ok" id="altaOk" hidden>
+        <p class="ok-titulo" id="altaOkTitulo" tabindex="-1">Solicitud enviada</p>
+        <p>
+          Recibimos tus datos. Te vamos a contactar al <b id="altaOkTel"></b> para validar el permiso antes de publicar tu
+          móvil en el sitio.
+        </p>
+        <button type="button" class="btn btn-line" id="altaOtra">Enviar otra solicitud</button>
+      </div>
       <div class="uf">
         <label for="titular">Titular</label>
         <input id="titular" name="titular" placeholder="Juan Pérez" autocomplete="name" required />
@@ -92,57 +100,120 @@ const condiciones = LEGALES.find((l) => l.label === 'Condiciones')!.href;
   const form = $<HTMLFormElement>('alta');
   const msg = $('formMsg');
   const stamp = $('stamp');
+  const ok = $('altaOk');
   const boton = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+  const textoBoton = boton.textContent;
+
+  // Nombre de cada campo en alta.php → id del control en la página.
+  const ID: Record<string, string> = {
+    titular: 'titular', movil: 'fantasia', telefono: 'tel', permiso: 'permiso', correo: 'mail',
+    consentimiento: 'consentimiento', declaracion: 'declaracion',
+  };
+  const NOMBRE: Record<string, string> = {
+    titular: 'titular', movil: 'nombre del móvil', telefono: 'teléfono (8 a 15 números)', permiso: 'n.º de permiso',
+    correo: 'correo válido',
+  };
+
+  function error(texto: string, campos: string[]) {
+    form.querySelectorAll('[aria-invalid]').forEach((el) => el.removeAttribute('aria-invalid'));
+    campos.forEach((c) => $(ID[c]!).setAttribute('aria-invalid', 'true'));
+    msg.textContent = texto;
+    msg.classList.add('error');
+    if (campos[0]) $(ID[campos[0]]!).focus();
+  }
+
+  /** Mismo control que alta.php, para avisar antes de enviar. */
+  function revisar(): string | null {
+    const v = (id: string) => $<HTMLInputElement>(id).value.trim();
+    const datos = ['titular', 'movil', 'telefono', 'permiso', 'correo'].filter((c) => {
+      const x = v(ID[c]!);
+      if (c === 'titular' || c === 'permiso') return x.length < 3;
+      if (c === 'movil') return x.length < 2;
+      if (c === 'telefono') return !/^\d{8,15}$/.test(x.replace(/\D/g, ''));
+      return x !== '' && !$<HTMLInputElement>('mail').checkValidity();
+    });
+    if (datos.length) {
+      error('Falta completar o corregir: ' + datos.map((c) => NOMBRE[c]).join(', ') + '.', datos);
+      return 'datos';
+    }
+    const casillas = ['consentimiento', 'declaracion'].filter((c) => !$<HTMLInputElement>(c).checked);
+    if (casillas.length) {
+      error(
+        casillas.length === 2
+          ? 'Para enviar la solicitud tenés que marcar las dos casillas.'
+          : casillas[0] === 'consentimiento'
+            ? 'Para enviar la solicitud tenés que aceptar el uso de tus datos.'
+            : 'Para enviar la solicitud tenés que marcar la declaración de responsabilidad.',
+        casillas,
+      );
+      return 'casillas';
+    }
+    return null;
+  }
+
+  // Al corregir un campo se le saca la marca roja; sin marcas, se borra el aviso.
+  form.addEventListener('input', (e) => {
+    (e.target as HTMLElement).removeAttribute('aria-invalid');
+    if (msg.classList.contains('error') && !form.querySelector('[aria-invalid]')) {
+      msg.classList.remove('error');
+      msg.textContent = '';
+    }
+  });
+
+  function confirmar(telefono: string) {
+    $('altaOkTel').textContent = telefono;
+    form.classList.add('enviado');
+    ok.hidden = false;
+    msg.textContent = '';
+    msg.classList.remove('error');
+    stamp.innerHTML = 'SOLICITUD<br>RECIBIDA';
+    replay(stamp, 'hit');
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('altaOkTitulo').focus({ preventScroll: true });
+  }
+
+  $('altaOtra').addEventListener('click', () => {
+    form.reset();
+    form.classList.remove('enviado');
+    ok.hidden = true;
+    stamp.innerHTML = 'PERMISO<br>IRN<br>A VERIFICAR';
+    $('titular').focus();
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const faltan = ['titular', 'fantasia', 'tel', 'permiso']
-      .map((id) => $<HTMLInputElement>(id))
-      .filter((i) => !i.value.trim());
-    if (faltan.length) {
-      msg.textContent = 'Falta completar: ' + faltan.map((i) => i.labels?.[0]?.textContent?.toLowerCase()).join(', ') + '.';
-      faltan[0]!.focus();
-      return;
-    }
-    const sinMarcar = ['consentimiento', 'declaracion'].map((id) => $<HTMLInputElement>(id)).filter((c) => !c.checked);
-    if (sinMarcar.length) {
-      msg.textContent =
-        sinMarcar.length === 2
-          ? 'Para enviar la solicitud tenés que marcar las dos casillas.'
-          : sinMarcar[0]!.id === 'consentimiento'
-            ? 'Para enviar la solicitud tenés que aceptar el uso de tus datos.'
-            : 'Para enviar la solicitud tenés que marcar la declaración de responsabilidad.';
-      sinMarcar[0]!.focus();
-      return;
-    }
+    if (revisar()) return;
+    const telefono = $<HTMLInputElement>('tel').value.trim();
 
     const endpoint = form.dataset.endpoint;
-    if (endpoint) {
-      boton.disabled = true;
-      try {
-        const r = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-        if (!r.ok) {
-          msg.textContent =
-            r.status === 422
-              ? 'Revisá los datos: titular, nombre del móvil, teléfono y permiso tienen que estar completos y las dos casillas marcadas.'
-              : r.status === 429
-                ? 'Ya recibimos varias solicitudes desde esta conexión. Probá de nuevo más tarde.'
-                : 'No pudimos enviar la solicitud. Probá de nuevo en un rato.';
-          return;
-        }
-      } catch {
-        msg.textContent = 'No pudimos enviar la solicitud. Revisá tu conexión y probá de nuevo.';
-        return;
-      } finally {
-        boton.disabled = false;
-      }
-      msg.textContent = 'Recibimos tu solicitud. Te contactamos para validar el permiso.';
-      form.reset();
-    } else {
+    if (!endpoint) {
+      msg.classList.remove('error');
       msg.textContent = 'Vista de demostración: el envío todavía no está conectado.';
+      return;
     }
-    stamp.innerHTML = 'SOLICITUD<br>RECIBIDA';
-    replay(stamp, 'hit');
+    boton.disabled = true;
+    boton.textContent = 'Enviando…';
+    try {
+      const r = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (r.ok) {
+        confirmar(telefono);
+        form.reset();
+        return;
+      }
+      if (r.status === 422) {
+        const campos = ((await r.json().catch(() => ({}))).campos ?? []).filter((c: string) => ID[c]);
+        error('Revisá los campos marcados en rojo.', campos);
+      } else if (r.status === 429) {
+        error('Ya recibimos varias solicitudes desde esta conexión. Probá de nuevo más tarde.', []);
+      } else {
+        error('No pudimos enviar la solicitud. Probá de nuevo en un rato.', []);
+      }
+    } catch {
+      error('No pudimos enviar la solicitud. Revisá tu conexión y probá de nuevo.', []);
+    } finally {
+      boton.disabled = false;
+      boton.textContent = textoBoton;
+    }
   });
 </script>
 
@@ -197,6 +268,31 @@ const condiciones = LEGALES.find((l) => l.label === 'Condiciones')!.href;
   /* Campo trampa para robots: fuera de la vista y del teclado. */
   .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .form-msg { font-size: 13px; color: var(--muted); min-height: 1.3em; }
+  .form-msg.error { color: var(--stamp); font-size: 14px; font-weight: 600; }
+  .form-msg.error::before { content: '⚠ '; }
+  .uf:has(input[aria-invalid='true']) label { color: var(--stamp); }
+  .uf input[aria-invalid='true'] { border-bottom-color: var(--stamp); }
+  .check:has(input[aria-invalid='true']) { color: var(--stamp); }
+  .check input[aria-invalid='true'] { border-color: var(--stamp); box-shadow: 0 0 0 2px rgb(179 38 30 / 0.2); }
+
+  /* Enviada: se ocultan los campos y queda la confirmación. */
+  .form.enviado > :not(.form-title, .stamp, .ok) { display: none; }
+  .ok { display: flex; flex-direction: column; gap: 14px; padding-block: 8px 4px; font-size: 16px; color: var(--ink-2); max-width: 30em; }
+  .ok[hidden] { display: none; }
+  .ok-titulo {
+    display: flex; align-items: center; gap: 12px; margin: 0;
+    font-family: var(--f-display); font-weight: 800; font-size: 30px; line-height: 1.1; text-transform: uppercase; color: var(--ink);
+  }
+  .ok-titulo::before {
+    content: '✓'; flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+    background: #1e7a3c; color: #fff; font: 700 22px/1 var(--f-body);
+  }
+  /* Lugar para el sello, que queda arriba a la derecha. */
+  .ok { padding-right: 132px; }
+  @media (max-width: 520px) { .ok { padding-right: 0; } .ok-titulo { padding-right: 96px; } }
+  .ok-titulo:focus { outline: none; }
+  .ok p { margin: 0; }
+  .ok .btn { align-self: flex-start; }
   .stamp {
     position: absolute; right: clamp(14px, 4vw, 34px); top: 62px; width: 116px; height: 116px;
     border: 4px double var(--stamp); border-radius: 50%; display: grid; place-items: center; text-align: center;
