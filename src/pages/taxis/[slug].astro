@@ -120,15 +120,10 @@ const schema = {
           <li>Tocá <b>Pedir ahora</b> para un viaje inmediato o <b>Reservar</b> para otro día u hora.</li>
           <li>Se abre WhatsApp con el mensaje listo para {nombre}.</li>
           <li>Completá desde dónde salís y a dónde vas, y envialo.</li>
+          <li>
+            Si te queda más cómodo, mandá un <b>audio</b>: decí dónde estás, a dónde vas y si es para ahora o una reserva.
+          </li>
         </ol>
-      </div>
-      <div class="bloque">
-        <h2>Dónde y cuándo</h2>
-        <ul>
-          <li><b>Sale desde</b> Fray Bentos, Balneario Las Cañas y el Puente Internacional San Martín.</li>
-          <li><b>Te lleva</b> a cualquier destino del país o de la región.</li>
-          <li><b>Servicio:</b> {s.nota.replace(/\n/g, ' · ')}.</li>
-        </ul>
       </div>
       <div class="bloque">
         <h2>Cuánto sale</h2>
@@ -136,7 +131,7 @@ const schema = {
           Cobra la tarifa oficial de la Intendencia de Río Negro: lo que marca el taxímetro a bordo. Con la calculadora del sitio
           sabés el precio estimado antes de subir.
         </p>
-        <a class="btn btn-ink" href={enInicio('pedir')}>Calcular mi viaje</a>
+        <a class="btn btn-ink" href={`${INICIO}calculadora/?desde=${s.slug}`}>Calcular mi viaje</a>
         <p class="fuente mono">{TARIFA.fuente}</p>
       </div>
     </div>
@@ -167,7 +162,7 @@ const schema = {
   .acciones { display: flex; gap: 10px; }
   .acciones :global(.pedir) { flex: 1; min-height: 48px; font-size: 15px; }
 
-  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 4vw, 48px); }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 48px); }
   @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   .bloque { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; font-size: 17px; line-height: 1.55; }
   .bloque h2 { font-size: clamp(32px, 4vw, 44px); }

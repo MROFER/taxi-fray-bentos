@@ -1,0 +1,106 @@
+---
+/** Página propia de la calculadora: el mismo taxímetro del inicio, solo, para enlazarlo desde cada taxi y para Google. */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Taximetro from '@/components/ui/Taximetro.astro';
+import { SITE, INICIO, enInicio } from '@/config/site';
+import { TARIFA } from '@/data/tarifa';
+import { SERVICIOS_TAXI, paginaDe, nombrePaginaDe } from '@/data/taxis';
+
+const path = '/calculadora/';
+// A esta página se llega desde varios taxis (?desde=<slug>): el botón de volver lleva a la página de ese taxi.
+const origenes = Object.fromEntries(SERVICIOS_TAXI.map((s) => [s.slug, { url: paginaDe(s), nombre: nombrePaginaDe(s) }]));
+const url = `${SITE.url}${path}`;
+const titulo = 'Calculadora de taxi en Fray Bentos · Precio del viaje';
+const descripcion =
+  'Calculá cuánto sale un taxi en Fray Bentos antes de subir: elegí de dónde salís y a dónde vas y te mostramos el precio estimado con la tarifa oficial.';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': url,
+      url,
+      name: titulo,
+      description: descripcion,
+      inLanguage: SITE.lang,
+      isPartOf: { '@id': `${SITE.url}/#sitio` },
+      breadcrumb: { '@id': `${url}#migas` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${url}#migas`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+        { '@type': 'ListItem', position: 2, name: 'Calculadora', item: url },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout title={titulo} description={descripcion} path={path} schema={schema}>
+  <section class="calc">
+    <div class="wrap calc-bar">
+      <nav class="migas mono" aria-label="Estás en">
+        <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Calculadora</span>
+      </nav>
+    </div>
+    <div class="wrap calc-grid">
+      <div class="calc-copy">
+        <h1>¿Cuánto sale <span class="hl">mi viaje?</span></h1>
+        <p class="lead">
+          Elegí de dónde salís y a dónde vas, y te mostramos el precio estimado con la tarifa oficial de la Intendencia de Río
+          Negro.
+        </p>
+        <ol class="pasos">
+          <li>Escribí la dirección de salida y la de llegada, o marcalas en el mapa.</li>
+          <li>Sumá las valijas, si llevás.</li>
+          <li>Tocá <b>Calcular tarifa</b>: vas a ver el precio de día y el de noche, domingo o feriado.</li>
+        </ol>
+        <p class="fuente mono">{TARIFA.fuente}</p>
+      </div>
+      <Taximetro />
+    </div>
+    <div class="wrap calc-pie">
+      <a class="btn btn-line" id="volver" href={INICIO}>← Volver al inicio</a>
+      <a class="btn btn-ink" href={enInicio('taxis')}>Elegir un taxi →</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ origenes }}>
+  // Si se llegó desde un taxi, volver lleva a su página; si no, a la página anterior del sitio (o al inicio).
+  const b = document.getElementById('volver');
+  const o = origenes[new URLSearchParams(location.search).get('desde') ?? ''];
+  if (o) {
+    b.href = o.url;
+    b.textContent = `← Volver a ${o.nombre}`;
+  } else if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) {
+    b.textContent = '← Volver';
+    b.addEventListener('click', (e) => { e.preventDefault(); history.back(); });
+  }
+</script>
+
+<style>
+  .calc { padding-block: clamp(24px, 3vw, 40px) clamp(56px, 8vw, 112px); }
+  .calc-bar { margin-bottom: clamp(20px, 3vw, 32px); }
+  .calc-pie { display: flex; justify-content: space-between; gap: 12px; margin-top: clamp(32px, 5vw, 56px); }
+  @media (max-width: 520px) { .calc-pie { flex-direction: column; } }
+  .calc-grid {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 88px); align-items: start;
+  }
+  @media (max-width: 960px) { .calc-grid { grid-template-columns: 1fr; } }
+  .calc-copy { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; min-width: 0; }
+  .migas { display: flex; gap: 10px; font-size: 11px; color: var(--muted); }
+  .migas a { color: var(--muted); }
+  h1 { font-size: clamp(48px, 7vw, 96px); }
+  .hl {
+    background: linear-gradient(transparent 58%, var(--yellow) 58%, var(--yellow) 92%, transparent 92%);
+    padding-inline: 0.04em;
+  }
+  .lead { font-size: clamp(17px, 1.6vw, 20px); max-width: 32em; color: var(--text-2); }
+  .pasos { padding-left: 1.2em; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 1.5; }
+  .fuente { font-size: 10px; color: var(--text-2); letter-spacing: 0.08em; text-transform: none; }
+</style>
