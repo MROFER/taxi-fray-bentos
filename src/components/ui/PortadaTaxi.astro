@@ -1,0 +1,48 @@
+---
+/**
+ * Portada de la página de un taxi: la foto de src/assets/taxis/<slug>.(jpg|jpeg|png|webp) si existe;
+ * si no, una ilustración del taxi en la ruta.
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+  slug: string;
+  alt: string;
+}
+const { slug, alt } = Astro.props;
+
+const fotos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/taxis/*.{jpg,jpeg,png,webp}', { eager: true });
+const foto = Object.entries(fotos).find(([ruta]) => ruta.replace(/^.*\/|\.[a-z]+$/g, '') === slug)?.[1].default;
+const casillas = Array.from({ length: 26 }, (_, i) => i);
+---
+
+{
+  foto ? (
+    <Image class="fondo" src={foto} alt={alt} widths={[640, 1024, 1600, 2200]} sizes="(max-width: 1240px) 100vw, 1200px" loading="eager" fetchpriority="high" />
+  ) : (
+    <svg class="fondo" viewBox="0 0 1600 600" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+      <rect width="1600" height="600" fill="#0f0e0b" />
+      <g fill="none">
+        <path id="ruta" d="M -40 300 C 400 210 760 360 1100 270 S 1500 200 1660 250" stroke="#f2b705" stroke-width="150" />
+        <path d="M -40 300 C 400 210 760 360 1100 270 S 1500 200 1660 250" stroke="#2a2822" stroke-width="134" />
+        <path d="M -40 300 C 400 210 760 360 1100 270 S 1500 200 1660 250" stroke="#f2b705" stroke-width="7" stroke-dasharray="44 36" />
+      </g>
+      <g transform="translate(1250 262) rotate(-7) scale(0.62) translate(-330 -238)">
+        <rect x="250" y="0" width="160" height="62" rx="10" fill="#fbf8f1" stroke="#1b1a17" stroke-width="8" />
+        <text x="330" y="47" text-anchor="middle" font-family="Barlow Condensed, sans-serif" font-weight="800" font-size="50" fill="#1b1a17">TAXI</text>
+        <path d="M40 210 L60 150 Q70 128 100 124 L170 118 L230 66 Q248 52 275 52 L440 52 Q468 52 486 70 L540 122 L612 132 Q650 140 655 175 L660 210 Q660 236 636 238 L40 238 Q20 236 22 216 Z" fill="#f2b705" stroke="#1b1a17" stroke-width="8" />
+        <path d="M246 120 L282 76 L360 76 L360 120 Z M380 76 L464 76 L510 120 L380 120 Z" fill="#1b1a17" />
+        <g fill="#1b1a17">{casillas.map((i) => <rect x={80 + i * 20} y={i % 2 ? 178 : 158} width="20" height="20" />)}</g>
+        <rect x="628" y="160" width="26" height="22" rx="4" fill="#fbf8f1" stroke="#1b1a17" stroke-width="5" />
+        <g stroke="#1b1a17" stroke-width="8">
+          <circle cx="160" cy="240" r="58" fill="#1b1a17" /><circle cx="160" cy="240" r="24" fill="#b8b0a0" />
+          <circle cx="530" cy="240" r="58" fill="#1b1a17" /><circle cx="530" cy="240" r="24" fill="#b8b0a0" />
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+<style>
+  .fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+</style>
