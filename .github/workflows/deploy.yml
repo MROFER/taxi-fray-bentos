@@ -64,7 +64,9 @@ jobs:
           rm -f dist/_headers
           REPO="https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git"
           git clone -q --depth 1 --branch hostinger "$REPO" publicar || { mkdir publicar && git -C publicar init -q -b hostinger; }
-          rsync -a --delete --exclude .git dist/ publicar/
+          # -c compara por contenido y sin -t los archivos cambiados quedan con fecha nueva: con "rsync -a" un cambio
+          # del mismo tamaño conservaba la fecha del build y git no lo veía ("Sin cambios").
+          rsync -rc --delete --exclude .git dist/ publicar/
           cd publicar
           git add -A
           if git diff --cached --quiet; then echo "Sin cambios"; exit 0; fi
