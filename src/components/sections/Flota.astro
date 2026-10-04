@@ -14,8 +14,8 @@ const pendientes = [
   'fotos reales',
 ].filter(Boolean);
 
-// En celular, con 3 o más taxis reales, aparece el dado que elige uno al azar (las tarjetas de ejemplo no cuentan).
-const conDado = TAXIS_REALES.length >= 3;
+// En celular aparece el dado que elige un taxi al azar. Gira por todas las tarjetas pero solo frena en taxis reales.
+const conDado = TAXIS.length >= 3 && TAXIS_REALES.length > 0;
 
 const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas', 'A bordo'] as const;
 ---
@@ -43,7 +43,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
         <tbody role="rowgroup">
           {
             TAXIS.map((t) => (
-              <tr role="row">
+              <tr role="row" data-ejemplo={t.servicio.ejemplo ? '' : undefined}>
                 <th scope="row" role="rowheader" class="svc">
                   {t.servicio.ejemplo ? (
                     <span class="nombre">{t.servicio.nombre}</span>
