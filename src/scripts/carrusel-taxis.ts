@@ -1,7 +1,8 @@
 /**
  * Carrusel de taxis en celular (sección "Taxis"): las filas del tablero se deslizan de costado, la del centro queda
- * adelante, y el dado elige un taxi al azar con efecto ruleta. Es infinito: hay una copia de las tarjetas antes y otra
- * después (inertes, solo de relleno) y, al quedar quieto, siempre vuelve sin que se note a la tarjeta original.
+ * adelante, y el dado elige un taxi al azar con efecto ruleta. Es en bucle, como un reloj: antes y después de las
+ * tarjetas hay copias (inertes, solo de relleno; al menos 12 de cada lado para que ni deslizando rápido se llegue al
+ * final) y, al quedar quieto, siempre vuelve sin que se note a la tarjeta original.
  * En escritorio las copias se ocultan por CSS y el tablero queda como siempre.
  */
 export function carrusel() {
@@ -20,8 +21,13 @@ export function carrusel() {
     c.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
     return c;
   };
-  tbody.prepend(...originales.map(clonar));
-  tbody.append(...originales.map(clonar));
+  const vueltas = Math.max(2, Math.ceil(12 / n));
+  for (let v = 0; v < vueltas; v++) {
+    tbody.prepend(...originales.map(clonar));
+    tbody.append(...originales.map(clonar));
+  }
+  // Índice de la primera tarjeta original (las del medio).
+  const m = vueltas * n;
   const filas = [...tbody.querySelectorAll<HTMLTableRowElement>(':scope > tr')];
   const puntos = [...document.querySelectorAll<HTMLElement>('#taxis-puntos > span')];
   const movil = matchMedia('(max-width: 760px)');
@@ -34,7 +40,7 @@ export function carrusel() {
     tbody.style.scrollSnapType = '';
   };
 
-  let actual = n;
+  let actual = m;
   let girando = false;
   function marcar() {
     const centro = tbody.scrollLeft + tbody.clientWidth / 2;
@@ -55,8 +61,8 @@ export function carrusel() {
     requestAnimationFrame(marcar);
     clearTimeout(quieto);
     quieto = window.setTimeout(() => {
-      if (girando || (actual >= n && actual < 2 * n)) return;
-      const j = n + (actual % n);
+      if (girando || (actual >= m && actual < m + n)) return;
+      const j = m + (actual % n);
       const ganadora = filas[actual].classList.contains('ganadora');
       filas[actual].classList.remove('ganadora');
       mover(actual, j);
@@ -68,9 +74,9 @@ export function carrusel() {
   const iniciar = () => {
     if (!movil.matches) return;
     tbody.style.scrollSnapType = 'none';
-    tbody.scrollLeft = posicion(n);
+    tbody.scrollLeft = posicion(m);
     tbody.style.scrollSnapType = '';
-    actual = n;
+    actual = m;
     marcar();
   };
   iniciar();
@@ -110,8 +116,9 @@ export function carrusel() {
     const desde = actual % n;
     let destino = Math.floor(Math.random() * (n - 1));
     if (destino >= desde) destino++;
-    const inicio = desde;
-    const fin = 2 * n + destino;
+    // Arranca una vuelta antes de las originales y termina una vuelta después: gira más de una vuelta completa.
+    const inicio = m - n + desde;
+    const fin = m + n + destino;
     mover(actual, inicio);
     tbody.style.scrollSnapType = 'none';
     tbody.classList.add('rapido');
@@ -138,7 +145,7 @@ export function carrusel() {
     dado.disabled = false;
     dado.classList.remove('girando');
     tbody.classList.remove('rapido');
-    const j = n + destino;
+    const j = m + destino;
     mover(actual, j);
     marcar();
     filas[j].classList.add('ganadora');
