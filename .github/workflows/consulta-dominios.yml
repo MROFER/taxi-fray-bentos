@@ -14,18 +14,21 @@ jobs:
           echo "=== muestra whois .com.uy ==="
           whois -h whois.nic.org.uy taxifraybentos.com.uy | head -25
           echo "---"
-          whois -h whois.nic.org.uy taxizzqqxx123.com.uy | head -15
+          whois -h whois.nic.org.uy zzqqxx123libre.com.uy | head -15
+          echo "---"
+          whois -h whois.nic.org.uy salto.uy | head -15
           echo "=== resultados ==="
-          for n in $nombres; do
-            for pre in taxi taxis; do
-              d="$pre$n"
-              c=$(curl -s -o /dev/null -w "%{http_code}" "https://rdap.verisign.com/com/v1/domain/$d.com")
-              [ "$c" = "404" ] && com=LIBRE || { [ "$c" = "200" ] && com=OCUPADO || com="?$c"; }
-              out=$(whois -h whois.nic.org.uy "$d.com.uy" 2>&1)
-              if echo "$out" | grep -qiE "no match|not found|no encontrado|no existe|No Data Found|No entries"; then uy=LIBRE
-              elif echo "$out" | grep -qiE "domain name|dominio|registrant|status|creat"; then uy=OCUPADO
-              else uy="?"; fi
-              echo "RES $d .com=$com .com.uy=$uy"
+          for d in $nombres; do
+            c=$(curl -s -o /dev/null -w "%{http_code}" "https://rdap.verisign.com/com/v1/domain/$d.com")
+            [ "$c" = "404" ] && com=LIBRE || { [ "$c" = "200" ] && com=OCUPADO || com="?$c"; }
+            res="RES $d .com=$com"
+            for tld in com.uy uy; do
+              out=$(whois -h whois.nic.org.uy "$d.$tld" 2>&1)
+              if echo "$out" | grep -qiE "no match|not found|no encontrado|no existe|No Data Found|No entries"; then r=LIBRE
+              elif echo "$out" | grep -qiE "domain name|dominio|registrant|status|creat"; then r=OCUPADO
+              else r="?"; fi
+              res="$res .$tld=$r"
               sleep 1
             done
+            echo "$res"
           done
