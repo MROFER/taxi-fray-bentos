@@ -43,8 +43,14 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
         <tbody role="rowgroup">
           {
             TAXIS.map((t) => (
-              <tr role="row" data-ejemplo={t.servicio.ejemplo ? '' : undefined} data-peso={pesoDado(t.servicio)}>
+              <tr role="row" class:list={{ destacado: t.servicio.personalizada }} data-ejemplo={t.servicio.ejemplo ? '' : undefined} data-peso={pesoDado(t.servicio)}>
                 <th scope="row" role="rowheader" class="svc">
+                  {t.servicio.personalizada && (
+                    <span class="sello-destacado mono">
+                      <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7L12 17.5 5.8 21.2l1.6-7L2 9.5l7.1-.6z" /></svg>
+                      Destacado
+                    </span>
+                  )}
                   {t.servicio.ejemplo ? (
                     <span class="nombre">{t.servicio.nombre}</span>
                   ) : (
@@ -129,6 +135,12 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
   .flip i.todo { color: var(--yellow); }
   .pill { display: inline-block; border: 1px solid var(--ink-3); border-radius: 4px; padding: 3px 8px; margin: 2px 4px 2px 0; font-size: 12px; color: var(--muted-dark); }
   .acciones { display: flex; flex-direction: column; gap: 8px; }
+  /* Taxis con página personalizada: etiqueta "Destacado" (en escritorio arriba del nombre; en celular, sobre el borde). */
+  .sello-destacado {
+    display: flex; align-items: center; gap: 6px; width: max-content; margin-bottom: 10px;
+    background: var(--yellow); color: var(--ink); font-size: 10px; font-weight: 700; line-height: 1; letter-spacing: 0.18em;
+    text-transform: uppercase; padding: 5px 8px; border-radius: 3px;
+  }
   .board tr.clon, .carrusel-ctl { display: none; }
   .carrusel-ctl { flex-direction: column; align-items: center; gap: 22px; }
   .puntos { display: flex; justify-content: center; gap: 8px; }
@@ -175,6 +187,11 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
     .board tr.activa {
       z-index: 3; transform: none; filter: none; border-color: #57524a;
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.6);
+    }
+    .board tr.destacado { border-color: var(--yellow); }
+    .board .sello-destacado {
+      position: absolute; top: -13px; left: 16px; z-index: 2; margin: 0;
+      padding: 6px 10px; border-radius: 4px; border: 2px solid var(--ink-deep);
     }
     .board tr.ganadora { border-color: var(--yellow); animation: latido 0.6s 2; }
     .carrusel-ctl { display: flex; }
