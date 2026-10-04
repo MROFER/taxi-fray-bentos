@@ -29,6 +29,8 @@ import Taximetro from '@/components/ui/Taximetro.astro';
     </div>
 
     <Taximetro />
+    <!-- En celular, después de calcular: atajo a los taxis (deja el título "Elegí el taxi…" arriba). -->
+    <a class="btn btn-ink elegir-taxi" href="#taxis">Elegir taxi →</a>
   </div>
 </section>
 
@@ -39,6 +41,8 @@ import Taximetro from '@/components/ui/Taximetro.astro';
     gap: clamp(32px, 6vw, 88px); align-items: center;
   }
   @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } }
+  .elegir-taxi { display: none; }
+  @media (max-width: 960px) { .elegir-taxi { display: inline-flex; justify-self: end; margin-top: calc(-1 * clamp(32px, 6vw, 88px) + 28px); } }
   .hero-copy { display: flex; flex-direction: column; gap: 26px; min-width: 0; }
   @media (max-width: 520px) { .hero-copy { gap: 20px; } }
   .kicker {
