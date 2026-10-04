@@ -22,6 +22,8 @@ export const SITE = {
   phoneDisplay: '',
   /** Correo de contacto. */
   email: 'contacto@taxifraybentos.com.uy',
+  /** Perfil de Instagram del sitio (sin parámetros de seguimiento). */
+  instagram: 'https://www.instagram.com/taxifraybentos/',
   /** Persona responsable de los datos personales (Ley 18.331), en la política de privacidad. */
   responsable: 'Maximiliano Rovelli',
 

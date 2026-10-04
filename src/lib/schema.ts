@@ -39,6 +39,7 @@ export function buildSchema() {
     url: SITE.url,
     logo: `${SITE.url}/icon-512.png`,
     areaServed: { '@id': id('fray-bentos') },
+    ...(SITE.instagram ? { sameAs: [SITE.instagram] } : {}),
     ...contacto,
   };
 
