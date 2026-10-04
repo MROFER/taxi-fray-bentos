@@ -6,7 +6,7 @@
  * En escritorio las copias se ocultan por CSS y el tablero queda como siempre.
  */
 export function carrusel() {
-  const encontrado = document.querySelector<HTMLElement>('#taxis .board tbody');
+  const encontrado = document.querySelector<HTMLElement>('.flota .board tbody');
   if (!encontrado) return;
   const tbody: HTMLElement = encontrado;
   const originales = [...tbody.querySelectorAll<HTMLTableRowElement>(':scope > tr')];

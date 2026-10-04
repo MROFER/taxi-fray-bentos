@@ -20,11 +20,12 @@ const conDado = TAXIS.length >= 3 && TAXIS_REALES.length > 0;
 const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas', 'A bordo'] as const;
 ---
 
-<section class="sec flota" id="taxis" aria-labelledby="taxis-title">
+<!-- El ancla #taxis va en el título: los enlaces a la sección dejan "Elegí el taxi…" arriba, con las tarjetas a la vista. -->
+<section class="sec flota" aria-labelledby="taxis">
   <div class="wrap">
     <header class="sec-head">
       <span class="tag">Taxis · {SERVICIOS_TAXI.length} {SERVICIOS_TAXI.length === 1 ? 'servicio' : 'servicios'}</span>
-      <h2 id="taxis-title">Elegí el taxi que necesitás</h2>
+      <h2 id="taxis">Elegí el taxi que necesitás</h2>
       <p>
         Todos con chofer habilitado y taxímetro a la vista. Cada taxi tiene su propio WhatsApp: pedilo ahora o reservalo
         para más tarde.
@@ -117,6 +118,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
 <style>
   .flota { background: var(--ink); color: var(--paper); }
   .flota .sec-head p { color: var(--muted-dark); }
+  #taxis { scroll-margin-top: 20px; }
   .board-wrap { position: relative; overflow-x: auto; border: 2px solid var(--ink-3); border-radius: 14px; background: var(--ink-deep); }
   .board { width: 100%; min-width: 980px; border-collapse: collapse; font-family: var(--f-mono); font-size: 14px; }
   thead th { text-align: left; font-weight: 400; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-dark); padding: 16px 18px; background: var(--ink-2); }
