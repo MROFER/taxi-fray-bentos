@@ -1,0 +1,31 @@
+# Temporal: consulta si los dominios están libres (se borra después de usarlo).
+name: Consulta dominios
+on:
+  push:
+    branches: [consulta-dominios]
+jobs:
+  consulta:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install -y -qq whois >/dev/null
+      - name: Consultar
+        run: |
+          nombres="artigas canelones cerrolargo colonia durazno flores florida lavalleja maldonado montevideo paysandu rionegro rivera rocha salto sanjose soriano tacuarembo treintaytres melo coloniadelsacramento trinidad minas sanjosedemayo mercedes fraybentos"
+          echo "=== muestra whois .com.uy ==="
+          whois -h whois.nic.org.uy taxifraybentos.com.uy | head -25
+          echo "---"
+          whois -h whois.nic.org.uy taxizzqqxx123.com.uy | head -15
+          echo "=== resultados ==="
+          for n in $nombres; do
+            for pre in taxi taxis; do
+              d="$pre$n"
+              c=$(curl -s -o /dev/null -w "%{http_code}" "https://rdap.verisign.com/com/v1/domain/$d.com")
+              [ "$c" = "404" ] && com=LIBRE || { [ "$c" = "200" ] && com=OCUPADO || com="?$c"; }
+              out=$(whois -h whois.nic.org.uy "$d.com.uy" 2>&1)
+              if echo "$out" | grep -qiE "no match|not found|no encontrado|no existe|No Data Found|No entries"; then uy=LIBRE
+              elif echo "$out" | grep -qiE "domain name|dominio|registrant|status|creat"; then uy=OCUPADO
+              else uy="?"; fi
+              echo "RES $d .com=$com .com.uy=$uy"
+              sleep 1
+            done
+          done
