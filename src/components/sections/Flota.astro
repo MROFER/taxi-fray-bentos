@@ -1,7 +1,7 @@
 ---
 import Placa from '@/components/ui/Placa.astro';
 import BotonesPedir from '@/components/ui/BotonesPedir.astro';
-import { TAXIS, TAXIS_REALES, SERVICIOS_TAXI, numeroDe, paginaDe } from '@/data/taxis';
+import { TAXIS, TAXIS_REALES, SERVICIOS_TAXI, numeroDe, paginaDe, pesoDado } from '@/data/taxis';
 
 // Solo en la copia de prueba (GitHub Pages) o en local; en www.taxifraybentos.com.uy no se muestra.
 const mostrarPendientes = import.meta.env.DEV || import.meta.env.PUBLIC_MOSTRAR_PENDIENTES === 'si';
@@ -43,7 +43,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
         <tbody role="rowgroup">
           {
             TAXIS.map((t) => (
-              <tr role="row" data-ejemplo={t.servicio.ejemplo ? '' : undefined}>
+              <tr role="row" data-ejemplo={t.servicio.ejemplo ? '' : undefined} data-peso={pesoDado(t.servicio)}>
                 <th scope="row" role="rowheader" class="svc">
                   {t.servicio.ejemplo ? (
                     <span class="nombre">{t.servicio.nombre}</span>

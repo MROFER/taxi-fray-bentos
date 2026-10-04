@@ -24,7 +24,13 @@ export interface Servicio {
   whatsapp: string;
   /** Tarjeta de muestra del diseño (no es un taxi real): no tiene página y no se informa a buscadores ni IAs. */
   ejemplo?: boolean;
+  /** Tiene página personalizada (portada, textos propios): en el dado de la sección Taxis sale con más probabilidad. */
+  personalizada?: boolean;
 }
+
+/** Cuántas veces más chances tiene en el dado un servicio con página personalizada frente a uno sin ella. */
+export const PESO_DADO_PERSONALIZADA = 3;
+export const pesoDado = (s: Servicio) => (s.personalizada ? PESO_DADO_PERSONALIZADA : 1);
 
 export interface Taxi {
   id: string;
@@ -50,6 +56,7 @@ const LECHUZAS: Servicio = {
   nota: 'Todos los destinos · 24/7\nInmediatos · Reservas',
   descripcion: '',
   whatsapp: '',
+  personalizada: true,
 };
 
 const MUESTRA = (slug: string): Servicio => ({

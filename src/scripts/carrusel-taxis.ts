@@ -114,11 +114,14 @@ export function carrusel() {
     filas.forEach((f) => f.classList.remove('ganadora'));
     if (res) res.textContent = '';
     // Solo frena en taxis reales (nunca en una tarjeta de ejemplo) y, si hay más de uno, nunca en el que ya estás viendo.
+    // Cada taxi tiene un peso (data-peso): los que tienen página personalizada salen con más probabilidad.
     const desde = actual % n;
     const reales = originales.map((f, i) => (f.hasAttribute('data-ejemplo') ? -1 : i)).filter((i) => i >= 0);
     const opciones = reales.length > 1 ? reales.filter((i) => i !== desde) : reales;
     if (!opciones.length) return;
-    const destino = opciones[Math.floor(Math.random() * opciones.length)];
+    const peso = (i: number) => Math.max(0, Number(originales[i].dataset.peso) || 1);
+    let sorteo = Math.random() * opciones.reduce((total, i) => total + peso(i), 0);
+    const destino = opciones.find((i) => (sorteo -= peso(i)) < 0) ?? opciones[opciones.length - 1];
     // Arranca una vuelta antes de las originales y termina una vuelta después: gira más de una vuelta completa.
     const inicio = m - n + desde;
     const fin = m + n + destino;
