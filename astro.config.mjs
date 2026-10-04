@@ -8,6 +8,8 @@ export default defineConfig({
   site: process.env.SITE_URL ?? 'https://taxifraybentos.com.uy',
   base: process.env.BASE_PATH ?? '/',
   trailingSlash: 'ignore',
+  // Dirección vieja de la calculadora (en Hostinger además hay un 301 en public/.htaccess).
+  redirects: { '/calculadora': `${(process.env.BASE_PATH ?? '/').replace(/\/$/, '')}/calculadora-de-tarifas/` },
   integrations: [
     sitemap({
       // Las páginas legales llevan noindex (ver PaginaLegal.astro): fuera del sitemap para no mandar señales contradictorias.

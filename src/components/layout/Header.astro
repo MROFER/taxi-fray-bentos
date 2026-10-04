@@ -6,7 +6,7 @@ import { NAV, INICIO, enInicio } from '@/config/site';
 // de volver regrese ahí. En la calculadora, sube a la de esa página. Desde el resto, a la calculadora del inicio.
 const ruta = Astro.url.pathname.startsWith(INICIO) ? Astro.url.pathname.slice(INICIO.length) : '';
 const taxi = ruta.match(/^taxis\/([^/]+)\/?$/)?.[1];
-const calculadora = taxi ? `${INICIO}calculadora/?desde=${taxi}` : ruta.startsWith('calculadora') ? '#pedir' : null;
+const calculadora = taxi ? `${INICIO}calculadora-de-tarifas/?desde=${taxi}` : ruta.startsWith('calculadora') ? '#pedir' : null;
 ---
 
 <header class="nav">

@@ -6,11 +6,11 @@ import { SITE, INICIO, enInicio } from '@/config/site';
 import { TARIFA } from '@/data/tarifa';
 import { SERVICIOS_TAXI, paginaDe, nombrePaginaDe } from '@/data/taxis';
 
-const path = '/calculadora/';
+const path = '/calculadora-de-tarifas/';
 // A esta página se llega desde varios taxis (?desde=<slug>): el botón de volver lleva a la página de ese taxi.
 const origenes = Object.fromEntries(SERVICIOS_TAXI.map((s) => [s.slug, { url: paginaDe(s), nombre: nombrePaginaDe(s) }]));
 const url = `${SITE.url}${path}`;
-const titulo = 'Calculadora de taxi en Fray Bentos · Precio del viaje';
+const titulo = 'Calculadora de tarifas de taxi · Fray Bentos';
 const descripcion =
   'Calculá cuánto sale un taxi en Fray Bentos antes de subir: elegí de dónde salís y a dónde vas y te mostramos el precio estimado con la tarifa oficial.';
 
@@ -32,7 +32,7 @@ const schema = {
       '@id': `${url}#migas`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
-        { '@type': 'ListItem', position: 2, name: 'Calculadora', item: url },
+        { '@type': 'ListItem', position: 2, name: 'Calculadora de tarifas', item: url },
       ],
     },
   ],
@@ -43,7 +43,7 @@ const schema = {
   <section class="calc">
     <div class="wrap calc-bar">
       <nav class="migas mono" aria-label="Estás en">
-        <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Calculadora</span>
+        <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><span aria-current="page">Calculadora de tarifas</span>
       </nav>
     </div>
     <div class="wrap calc-grid">
