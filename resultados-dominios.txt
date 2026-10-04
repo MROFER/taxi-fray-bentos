@@ -1,0 +1,33 @@
+=== muestra whois .com.uy ===
+Timeout.
+---
+Timeout.
+---
+Timeout.
+=== resultados ===
+RES artigas .com=OCUPADO .com.uy=? .uy=?
+RES canelones .com=OCUPADO .com.uy=? .uy=?
+RES cerrolargo .com=OCUPADO .com.uy=? .uy=?
+RES colonia .com=OCUPADO .com.uy=? .uy=?
+RES durazno .com=OCUPADO .com.uy=? .uy=?
+RES flores .com=OCUPADO .com.uy=? .uy=?
+RES florida .com=OCUPADO .com.uy=? .uy=?
+RES lavalleja .com=OCUPADO .com.uy=? .uy=?
+RES maldonado .com=OCUPADO .com.uy=? .uy=?
+RES montevideo .com=OCUPADO .com.uy=? .uy=?
+RES paysandu .com=OCUPADO .com.uy=? .uy=?
+RES rionegro .com=OCUPADO .com.uy=? .uy=?
+RES rivera .com=OCUPADO .com.uy=? .uy=?
+RES rocha .com=OCUPADO .com.uy=? .uy=?
+RES salto .com=OCUPADO .com.uy=? .uy=?
+RES sanjose .com=OCUPADO .com.uy=? .uy=?
+RES soriano .com=OCUPADO .com.uy=? .uy=?
+RES tacuarembo .com=OCUPADO .com.uy=? .uy=?
+RES treintaytres .com=OCUPADO .com.uy=? .uy=?
+RES melo .com=OCUPADO .com.uy=? .uy=?
+RES coloniadelsacramento .com=OCUPADO .com.uy=? .uy=?
+RES trinidad .com=OCUPADO .com.uy=? .uy=?
+RES minas .com=OCUPADO .com.uy=? .uy=?
+RES sanjosedemayo .com=LIBRE .com.uy=? .uy=?
+RES mercedes .com=OCUPADO .com.uy=? .uy=?
+RES fraybentos .com=OCUPADO .com.uy=? .uy=?
