@@ -12,28 +12,54 @@ interface Props {
   nombre: string;
 }
 const { servicio, nombre } = Astro.props;
-const mostrarPendientes = import.meta.env.DEV || import.meta.env.PUBLIC_MOSTRAR_PENDIENTES === 'si';
-const ejemplo = !servicio.resenaGoogle;
+// Sin enlace el recuadro igual se muestra, con el QR borroso y el aviso de que está en camino.
+const pendiente = !servicio.resenaGoogle;
 const enlace = servicio.resenaGoogle || 'https://g.page/r/EJEMPLO/review';
 const qr = await QRCode.toString(enlace, { type: 'svg', margin: 0, errorCorrectionLevel: 'M', color: { dark: '#1b1a17', light: '#00000000' } });
 ---
 
-{
-  (!ejemplo || mostrarPendientes) && (
-    <section class="resena" aria-labelledby="resena-title">
+<section class="resena" aria-labelledby="resena-title">
       <div class="wrap">
         <div class="tarjeta">
-          <div class="qr" role="img" aria-label={`Código QR para dejarle una reseña a ${nombre} en Google`}>
-            <Fragment set:html={qr} />
-            {ejemplo && <span class="muestra mono">Ejemplo</span>}
-          </div>
+          {
+            pendiente ? (
+              <div class="qr pendiente" role="img" aria-label="El código QR de reseñas todavía no está disponible">
+                <Fragment set:html={qr} />
+                <span class="aviso mono">
+                  <span class="puntos" aria-hidden="true"><i /><i /><i /></span>
+                  QR en camino
+                </span>
+              </div>
+            ) : (
+              <div class="qr" role="img" aria-label={`Código QR para dejarle una reseña a ${nombre} en Google`}>
+                <Fragment set:html={qr} />
+              </div>
+            )
+          }
           <div class="texto">
             <span class="tag dark">Reseñas</span>
             <h2 id="resena-title">¿Viajaste con {nombre}?</h2>
-            <p>
-              Contale a otros cómo te fue. Escaneá el código con la cámara del celular, o tocá el botón, y dejale tu
-              reseña en Google. Te lleva un minuto y lo ayuda un montón.
-            </p>
+            {
+              pendiente ? (
+                <p>
+                  Muy pronto vas a poder dejarle tu reseña en Google desde acá: escaneando el código con la cámara del
+                  celular o tocando el botón. Estamos terminando de prepararlo.
+                </p>
+              ) : (
+                <p>
+                  Contale a otros cómo te fue. Escaneá el código con la cámara del celular, o tocá el botón, y dejale tu
+                  reseña en Google. Te lleva un minuto y lo ayuda un montón.
+                </p>
+              )
+            }
+            {pendiente ? (
+              <div class="ctas">
+                <span class="btn btn-ink apagado" aria-disabled="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z" /></svg>
+                  Reseñas próximamente
+                </span>
+              </div>
+            ) : (
             <div class="ctas">
               <a class="btn btn-ink" href={enlace} target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5-4.8-4.6 6.6-.9z" /></svg>
@@ -44,12 +70,11 @@ const qr = await QRCode.toString(enlace, { type: 'svg', margin: 0, errorCorrecti
                 Compartir
               </button>
             </div>
+            )}
           </div>
         </div>
       </div>
     </section>
-  )
-}
 
 <script>
   import { toast } from '@/scripts/ui';
@@ -88,10 +113,18 @@ const qr = await QRCode.toString(enlace, { type: 'svg', margin: 0, errorCorrecti
     background: var(--paper); border: 3px solid var(--ink); border-radius: 12px;
   }
   .qr :global(svg) { display: block; width: 100%; height: 100%; }
-  .muestra {
-    position: absolute; inset: auto 50% -12px auto; transform: translateX(50%); background: var(--ink); color: var(--yellow);
-    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; white-space: nowrap;
+  .pendiente :global(svg) { filter: blur(5px); opacity: 0.35; }
+  .aviso {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); text-align: center;
   }
+  .puntos { display: flex; gap: 6px; }
+  .puntos i { width: 9px; height: 9px; border-radius: 50%; background: var(--ink); animation: salto 1.2s ease-in-out infinite; }
+  .puntos i:nth-child(2) { animation-delay: 0.15s; }
+  .puntos i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes salto { 0%, 60%, 100% { transform: translateY(0); opacity: 0.35; } 30% { transform: translateY(-6px); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .puntos i { animation: none; opacity: 0.6; } }
+  .apagado { opacity: 0.55; cursor: default; pointer-events: none; }
   .texto { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; color: var(--ink); }
   h2 { font-size: clamp(30px, 4vw, 44px); }
   p { font-size: 17px; line-height: 1.55; max-width: 34em; margin: 0; }
