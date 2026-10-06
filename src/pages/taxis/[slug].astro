@@ -93,7 +93,7 @@ const schema = {
 
       {
         vehiculos.length === 0 && (
-          <div class="acciones sola"><BotonesPedir taxi={{ id: s.slug, servicio: s, nombre, nota: s.nota, placa: '', vehiculo: [], plazas: '', valijas: '', aBordo: [] }} /></div>
+          <div class="acciones sola"><BotonesPedir taxi={{ id: s.slug, servicio: s, nombre, nota: s.nota, destacado: false, placa: '', vehiculo: [], plazas: '', valijas: '', aBordo: [] }} /></div>
         )
       }
       {vehiculos.length > 0 && <h2 class="mono sub">{vehiculos.length === 1 ? 'El auto' : `Los autos (${vehiculos.length})`}</h2>}

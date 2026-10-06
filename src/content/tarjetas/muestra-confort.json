@@ -13,6 +13,7 @@
     "[Extras]"
   ],
   "whatsapp": "",
+  "destacado": false,
   "ejemplo": true,
   "pagina": {
     "activa": false,

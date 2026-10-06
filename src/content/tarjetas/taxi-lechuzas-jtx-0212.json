@@ -4,11 +4,18 @@
   "nombre": "Taxi Lechuzas",
   "nota": "Todos los destinos · 24/7\nInmediatos · Reservas",
   "placa": "JTX 0212",
-  "vehiculo": ["Nissan Versa", "Drive"],
+  "vehiculo": [
+    "Nissan Versa",
+    "Drive"
+  ],
   "plazas": "4",
   "valijas": "3 grandes",
-  "aBordo": ["USB-C", "Mascotas"],
+  "aBordo": [
+    "USB-C",
+    "Mascotas"
+  ],
   "whatsapp": "",
+  "destacado": true,
   "ejemplo": false,
   "pagina": {
     "activa": true,

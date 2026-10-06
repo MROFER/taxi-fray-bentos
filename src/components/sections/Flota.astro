@@ -44,9 +44,9 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
         <tbody role="rowgroup">
           {
             TAXIS.map((t) => (
-              <tr role="row" class:list={{ destacado: t.servicio.personalizada }} data-ejemplo={t.servicio.ejemplo ? '' : undefined} data-peso={pesoDado(t.servicio)}>
+              <tr role="row" class:list={{ destacado: t.destacado }} data-ejemplo={t.servicio.ejemplo ? '' : undefined} data-peso={pesoDado(t)}>
                 <th scope="row" role="rowheader" class="svc">
-                  {t.servicio.personalizada && (
+                  {t.destacado && (
                     <span class="sello-destacado mono">
                       <svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7L12 17.5 5.8 21.2l1.6-7L2 9.5l7.1-.6z" /></svg>
                       Destacado
@@ -137,7 +137,7 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
   .flip i.todo { color: var(--yellow); }
   .pill { display: inline-block; border: 1px solid var(--ink-3); border-radius: 4px; padding: 3px 8px; margin: 2px 4px 2px 0; font-size: 12px; color: var(--muted-dark); }
   .acciones { display: flex; flex-direction: column; gap: 8px; }
-  /* Taxis con página personalizada: etiqueta "Destacado" (en escritorio arriba del nombre; en celular, sobre el borde). */
+  /* Taxis destacados en el panel: etiqueta "Destacado" (en escritorio arriba del nombre; en celular, sobre el borde). */
   .sello-destacado {
     display: flex; align-items: center; gap: 6px; width: max-content; margin-bottom: 10px;
     background: var(--yellow); color: var(--ink); font-size: 10px; font-weight: 700; line-height: 1; letter-spacing: 0.18em;

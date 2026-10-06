@@ -32,13 +32,13 @@ export interface Servicio {
   resenaGoogle?: string;
   /** Tarjeta de muestra del diseño (no es un taxi real): no tiene página y no se informa a buscadores ni IAs. */
   ejemplo?: boolean;
-  /** Tiene página propia publicada: se enlaza desde su tarjeta, lleva "Destacado" y sale más en el dado. */
+  /** Tiene página propia publicada: su tarjeta enlaza a ella. */
   personalizada?: boolean;
 }
 
-/** Cuántas veces más chances tiene en el dado un servicio con página propia frente a uno sin ella. */
-export const PESO_DADO_PERSONALIZADA = 3;
-export const pesoDado = (s: Servicio) => (s.personalizada ? PESO_DADO_PERSONALIZADA : 1);
+/** Cuántas veces más chances tiene en el dado un taxi destacado frente a uno común. */
+export const PESO_DADO_DESTACADO = 3;
+export const pesoDado = (t: Taxi) => (t.destacado ? PESO_DADO_DESTACADO : 1);
 
 export interface Taxi {
   id: string;
@@ -46,6 +46,8 @@ export interface Taxi {
   /** Nombre y nota que muestra la tarjeta. */
   nombre: string;
   nota: string;
+  /** Marcado como destacado en el panel: lleva la etiqueta "Destacado" y sale más en el dado. */
+  destacado: boolean;
   /** Placa municipal. PENDIENTE: "JTX ____" se muestra como a definir. */
   placa: string;
   /** Una línea por renglón. */
@@ -70,6 +72,7 @@ interface TarjetaJson {
   aBordo?: string[];
   whatsapp?: string;
   ejemplo?: boolean;
+  destacado?: boolean;
   pagina?: {
     activa?: boolean;
     direccion?: string;
@@ -128,6 +131,7 @@ const TODAS: readonly Taxi[] = tarjetas.map(({ id, t }) => {
     servicio,
     nombre: t.nombre,
     nota: t.nota ?? '',
+    destacado: Boolean(t.destacado) && !t.ejemplo,
     placa: t.placa || 'JTX ____',
     vehiculo: lineas(t.vehiculo),
     plazas: t.plazas ?? '',

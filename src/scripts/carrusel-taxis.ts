@@ -114,7 +114,7 @@ export function carrusel() {
     filas.forEach((f) => f.classList.remove('ganadora'));
     if (res) res.textContent = '';
     // Solo frena en taxis reales (nunca en una tarjeta de ejemplo) y, si hay más de uno, nunca en el que ya estás viendo.
-    // Cada taxi tiene un peso (data-peso): los que tienen página personalizada salen con más probabilidad.
+    // Cada taxi tiene un peso (data-peso): los destacados salen con más probabilidad.
     const desde = actual % n;
     const reales = originales.map((f, i) => (f.hasAttribute('data-ejemplo') ? -1 : i)).filter((i) => i >= 0);
     const opciones = reales.length > 1 ? reales.filter((i) => i !== desde) : reales;

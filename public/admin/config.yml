@@ -59,14 +59,15 @@ collections:
         field: { name: etiqueta, label: Etiqueta, widget: string }
         hint: 'Escribí una etiqueta y agregá otra. Ej. USB-C, Mascotas, Aire acondicionado.'
       - { name: whatsapp, label: WhatsApp, widget: string, required: false, pattern: ['^(\d{8,15})?$', 'Con código de país y solo números, ej. 59899123456'], hint: 'Con código de país, sin + ni espacios. Ej. 59899123456' }
+      - { name: destacado, label: Destacado, widget: boolean, default: false, hint: 'Encendido = lleva la etiqueta "Destacado" y sale con más probabilidad en el dado ("Cualquier taxi").' }
       - { name: ejemplo, label: Tarjeta de muestra, widget: boolean, default: false, hint: 'Encendido = es una tarjeta de ejemplo del diseño (no es un taxi real, no tiene página y el dado no se detiene en ella).' }
       - name: pagina
         label: Página propia
         widget: object
         collapsed: false
-        hint: 'Activala para crear la página del taxi con la plantilla: portada, presentación, botones de WhatsApp y QR de reseñas.'
+        hint: 'Solo si este taxi necesita página. Se arma con la plantilla: la tarjeta del auto y los botones salen de los datos de arriba; acá cargás portada, presentación y enlace de reseñas.'
         fields:
-          - { name: activa, label: Tiene página propia, widget: boolean, default: false }
+          - { name: activa, label: Página publicada, widget: boolean, default: false, hint: 'Encendido = la página está online. Apagado = no existe para los visitantes, pero lo que cargaste abajo queda guardado.' }
           - { name: direccion, label: Dirección de la página, widget: string, required: false, pattern: ['^([a-z0-9]+(-[a-z0-9]+)*)?$', 'Solo minúsculas, números y guiones, ej. taxi-lechuzas'], hint: 'Queda en taxifraybentos.com.uy/taxis/<dirección>/. Solo minúsculas y guiones, ej. taxi-lechuzas. No la cambies una vez publicada: Google ya la conoce.' }
           - { name: empresa, label: Nombre comercial para Google, widget: string, required: false, hint: 'Si en Google figura con otro nombre (ej. Lechuzas Viajes Uruguay). Vacío = el nombre del taxi.' }
           - { name: descripcion, label: Presentación, widget: text, required: false, hint: 'Texto bajo el título de la página; también es la descripción que ve Google. Vacío = se arma uno solo.' }
