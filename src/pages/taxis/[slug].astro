@@ -5,6 +5,7 @@ import Placa from '@/components/ui/Placa.astro';
 import PortadaTaxi from '@/components/ui/PortadaTaxi.astro';
 import BotonesPedir from '@/components/ui/BotonesPedir.astro';
 import ResenaGoogle from '@/components/ui/ResenaGoogle.astro';
+import RedesTaxi from '@/components/ui/RedesTaxi.astro';
 import { SITE, INICIO, enInicio } from '@/config/site';
 import { TARIFA } from '@/data/tarifa';
 import {
@@ -73,6 +74,7 @@ const schema = {
       areaServed: { '@id': `${SITE.url}/#fray-bentos` },
       isRelatedTo: { '@id': `${SITE.url}/#servicio` },
       ...(numero ? { telephone: `+${numero}` } : {}),
+      ...(s.redes.length ? { sameAs: s.redes.map((r) => r.enlace) } : {}),
     },
   ],
 };
@@ -90,6 +92,7 @@ const schema = {
       <h1>{nombre}</h1>
       <p class="nota mono">{s.nota.replace(/\n/g, ' · ')}</p>
       <p class="desc">{descripcion}</p>
+      <RedesTaxi redes={s.redes} nombre={nombre} />
 
       {
         vehiculos.length === 0 && (

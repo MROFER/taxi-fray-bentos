@@ -1,7 +1,9 @@
 // Corta el build si una tarjeta de taxi (o su página) cargada desde el panel (/admin) tiene un dato mal cargado,
 // así no se publica un sitio roto. Los archivos están en src/content/tarjetas.
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+
+const NOMBRE_RED = { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok', youtube: 'YouTube', web: 'un sitio web' };
 
 const leer = (dir) =>
   existsSync(dir)
@@ -36,7 +38,17 @@ for (const { id, datos: t, error } of tarjetas) {
     errores.push(`${donde}: la dirección "${p.direccion}" ya la usa "${direcciones.get(p.direccion)}".`);
   else direcciones.set(p.direccion, t.nombre);
   if (p.resenaGoogle && !/^https:\/\/\S+$/.test(p.resenaGoogle)) errores.push(`${donde}: el enlace de reseñas tiene que empezar con https://`);
-  if (p.portada && !existsSync(join('.', p.portada))) errores.push(`${donde}: no se encuentra la foto de portada ${p.portada}.`);
+  if (p.portada && !/\.(jpe?g|png|webp)$/i.test(p.portada)) errores.push(`${donde}: la foto de portada tiene que ser JPG, PNG o WebP (las HEIC del iPhone no sirven: compartila como JPG).`);
+  else if (p.portada && !existsSync(join('.', p.portada))) errores.push(`${donde}: no se encuentra la foto de portada ${p.portada}.`);
+  else if (p.portada && statSync(join('.', p.portada)).size > 15 * 1024 * 1024) errores.push(`${donde}: la foto de portada pesa más de 15 MB; subí una más liviana.`);
+  for (const r of p.redes ?? []) {
+    const dominio = { instagram: /(^|\.)instagram\.com$/, facebook: /(^|\.)(facebook\.com|fb\.com)$/, tiktok: /(^|\.)tiktok\.com$/, youtube: /(^|\.)(youtube\.com|youtu\.be)$/, web: /./ }[r.red];
+    let host = '';
+    try { host = new URL(r.enlace).hostname; } catch {}
+    if (!dominio) errores.push(`${donde}: la red "${r.red}" no está en la lista.`);
+    else if (!/^https:\/\/\S+$/.test(r.enlace ?? '') || !host) errores.push(`${donde}: el enlace de ${NOMBRE_RED[r.red] ?? r.red} tiene que ser una dirección completa que empiece con https://`);
+    else if (!dominio.test(host)) errores.push(`${donde}: el enlace "${r.enlace}" no es de ${NOMBRE_RED[r.red]}.`);
+  }
   if (p.portadaY != null && !(p.portadaY >= 0 && p.portadaY <= 100)) errores.push(`${donde}: el encuadre de la portada va de 0 a 100.`);
 }
 

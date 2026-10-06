@@ -30,10 +30,36 @@ export interface Servicio {
   whatsapp: string;
   /** Enlace "Escribir una reseña" de su Perfil de Empresa de Google (activa el QR de reseñas). */
   resenaGoogle?: string;
+  /** Redes sociales del servicio (Instagram, Facebook…), que se muestran en su página con su ícono. */
+  redes: Red[];
   /** Tarjeta de muestra del diseño (no es un taxi real): no tiene página y no se informa a buscadores ni IAs. */
   ejemplo?: boolean;
   /** Tiene página propia publicada: su tarjeta enlaza a ella. */
   personalizada?: boolean;
+}
+
+/** Redes que se pueden cargar desde el panel. */
+export const REDES = ['instagram', 'facebook', 'tiktok', 'youtube', 'web'] as const;
+export interface Red {
+  red: (typeof REDES)[number];
+  enlace: string;
+}
+
+/** Cómo se muestra el enlace: "@usuario" para Instagram y TikTok, el dominio para un sitio web, y si no, el nombre de la red. */
+export function usuarioDe(r: Red): string {
+  let u: URL;
+  try {
+    u = new URL(r.enlace);
+  } catch {
+    return r.enlace;
+  }
+  const primero = u.pathname.split('/').filter(Boolean)[0] ?? '';
+  if (r.red === 'web') return u.hostname.replace(/^www\./, '');
+  if (r.red === 'instagram' && primero) return `@${primero}`;
+  if (r.red === 'tiktok' && primero) return primero.startsWith('@') ? primero : `@${primero}`;
+  if (r.red === 'youtube' && primero.startsWith('@')) return primero;
+  if (r.red === 'facebook' && primero && primero !== 'profile.php') return primero;
+  return { instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok', youtube: 'YouTube', web: 'Sitio web' }[r.red];
 }
 
 /** Cuántas veces más chances tiene en el dado un taxi destacado frente a uno común. */
@@ -81,6 +107,7 @@ interface TarjetaJson {
     portada?: string;
     portadaY?: number;
     resenaGoogle?: string;
+    redes?: { red?: string; enlace?: string }[];
   };
 }
 
@@ -108,6 +135,7 @@ for (const { t } of tarjetas) {
     portadaY: typeof p.portadaY === 'number' ? p.portadaY : undefined,
     whatsapp: t.whatsapp ?? '',
     resenaGoogle: p.resenaGoogle || undefined,
+    redes: (p.redes ?? []).filter((r): r is Red => REDES.includes(r.red as Red['red']) && Boolean(r.enlace)),
     personalizada: true,
   });
 }
@@ -124,6 +152,7 @@ const TODAS: readonly Taxi[] = tarjetas.map(({ id, t }) => {
     nota: t.nota ?? '',
     descripcion: '',
     whatsapp: t.whatsapp ?? '',
+    redes: [],
     ejemplo: Boolean(t.ejemplo),
   };
   return {

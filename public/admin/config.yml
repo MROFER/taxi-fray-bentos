@@ -16,6 +16,14 @@ site_url: https://www.taxifraybentos.com.uy
 logo_url: /icon-192.png
 media_folder: src/assets/taxis
 public_folder: /src/assets/taxis
+# Las fotos se convierten a WebP al subirlas (más livianas) y se achican a 2400 px como máximo.
+media_libraries:
+  default:
+    config:
+      max_file_size: 15000000
+      slugify_filename: true
+      transformations:
+        raster_image: { format: webp, quality: 85, width: 2400, height: 2400 }
 
 slug:
   encoding: ascii
@@ -59,7 +67,8 @@ collections:
         hint: 'Una etiqueta por casilla; con "Agregar etiqueta" sumás otra y con la cruz la sacás. Ej. USB-C, Mascotas.'
       - { name: whatsapp, label: WhatsApp, widget: string, required: false, pattern: ['^(\d{8,15})?$', 'Con código de país y solo números, ej. 59899123456'], hint: 'Con código de país, sin + ni espacios. Ej. 59899123456' }
       - { name: destacado, label: Destacado, widget: boolean, default: false, hint: 'Encendido = lleva la etiqueta "Destacado" y sale con más probabilidad en el dado ("Cualquier taxi").' }
-      - { name: ejemplo, label: Tarjeta de muestra, widget: boolean, default: false, hint: 'Encendido = es una tarjeta de ejemplo del diseño (no es un taxi real, no tiene página y el dado no se detiene en ella).' }
+      # Marca las 2 tarjetas de ejemplo del diseño ("[Nombre del servicio]"); no se muestra en el formulario.
+      - { name: ejemplo, label: Tarjeta de muestra, widget: hidden, default: false }
       - name: pagina
         label: Página propia
         widget: object
@@ -70,6 +79,17 @@ collections:
           - { name: direccion, label: Dirección de la página, widget: string, required: false, pattern: ['^([a-z0-9]+(-[a-z0-9]+)*)?$', 'Solo minúsculas, números y guiones, ej. taxi-lechuzas'], hint: 'Queda en taxifraybentos.com.uy/taxis/<dirección>/. Solo minúsculas y guiones, ej. taxi-lechuzas. No la cambies una vez publicada: Google ya la conoce.' }
           - { name: empresa, label: Nombre comercial para Google, widget: string, required: false, hint: 'Si en Google figura con otro nombre (ej. Lechuzas Viajes Uruguay). Vacío = el nombre del taxi.' }
           - { name: descripcion, label: Presentación, widget: text, required: false, hint: 'Texto bajo el título de la página; también es la descripción que ve Google. Vacío = se arma uno solo.' }
-          - { name: portada, label: Foto de portada, widget: image, required: false, choose_url: false, hint: 'Arrastrá la foto. Mejor horizontal y de al menos 1600 × 900 px; el sitio la recorta y la optimiza.' }
+          - { name: portada, label: Foto de portada, widget: image, required: false, choose_url: false, accept: 'image/jpeg,image/png,image/webp', hint: 'Arrastrá la foto (JPG, PNG o WebP). Mejor horizontal y de al menos 1600 × 900 px. El panel la pasa a WebP al subirla y el sitio la recorta y la optimiza.' }
           - { name: portadaY, label: Encuadre de la portada, widget: number, value_type: int, default: 50, min: 0, max: 100, required: false, hint: '0 = se ve la parte de arriba de la foto, 100 = la de abajo.' }
           - { name: resenaGoogle, label: Enlace de reseñas de Google, widget: string, required: false, hint: 'El enlace "Escribir una reseña" de su Perfil de Empresa (ej. https://g.page/r/…/review). Con él aparece el QR de reseñas; vacío = "QR en camino".' }
+          - name: redes
+            label: Redes sociales
+            label_singular: red
+            widget: list
+            required: false
+            collapsed: false
+            summary: '{{red}} · {{enlace}}'
+            hint: 'Se muestran en la página con su ícono y el usuario (ej. @taxilechuzas). Pegá el enlace completo del perfil.'
+            fields:
+              - { name: red, label: Red, widget: select, default: instagram, options: [{ label: Instagram, value: instagram }, { label: Facebook, value: facebook }, { label: TikTok, value: tiktok }, { label: YouTube, value: youtube }, { label: Sitio web, value: web }] }
+              - { name: enlace, label: Enlace del perfil, widget: string, pattern: ['^https://\S+$', 'Pegá el enlace completo, ej. https://www.instagram.com/usuario/'], hint: 'Ej. https://www.instagram.com/usuario/' }
