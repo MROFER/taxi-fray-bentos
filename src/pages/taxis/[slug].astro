@@ -79,7 +79,7 @@ const schema = {
 ---
 
 <BaseLayout title={titulo} description={descripcion} path={path} schema={schema}>
-  <PortadaTaxi slug={s.slug} alt={`${nombre} en Fray Bentos`} y={s.portadaY}>
+  <PortadaTaxi slug={s.slug} portada={s.portada} alt={`${nombre} en Fray Bentos`} y={s.portadaY}>
     <nav class="migas mono" aria-label="Estás en">
       <a href={INICIO}>Inicio</a><span aria-hidden="true">/</span><a href={enInicio('taxis')}>Taxis</a><span aria-hidden="true">/</span><span aria-current="page">{nombre}</span>
     </nav>
@@ -91,7 +91,13 @@ const schema = {
       <p class="nota mono">{s.nota.replace(/\n/g, ' · ')}</p>
       <p class="desc">{descripcion}</p>
 
-      <h2 class="mono sub">{vehiculos.length === 1 ? 'El auto' : `Los autos (${vehiculos.length})`}</h2>
+      {
+        vehiculos.length === 0 && (
+          <div class="acciones sola"><BotonesPedir taxi={{ id: s.slug, servicio: s, nombre, nota: s.nota, placa: '', vehiculo: [], plazas: '', valijas: '', aBordo: [] }} /></div>
+        )
+      }
+      {vehiculos.length > 0 && <h2 class="mono sub">{vehiculos.length === 1 ? 'El auto' : `Los autos (${vehiculos.length})`}</h2>}
+      {vehiculos.length > 0 && (
       <ul class="autos">
         {
           vehiculos.map((t) => (
@@ -110,6 +116,7 @@ const schema = {
           ))
         }
       </ul>
+      )}
     </div>
   </section>
 
@@ -164,6 +171,7 @@ const schema = {
   dt { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-dark); }
   dd { margin: 0; text-align: right; }
   .acciones { display: flex; gap: 10px; }
+  .acciones.sola { max-width: 420px; }
   .acciones :global(.pedir) { flex: 1; min-height: 48px; font-size: 15px; }
 
   .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 48px); }

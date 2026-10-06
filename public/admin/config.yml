@@ -1,0 +1,75 @@
+# Panel de administración de Taxi Fray Bentos (Sveltia CMS).
+# Cada cambio guardado se escribe como commit en GitHub (rama main) y el workflow "Publicar" actualiza el sitio solo.
+# Antes de publicar, scripts/validar-taxis.mjs revisa los datos: si algo está mal cargado, el sitio no se rompe, queda como estaba.
+backend:
+  name: github
+  repo: MROFER/taxi-fray-bentos
+  branch: main
+  commit_messages:
+    create: 'Panel: nueva tarjeta "{{slug}}"'
+    update: 'Panel: cambios en "{{slug}}"'
+    delete: 'Panel: tarjeta "{{slug}}" eliminada'
+    uploadMedia: 'Panel: foto "{{path}}"'
+    deleteMedia: 'Panel: foto "{{path}}" eliminada'
+
+site_url: https://www.taxifraybentos.com.uy
+logo_url: /icon-192.png
+media_folder: src/assets/taxis
+public_folder: /src/assets/taxis
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: '-'
+
+collections:
+  - name: tarjetas
+    label: Taxis
+    label_singular: Taxi
+    description: >-
+      Cada taxi es una tarjeta de la sección Taxis del inicio. Desde acá lo publicás u ocultás, y si querés
+      le creás su página propia activando "Página propia".
+    folder: src/content/tarjetas
+    extension: json
+    format: json
+    create: true
+    delete: true
+    identifier_field: nombre
+    slug: '{{nombre}}-{{placa}}'
+    summary: '{{nombre}} · {{placa}}'
+    sortable_fields: [orden, nombre]
+    fields:
+      - { name: publicada, label: Publicada en el inicio, widget: boolean, default: true, hint: 'Apagado = la tarjeta no se muestra en la sección Taxis (su página, si tiene, sigue online).' }
+      - { name: orden, label: Orden en el inicio, widget: number, value_type: int, default: 10, min: 1, hint: '1 = primera tarjeta.' }
+      - { name: nombre, label: Nombre del taxi, widget: string, hint: 'Ej. Taxi Lechuzas. Es el título de la tarjeta y el saludo del mensaje de WhatsApp.' }
+      - { name: nota, label: Detalle bajo el nombre, widget: text, required: false, hint: 'Una línea por renglón. Ej. Todos los destinos · 24/7' }
+      - { name: placa, label: Placa municipal, widget: string, default: 'JTX ', hint: 'Ej. JTX 0212' }
+      - name: vehiculo
+        label: Vehículo
+        label_singular: renglón
+        widget: list
+        field: { name: linea, label: Renglón, widget: string }
+        hint: 'Un renglón por línea de la tarjeta. Ej. "Nissan Versa" y "Drive".'
+      - { name: plazas, label: Plazas, widget: string, required: false, hint: 'Ej. 4. Vacío = "a confirmar".' }
+      - { name: valijas, label: Valijas, widget: string, required: false, hint: 'Ej. 3 grandes' }
+      - name: aBordo
+        label: A bordo (etiquetas)
+        label_singular: etiqueta
+        widget: list
+        field: { name: etiqueta, label: Etiqueta, widget: string }
+        hint: 'Escribí una etiqueta y agregá otra. Ej. USB-C, Mascotas, Aire acondicionado.'
+      - { name: whatsapp, label: WhatsApp, widget: string, required: false, pattern: ['^(\d{8,15})?$', 'Con código de país y solo números, ej. 59899123456'], hint: 'Con código de país, sin + ni espacios. Ej. 59899123456' }
+      - { name: ejemplo, label: Tarjeta de muestra, widget: boolean, default: false, hint: 'Encendido = es una tarjeta de ejemplo del diseño (no es un taxi real, no tiene página y el dado no se detiene en ella).' }
+      - name: pagina
+        label: Página propia
+        widget: object
+        collapsed: false
+        hint: 'Activala para crear la página del taxi con la plantilla: portada, presentación, botones de WhatsApp y QR de reseñas.'
+        fields:
+          - { name: activa, label: Tiene página propia, widget: boolean, default: false }
+          - { name: direccion, label: Dirección de la página, widget: string, required: false, pattern: ['^([a-z0-9]+(-[a-z0-9]+)*)?$', 'Solo minúsculas, números y guiones, ej. taxi-lechuzas'], hint: 'Queda en taxifraybentos.com.uy/taxis/<dirección>/. Solo minúsculas y guiones, ej. taxi-lechuzas. No la cambies una vez publicada: Google ya la conoce.' }
+          - { name: empresa, label: Nombre comercial para Google, widget: string, required: false, hint: 'Si en Google figura con otro nombre (ej. Lechuzas Viajes Uruguay). Vacío = el nombre del taxi.' }
+          - { name: descripcion, label: Presentación, widget: text, required: false, hint: 'Texto bajo el título de la página; también es la descripción que ve Google. Vacío = se arma uno solo.' }
+          - { name: portada, label: Foto de portada, widget: image, required: false, choose_url: false, hint: 'Arrastrá la foto. Mejor horizontal y de al menos 1600 × 900 px; el sitio la recorta y la optimiza.' }
+          - { name: portadaY, label: Encuadre de la portada, widget: number, value_type: int, default: 50, min: 0, max: 100, required: false, hint: '0 = se ve la parte de arriba de la foto, 100 = la de abajo.' }
+          - { name: resenaGoogle, label: Enlace de reseñas de Google, widget: string, required: false, hint: 'El enlace "Escribir una reseña" de su Perfil de Empresa (ej. https://g.page/r/…/review). Con él aparece el QR de reseñas; vacío = "QR en camino".' }

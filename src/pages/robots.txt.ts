@@ -24,8 +24,8 @@ const bots = [
 export const GET: APIRoute = () =>
   new Response(
     [
-      ...bots.map((b) => `User-agent: ${b}\nAllow: /\n`),
-      'User-agent: *\nAllow: /\n',
+      ...bots.map((b) => `User-agent: ${b}\nAllow: /\nDisallow: /admin/\n`),
+      'User-agent: *\nAllow: /\nDisallow: /admin/\n',
       `Sitemap: ${`${SITE.url}/sitemap-index.xml`}`,
       '',
     ].join('\n'),

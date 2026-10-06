@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && node scripts/validar-tarifas.mjs && astro build",
+    "build": "astro check && node scripts/validar-tarifas.mjs && node scripts/validar-taxis.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "test": "node --test \"calculadora/tests/*.test.mjs\" \"servidor/tests/*.test.mjs\"",

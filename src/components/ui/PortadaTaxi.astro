@@ -1,21 +1,25 @@
 ---
 /**
  * Portada de la página de un taxi, a todo el ancho y pegada a la barra de navegación, con las migas encima.
- * La foto sale de src/assets/taxis/<slug>.(jpg|jpeg|png|webp). Sin foto, en el dominio no se muestra la portada
+ * La foto es la que se cargó en el panel (campo portada, dentro de src/assets/taxis) o, si no hay,
+ * src/assets/taxis/<slug>.(jpg|jpeg|png|webp). Sin foto, en el dominio no se muestra la portada
  * (las migas quedan solas arriba); en la copia de prueba se ve el lugar marcado como pendiente.
  */
 import { Image } from 'astro:assets';
 
 interface Props {
   slug: string;
+  /** Ruta de la foto cargada en el panel (ej. "/src/assets/taxis/mi-taxi.jpg"). */
+  portada?: string;
   alt: string;
   /** Encuadre vertical de la foto, de 0 (arriba) a 100 (abajo). */
   y?: number;
 }
-const { slug, alt, y = 50 } = Astro.props;
+const { slug, portada, alt, y = 50 } = Astro.props;
 
-const fotos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/taxis/*.{jpg,jpeg,png,webp}', { eager: true });
-const foto = Object.entries(fotos).find(([ruta]) => ruta.replace(/^.*\/|\.[a-z]+$/g, '') === slug)?.[1].default;
+const fotos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/taxis/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', { eager: true });
+const elegida = portada ? fotos[portada.startsWith('/') ? portada : `/${portada}`] : undefined;
+const foto = (elegida ?? Object.entries(fotos).find(([ruta]) => ruta.replace(/^.*\/|\.[a-zA-Z]+$/g, '') === slug)?.[1])?.default;
 const mostrarPendientes = import.meta.env.DEV || import.meta.env.PUBLIC_MOSTRAR_PENDIENTES === 'si';
 const conPortada = Boolean(foto) || mostrarPendientes;
 ---

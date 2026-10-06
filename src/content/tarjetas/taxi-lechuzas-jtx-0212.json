@@ -1,0 +1,22 @@
+{
+  "publicada": true,
+  "orden": 1,
+  "nombre": "Taxi Lechuzas",
+  "nota": "Todos los destinos · 24/7\nInmediatos · Reservas",
+  "placa": "JTX 0212",
+  "vehiculo": ["Nissan Versa", "Drive"],
+  "plazas": "4",
+  "valijas": "3 grandes",
+  "aBordo": ["USB-C", "Mascotas"],
+  "whatsapp": "",
+  "ejemplo": false,
+  "pagina": {
+    "activa": true,
+    "direccion": "taxi-lechuzas",
+    "empresa": "Lechuzas Viajes Uruguay",
+    "descripcion": "Taxi Lechuzas es un servicio de taxi habilitado y destacado en Fray Bentos. Pedilo por WhatsApp para viajar ahora o reservá tu traslado: en la ciudad, a Las Cañas, al Puente Internacional San Martín o a cualquier destino nacional e internacional.",
+    "portada": "/src/assets/taxis/taxi-lechuzas.png",
+    "portadaY": 48,
+    "resenaGoogle": "https://g.page/r/CQIjlOwaTOjCEAE/review"
+  }
+}

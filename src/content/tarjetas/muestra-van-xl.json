@@ -1,0 +1,26 @@
+{
+  "publicada": true,
+  "orden": 3,
+  "nombre": "[Nombre del servicio]",
+  "nota": "[Destinos · Horario]",
+  "placa": "JTX ____",
+  "vehiculo": [
+    "[Marca y modelo]"
+  ],
+  "plazas": "",
+  "valijas": "[Cantidad]",
+  "aBordo": [
+    "[Extras]"
+  ],
+  "whatsapp": "",
+  "ejemplo": true,
+  "pagina": {
+    "activa": false,
+    "direccion": "",
+    "empresa": "",
+    "descripcion": "",
+    "portada": "",
+    "portadaY": 50,
+    "resenaGoogle": ""
+  }
+}

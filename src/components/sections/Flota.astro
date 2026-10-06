@@ -10,7 +10,7 @@ const reales = TAXIS_REALES;
 const pendientes = [
   reales.some((t) => t.placa.includes('_')) && 'placas JTX',
   reales.some((t) => !numeroDe(t)) && 'WhatsApp de cada taxi',
-  ...reales.filter((t) => !t.plazas).map((t) => `plazas de ${t.servicio.nombre}`),
+  ...reales.filter((t) => !t.plazas).map((t) => `plazas de ${t.nombre}`),
   'fotos reales',
 ].filter(Boolean);
 
@@ -52,15 +52,15 @@ const columnas = ['Servicio', 'Placa municipal', 'Vehículo', 'Plazas', 'Valijas
                       Destacado
                     </span>
                   )}
-                  {t.servicio.ejemplo ? (
-                    <span class="nombre">{t.servicio.nombre}</span>
+                  {!t.servicio.personalizada ? (
+                    <span class="nombre">{t.nombre}</span>
                   ) : (
                     <a class="nombre" href={paginaDe(t.servicio)}>
-                      {t.servicio.nombre}
+                      {t.nombre}
                       <span class="ver mono" aria-hidden="true">Ver página →</span>
                     </a>
                   )}
-                  <small>{t.servicio.nota}</small>
+                  <small>{t.nota}</small>
                 </th>
                 <td role="cell" data-label="Placa">
                   <Placa numero={t.placa} />
