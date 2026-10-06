@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Placa from '@/components/ui/Placa.astro';
 import PortadaTaxi from '@/components/ui/PortadaTaxi.astro';
 import BotonesPedir from '@/components/ui/BotonesPedir.astro';
+import ResenaGoogle from '@/components/ui/ResenaGoogle.astro';
 import { SITE, INICIO, enInicio } from '@/config/site';
 import { TARIFA } from '@/data/tarifa';
 import {
@@ -135,7 +136,10 @@ const schema = {
         <p class="fuente mono">{TARIFA.fuente}</p>
       </div>
     </div>
-    <div class="wrap volver">
+  </section>
+  <ResenaGoogle servicio={s} nombre={nombre} />
+  <section class="sec-volver">
+    <div class="wrap">
       <a class="btn btn-line" href={enInicio('taxis')}>← Ver todos los taxis de Fray Bentos</a>
     </div>
   </section>
@@ -168,5 +172,5 @@ const schema = {
   .bloque h2 { font-size: clamp(32px, 4vw, 44px); }
   .bloque ol, .bloque ul { padding-left: 1.2em; display: flex; flex-direction: column; gap: 8px; margin: 0; }
   .fuente { font-size: 10px; color: var(--text-2); letter-spacing: 0.08em; text-transform: none; }
-  .volver { margin-top: clamp(40px, 6vw, 72px); }
+  .sec-volver { padding-bottom: clamp(56px, 8vw, 96px); }
 </style>

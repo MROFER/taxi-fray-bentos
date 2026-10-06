@@ -22,6 +22,11 @@ export interface Servicio {
   portadaY?: number;
   /** WhatsApp del servicio, con código de país, sin + ni espacios (ej. "59899123456"). Vacío = a definir. */
   whatsapp: string;
+  /**
+   * Enlace "Escribir una reseña" de su Perfil de Empresa de Google (en el perfil: "Pedir reseñas" → copiar enlace,
+   * ej. "https://g.page/r/XXXX/review"). Con él, su página muestra el QR de reseñas. Vacío = sin recuadro de reseñas.
+   */
+  resenaGoogle?: string;
   /** Tarjeta de muestra del diseño (no es un taxi real): no tiene página y no se informa a buscadores ni IAs. */
   ejemplo?: boolean;
   /** Tiene página personalizada (portada, textos propios): en el dado de la sección Taxis sale con más probabilidad. */
