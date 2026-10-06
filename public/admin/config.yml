@@ -33,10 +33,11 @@ collections:
     extension: json
     format: json
     create: true
+    editor: { preview: false }
     delete: true
     identifier_field: nombre
     slug: '{{nombre}}-{{placa}}'
-    summary: '{{nombre}} · {{placa}}'
+    summary: "{{nombre}} · {{placa}}   ·   {{publicada | ternary('🟢 Publicada en el inicio', '⚪ Oculta')}}   ·   {{pagina.activa | ternary('📄 Con página propia', 'Sin página')}}{{destacado | ternary('   ·   ⭐ Destacado', '')}}"
     sortable_fields: [orden, nombre]
     fields:
       - { name: publicada, label: Publicada en el inicio, widget: boolean, default: true, hint: 'Apagado = la tarjeta no se muestra en la sección Taxis (su página, si tiene, sigue online).' }
@@ -48,7 +49,6 @@ collections:
         label: Vehículo
         label_singular: renglón
         widget: list
-        field: { name: linea, label: Renglón, widget: string }
         hint: 'Un renglón por línea de la tarjeta. Ej. "Nissan Versa" y "Drive".'
       - { name: plazas, label: Plazas, widget: string, required: false, hint: 'Ej. 4. Vacío = "a confirmar".' }
       - { name: valijas, label: Valijas, widget: string, required: false, hint: 'Ej. 3 grandes' }
@@ -56,8 +56,7 @@ collections:
         label: A bordo (etiquetas)
         label_singular: etiqueta
         widget: list
-        field: { name: etiqueta, label: Etiqueta, widget: string }
-        hint: 'Escribí una etiqueta y agregá otra. Ej. USB-C, Mascotas, Aire acondicionado.'
+        hint: 'Una etiqueta por casilla; con "Agregar etiqueta" sumás otra y con la cruz la sacás. Ej. USB-C, Mascotas.'
       - { name: whatsapp, label: WhatsApp, widget: string, required: false, pattern: ['^(\d{8,15})?$', 'Con código de país y solo números, ej. 59899123456'], hint: 'Con código de país, sin + ni espacios. Ej. 59899123456' }
       - { name: destacado, label: Destacado, widget: boolean, default: false, hint: 'Encendido = lleva la etiqueta "Destacado" y sale con más probabilidad en el dado ("Cualquier taxi").' }
       - { name: ejemplo, label: Tarjeta de muestra, widget: boolean, default: false, hint: 'Encendido = es una tarjeta de ejemplo del diseño (no es un taxi real, no tiene página y el dado no se detiene en ella).' }
