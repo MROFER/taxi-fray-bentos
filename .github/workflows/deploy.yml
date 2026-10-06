@@ -2,11 +2,13 @@
 # - Rama hostinger: el sitio para www.taxifraybentos.com.uy con el formulario conectado (api/alta.php).
 #   Hostinger (hPanel → Avanzado → GIT) baja esa rama a public_html cada vez que cambia.
 # - Rama gh-pages: copia en https://mrofer.github.io/taxi-fray-bentos/ (sin PHP: el formulario queda en demostración).
+# PRUEBA DEL PANEL: mientras exista la rama panel-admin, un push ahí publica SOLO la copia de GitHub Pages
+# (con el panel guardando en panel-admin). El dominio real no se toca. Al unir la rama a main, sacar panel-admin de acá.
 name: Publicar
 
 on:
   push:
-    branches: [main]
+    branches: [main, panel-admin]
   workflow_dispatch:
 
 permissions:
@@ -44,6 +46,7 @@ jobs:
           git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
 
   hostinger:
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://www.taxifraybentos.com.uy

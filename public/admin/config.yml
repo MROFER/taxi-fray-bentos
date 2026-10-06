@@ -4,7 +4,8 @@
 backend:
   name: github
   repo: MROFER/taxi-fray-bentos
-  branch: main
+  # PRUEBA: guarda en la rama panel-admin (copia de prueba en GitHub Pages). Al publicar el panel, volver a main.
+  branch: panel-admin
   commit_messages:
     create: 'Panel: nueva tarjeta "{{slug}}"'
     update: 'Panel: cambios en "{{slug}}"'
@@ -13,7 +14,7 @@ backend:
     deleteMedia: 'Panel: foto "{{path}}" eliminada'
 
 site_url: https://www.taxifraybentos.com.uy
-logo_url: /icon-192.png
+logo_url: ../icon-192.png
 media_folder: src/assets/taxis
 public_folder: /src/assets/taxis
 # Las fotos se convierten a WebP al subirlas (más livianas) y se achican a 2400 px como máximo.
