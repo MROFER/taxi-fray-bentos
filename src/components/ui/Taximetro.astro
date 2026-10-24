@@ -14,6 +14,8 @@ const campos = [
 ] as const;
 ---
 
+<!-- Envoltorio solo para Google: data-nosnippet no vale en <form>. display: contents no cambia el diseño. -->
+<div class="sin-fragmento" data-nosnippet>
 <form class="meter" id="pedir" aria-labelledby="meter-title" autocomplete="off" novalidate>
   <div class="meter-head mono">
     <span class="led" id="modo">Libre</span><h2 id="meter-title" class="meter-title">Taxímetro</h2>
@@ -83,6 +85,7 @@ const campos = [
     que indica el reloj taxímetro a bordo de la unidad. Las tarifas las fija la Intendencia de Río Negro.
   </p>
 </form>
+</div>
 
 <dialog class="mapa" id="mapa" aria-labelledby="mapaTit">
   <div class="mapa-box">
@@ -122,6 +125,7 @@ const campos = [
 </script>
 
 <style>
+  .sin-fragmento { display: contents; }
   .meter {
     background: var(--ink); color: var(--paper); border-radius: 22px;
     padding: clamp(18px, 3vw, 30px); box-shadow: 12px 12px 0 var(--yellow);

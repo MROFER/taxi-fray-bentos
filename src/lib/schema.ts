@@ -117,7 +117,7 @@ export function buildSchema() {
   const sitio = {
     '@type': 'WebSite',
     '@id': id('sitio'),
-    url: SITE.url,
+    url: `${SITE.url}/`,
     name: SITE.name,
     inLanguage: SITE.lang,
     publisher: { '@id': id('organizacion') },
