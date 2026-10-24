@@ -13,7 +13,7 @@ export const SITE = {
   lang: 'es-UY',
   title: 'Taxi en Fray Bentos las 24 horas · Tarifas y WhatsApp',
   description:
-    'Conectá con servicios de taxi habilitados en Fray Bentos. Pedí un taxi cuando lo necesites o reservá tu traslado en la ciudad, Las Cañas, Puente Internacional San Martín y otros destinos.',
+    'Taxi en Fray Bentos las 24 horas. Pedí o reservá por WhatsApp un taxi habilitado: en la ciudad, a Las Cañas, al Puente San Martín y a otros destinos.',
   themeColor: '#1B1A17',
 
   /** Teléfono general en formato internacional, sin espacios (ej. "+59899123456"). PENDIENTE. */

@@ -11,7 +11,7 @@ import { COBERTURA, SERVICIOS } from '@/data/cobertura';
  * Se genera desde los mismos datos que la página, así nunca queda desactualizado.
  */
 export const GET: APIRoute = () => {
-  const url = (hash: string) => `${SITE.url}/${hash}`;
+  const url = (ruta: string) => new URL(ruta, `${SITE.url}/`).href;
   const n = TARIFA.horarioNocturno;
   const md = `# ${SITE.name}
 
@@ -50,6 +50,7 @@ ${FAQ.map((f) => `### ${f.pregunta}\n\n${f.respuesta}`).join('\n\n')}
 ## Secciones
 
 ${NAV.map((s) => `- [${s.label}](${url(s.href)})`).join('\n')}
+- [Calculadora de tarifas](${url('calculadora-de-tarifas/')}): precio estimado de un viaje en taxi con la tarifa oficial.
 `;
   return new Response(md, { headers: { 'Content-Type': 'text/markdown; charset=utf-8' } });
 };
