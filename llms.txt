@@ -1,0 +1,97 @@
+# Taxi Fray Bentos
+
+> Conectá con servicios de taxi habilitados en Fray Bentos. Pedí un taxi cuando lo necesites o reservá tu traslado en la ciudad, Las Cañas, Puente Internacional San Martín y otros destinos.
+
+Directorio de taxis habilitados por la Intendencia de Río Negro en Fray Bentos, Uruguay. Servicio las 24 horas. Cada taxi se pide directo por WhatsApp, para ahora o con reserva.
+
+## Tarifa oficial vigente (pesos uruguayos)
+
+- Bajada de bandera: $ 100,56 (incluye los primeros 250 m)
+- Ficha cada 100 m en ciudad: $ 2,93
+- Hora de espera: $ 451,96
+- Kilómetro fuera de la planta urbana: $ 55,36
+- Recargo de 22:00 a 6:00, domingos y feriados: hasta 20 %
+- Valija extra: hasta $ 29,27 (la primera va sin cargo)
+- Fuente: Resolución MEF 111/026 · Resolución Departamental del 28/07/2026, pág. 46-47
+- El valor a pagar es el que marca el taxímetro a bordo.
+
+## Servicios
+
+- [Taxi Lechuzas (Lechuzas Viajes Uruguay)](https://mrofer.github.io/taxi-fray-bentos/taxis/taxi-lechuzas/): todos los destinos · 24/7 · inmediatos · reservas. Vehículo: Nissan Versa Drive, valijas: 3 grandes.
+- Viajes urbanos 24 h
+- Cruce a Gualeguaychú
+- Reservas
+- Viajes extraurbanos
+
+## Cobertura
+
+- Fray Bentos
+- Balneario Las Cañas
+- Puente San Martín
+- Otros destinos
+
+## Paradas de taxi en Fray Bentos
+
+- Plaza Constitución: 18 de Julio y Treinta y Tres
+- Banco República (BROU): Libertador J. A. Lavalleja y 25 de Mayo
+- Plaza Artigas: 18 de Julio y Las Piedras
+- Hospital Dr. Ángel M. Cuervo: Pte. Manuel Oribe y Echeverría
+- Terminal de Ómnibus: 18 de Julio y Juan Manuel Blanes
+
+## Preguntas frecuentes
+
+### ¿Cuánto cuesta un taxi de Fray Bentos a Las Cañas?
+
+Desde el centro de Fray Bentos (Plaza Constitución) hasta el Balneario Las Cañas son unos 8,8 km. De día, de lunes a sábado, el viaje sale entre $ 578 y $ 593; de noche, domingos y feriados, entre $ 692 y $ 710. Es una estimación con la tarifa oficial: el valor a pagar es el que marca el taxímetro.
+
+### ¿Cuánto cuesta un taxi de Las Cañas a Fray Bentos?
+
+Prácticamente lo mismo que a la ida, porque es el mismo recorrido de unos 8,8 km: entre $ 578 y $ 593 de día y entre $ 692 y $ 710 de noche, domingos y feriados, hasta el centro. Para tu dirección exacta, usá la calculadora de la página.
+
+### ¿Cuánto cuesta un taxi al Puente Internacional San Martín?
+
+Desde el centro de Fray Bentos hasta el puesto de frontera del Puente San Martín son unos 10,1 km. De día, de lunes a sábado, sale entre $ 645 y $ 661; de noche, domingos y feriados, entre $ 774 y $ 792. Es una estimación con la tarifa oficial: el valor a pagar es el que marca el taxímetro.
+
+### ¿Cuánto cuesta un taxi dentro de Fray Bentos?
+
+La bajada de bandera cuesta $ 100,56 e incluye los primeros 250 metros; después, cada 100 metros suma una ficha de $ 2,93. Por ejemplo, del centro a la UTEC (unos 2 km) el viaje sale entre $ 153 y $ 166 de día.
+
+### ¿La tarifa del taxi cambia de noche?
+
+Sí. De 22:00 a 06:00 se cobra la Tarifa 2, que tiene un recargo del 20 % sobre la bajada de bandera, el kilómetro y la hora de espera.
+
+### ¿La tarifa es diferente los domingos y feriados?
+
+Sí. Los domingos y feriados se cobra todo el día la Tarifa 2, con el mismo recargo del 20 % que de noche. El recargo no se acumula: un domingo a la noche también es 20 %.
+
+### ¿Cómo pido un taxi en Fray Bentos?
+
+Elegí el taxi según lo que lleves y escribile directo por WhatsApp: podés pedirlo ahora o reservarlo para más tarde. También podés tomarlo en una de las paradas de la ciudad.
+
+### ¿Cuánto se paga por las valijas en el taxi?
+
+La primera valija va sin cargo. Cada valija extra se cobra hasta $ 29,27, también de noche, porque las valijas no llevan recargo.
+
+### ¿Puedo tomar un taxi para ir a otra ciudad, como Gualeguaychú?
+
+Sí. Podés subirte a un taxi en Fray Bentos e ir al destino que quieras, también a otra ciudad o a Gualeguaychú. Lo que el taxi no puede hacer es levantar pasajeros nuevos fuera de Fray Bentos, que incluye la ciudad, Las Cañas y el Puente San Martín. Fuera de la planta urbana, el kilómetro cuesta $ 55,36 de día.
+
+### ¿Hay taxis las 24 horas en Fray Bentos?
+
+Sí. Podés pedir un taxi a cualquier hora por WhatsApp o reservarlo para más tarde, con choferes habilitados por la Intendencia de Río Negro.
+
+### ¿Cuánto cobra el taxi por esperarme?
+
+La hora de espera cuesta $ 451,96 de día; de noche, domingos y feriados lleva el recargo del 20 %. El taxímetro la cuenta por tiempo mientras el auto está parado o va muy despacio.
+
+### ¿Dónde hay paradas de taxi en Fray Bentos?
+
+Hay paradas en Plaza Constitución (18 de Julio y Treinta y Tres), Banco República (BROU) (Libertador J. A. Lavalleja y 25 de Mayo), Plaza Artigas (18 de Julio y Las Piedras), Hospital Dr. Ángel M. Cuervo (Pte. Manuel Oribe y Echeverría) y Terminal de Ómnibus (18 de Julio y Juan Manuel Blanes).
+
+## Secciones
+
+- [Taxis](https://mrofer.github.io/taxi-fray-bentos//taxi-fray-bentos/#taxis)
+- [Paradas](https://mrofer.github.io/taxi-fray-bentos//taxi-fray-bentos/#paradas)
+- [Tarifas](https://mrofer.github.io/taxi-fray-bentos//taxi-fray-bentos/#tarifas)
+- [Para choferes](https://mrofer.github.io/taxi-fray-bentos//taxi-fray-bentos/#choferes)
+- [Preguntas frecuentes](https://mrofer.github.io/taxi-fray-bentos//taxi-fray-bentos/#preguntas)

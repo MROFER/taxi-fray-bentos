@@ -1,0 +1,1 @@
+var e=e=>document.getElementById(e),t=()=>matchMedia(`(prefers-reduced-motion: reduce)`).matches,n;function r(t){let r=e(`toast`);r.textContent=t,r.classList.add(`on`),clearTimeout(n),n=window.setTimeout(()=>r.classList.remove(`on`),3800)}function i(e,t){e.classList.remove(t),e.offsetWidth,e.classList.add(t)}export{r as i,t as n,i as r,e as t};
