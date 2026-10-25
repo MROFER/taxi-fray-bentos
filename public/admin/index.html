@@ -4,11 +4,208 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
     <title>Panel · Taxi Fray Bentos</title>
     <link rel="icon" href="../favicon.svg" />
+    <style>
+      :root { --ink: #1b1a17; --ink-2: #2a2822; --ink-3: #3a372f; --paper: #f2ecdf; --yellow: #f2b705; --muted: #b9b2a3; --error: #ff8a80; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--ink); color: var(--paper); font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; }
+      #ingreso { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+      .caja { width: 100%; max-width: 380px; }
+      .marca { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+      .marca img { width: 44px; height: 44px; border-radius: 8px; }
+      .marca b { display: block; font-size: 20px; letter-spacing: 0.02em; }
+      .marca span { color: var(--muted); font-size: 14px; }
+      h1 { font-size: 22px; margin: 0 0 6px; }
+      p { margin: 0 0 18px; color: var(--muted); font-size: 15px; }
+      label { display: block; font-size: 14px; font-weight: 600; margin: 14px 0 6px; }
+      input { width: 100%; font: inherit; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--ink-3); background: var(--ink-2); color: var(--paper); }
+      input:focus { outline: 3px solid var(--yellow); outline-offset: 1px; border-color: transparent; }
+      .clave { position: relative; }
+      .clave input { padding-right: 74px; }
+      .ver { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--yellow); font: inherit; font-size: 14px; padding: 8px; cursor: pointer; }
+      button.principal { width: 100%; margin-top: 22px; min-height: 48px; border: 0; border-radius: 8px; background: var(--yellow); color: var(--ink); font: inherit; font-weight: 700; cursor: pointer; }
+      button.principal:disabled { opacity: 0.6; cursor: wait; }
+      .enlace { display: inline-block; margin-top: 18px; background: none; border: 0; padding: 4px 0; color: var(--yellow); font: inherit; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+      .aviso { margin-top: 16px; padding: 12px 14px; border-radius: 8px; font-size: 15px; background: var(--ink-2); border-left: 4px solid var(--yellow); color: var(--paper); }
+      .aviso.error { border-left-color: var(--error); }
+      .aviso:empty { display: none; }
+      [hidden] { display: none !important; }
+    </style>
   </head>
   <body>
-    <!-- Panel de administración (Sveltia CMS): edita los archivos de src/content en GitHub; cada cambio publica el sitio solo. -->
-    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+    <!--
+      Panel de administración (Sveltia CMS). Antes de abrirlo, esta página pide mail y contraseña (ver public/api/panel/):
+      el servidor guarda la llave de GitHub y le pasa al panel los pedidos solo con la sesión abierta.
+    -->
+    <main id="ingreso" hidden>
+      <div class="caja">
+        <div class="marca">
+          <img src="../icon-192.png" alt="" />
+          <div><b>Taxi Fray Bentos</b><span>Panel de administración</span></div>
+        </div>
+
+        <form id="f-entrar" hidden>
+          <h1>Ingresar</h1>
+          <label for="e-correo">Mail</label>
+          <input id="e-correo" name="correo" type="email" autocomplete="username" required />
+          <label for="e-clave">Contraseña</label>
+          <div class="clave">
+            <input id="e-clave" name="clave" type="password" autocomplete="current-password" required />
+            <button type="button" class="ver">Ver</button>
+          </div>
+          <button class="principal" type="submit">Entrar</button>
+          <button type="button" class="enlace" data-ir="f-recuperar">¿Primera vez u olvidaste la contraseña?</button>
+        </form>
+
+        <form id="f-recuperar" hidden>
+          <h1>Elegir contraseña</h1>
+          <p>Escribí tu mail y te mandamos un enlace para elegir una contraseña nueva.</p>
+          <label for="r-correo">Mail</label>
+          <input id="r-correo" name="correo" type="email" autocomplete="username" required />
+          <button class="principal" type="submit">Mandarme el enlace</button>
+          <button type="button" class="enlace" data-ir="f-entrar">Volver</button>
+        </form>
+
+        <form id="f-restablecer" hidden>
+          <h1>Contraseña nueva</h1>
+          <p>Mínimo 10 caracteres. Una frase corta que recuerdes es más segura que una palabra con símbolos.</p>
+          <label for="n-clave">Contraseña nueva</label>
+          <div class="clave">
+            <input id="n-clave" name="clave" type="password" autocomplete="new-password" minlength="10" required />
+            <button type="button" class="ver">Ver</button>
+          </div>
+          <label for="n-repetir">Repetila</label>
+          <input id="n-repetir" type="password" autocomplete="new-password" minlength="10" required />
+          <button class="principal" type="submit">Guardar y entrar</button>
+        </form>
+
+        <div id="aviso" class="aviso" role="status" aria-live="polite"></div>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        const API = '/api/panel/';
+        // Cuenta guardada que lee el panel al arrancar. El "token" es de mentira: la llave real queda en el servidor.
+        const CUENTA = 'sveltia-cms.user';
+        const PANEL = 'https://unpkg.com/@sveltia/cms@0.229.0/dist/sveltia-cms.js';
+        const $ = (id) => document.getElementById(id);
+        const aviso = $('aviso');
+        const ERRORES = {
+          datos: 'Mail o contraseña incorrectos.',
+          demasiados: 'Demasiados intentos. Esperá 15 minutos y probá de nuevo.',
+          enlace: 'El enlace venció o ya se usó. Pedí uno nuevo.',
+          corta: 'La contraseña tiene que tener al menos 10 caracteres.',
+          'sin-configurar': 'Falta configurar el servidor (taxi-config.php).',
+          base: 'Hubo un problema en el servidor. Probá de nuevo en un rato.',
+        };
+
+        const decir = (texto, error = false) => {
+          aviso.textContent = texto;
+          aviso.classList.toggle('error', error);
+        };
+        const mostrar = (id) => {
+          $('ingreso').hidden = false;
+          for (const f of document.forms) f.hidden = f.id !== id;
+          decir('');
+          $(id).querySelector('input')?.focus();
+        };
+        async function api(nombre, datos) {
+          try {
+            const r = await fetch(API + nombre, {
+              method: datos ? 'POST' : 'GET',
+              headers: datos ? { 'Content-Type': 'application/json' } : {},
+              body: datos ? JSON.stringify(datos) : undefined,
+              credentials: 'same-origin',
+              cache: 'no-store',
+            });
+            const j = await r.json().catch(() => ({}));
+            return { estado: r.status, ...j };
+          } catch {
+            return { estado: 0, error: 'red' };
+          }
+        }
+        const error = (r) => ERRORES[r.error] || 'No se pudo conectar. Revisá internet y probá de nuevo.';
+
+        function abrirPanel() {
+          localStorage.setItem(CUENTA, JSON.stringify({ backendName: 'github', token: 'sesion-en-el-servidor' }));
+          $('ingreso').remove();
+          const s = document.createElement('script');
+          s.src = PANEL;
+          document.body.append(s);
+          // "Cerrar sesión" del panel (o la sesión vencida) borra la cuenta guardada: se cierra también en el servidor.
+          setInterval(async () => {
+            const c = localStorage.getItem(CUENTA);
+            if (c && c !== '{}') return;
+            await api('salir.php', {});
+            localStorage.removeItem(CUENTA);
+            location.replace(location.pathname);
+          }, 1000);
+        }
+
+        for (const b of document.querySelectorAll('.ver')) {
+          b.addEventListener('click', () => {
+            const i = b.previousElementSibling;
+            i.type = i.type === 'password' ? 'text' : 'password';
+            b.textContent = i.type === 'password' ? 'Ver' : 'Ocultar';
+          });
+        }
+        for (const b of document.querySelectorAll('[data-ir]')) {
+          b.addEventListener('click', () => {
+            const correo = document.querySelector('form:not([hidden]) input[type=email]')?.value;
+            mostrar(b.dataset.ir);
+            const destino = $(b.dataset.ir).querySelector('input[type=email]');
+            if (destino && correo) destino.value = correo;
+          });
+        }
+        const enviando = (form, si) => (form.querySelector('.principal').disabled = si);
+
+        $('f-entrar').addEventListener('submit', async (ev) => {
+          ev.preventDefault();
+          enviando(ev.target, true);
+          const r = await api('entrar.php', { correo: $('e-correo').value, clave: $('e-clave').value });
+          enviando(ev.target, false);
+          if (r.ok) return abrirPanel();
+          decir(error(r), true);
+        });
+
+        $('f-recuperar').addEventListener('submit', async (ev) => {
+          ev.preventDefault();
+          enviando(ev.target, true);
+          const r = await api('recuperar.php', { correo: $('r-correo').value });
+          enviando(ev.target, false);
+          if (r.ok) decir('Si ese mail está habilitado, te llegó un enlace (vale 1 hora). Mirá también en correo no deseado.');
+          else decir(error(r), true);
+        });
+
+        $('f-restablecer').addEventListener('submit', async (ev) => {
+          ev.preventDefault();
+          if ($('n-clave').value !== $('n-repetir').value) return decir('Las dos contraseñas no coinciden.', true);
+          enviando(ev.target, true);
+          const codigo = new URLSearchParams(location.hash.slice(1)).get('restablecer');
+          const r = await api('restablecer.php', { codigo, clave: $('n-clave').value });
+          enviando(ev.target, false);
+          if (!r.ok) return decir(error(r), true);
+          history.replaceState(null, '', location.pathname);
+          abrirPanel();
+        });
+
+        // El enlace del mail abierto en esta misma pestaña solo cambia el "#": no recarga la página.
+        addEventListener('hashchange', () => {
+          if (new URLSearchParams(location.hash.slice(1)).get('restablecer') && $('ingreso')) mostrar('f-restablecer');
+        });
+
+        (async () => {
+          if (new URLSearchParams(location.hash.slice(1)).get('restablecer')) return mostrar('f-restablecer');
+          const r = await api('sesion.php');
+          if (r.ok && r.llave) return abrirPanel();
+          mostrar('f-entrar');
+          if (r.ok && !r.llave) decir('Entraste, pero falta la llave de GitHub en el servidor (taxi-config.php). Sin ella el panel no puede guardar.', true);
+          else if (r.estado !== 401) decir(error(r), true);
+        })();
+      })();
+    </script>
   </body>
 </html>

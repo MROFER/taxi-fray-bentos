@@ -6,6 +6,11 @@ backend:
   repo: MROFER/taxi-fray-bentos
   # PRUEBA: guarda en la rama panel-admin (copia de prueba en GitHub Pages). Al publicar el panel, volver a main.
   branch: panel-admin
+  # Ingreso con mail y contraseña: el panel le habla a nuestro servidor, que agrega la llave de GitHub
+  # (taxi-config.php) solo si hay sesión abierta. Ver public/api/panel/gh.php.
+  api_root: https://www.taxifraybentos.com.uy/api/panel/gh.php/api/v3
+  graphql_api_root: https://www.taxifraybentos.com.uy/api/panel/gh.php/api/graphql
+  include_credentials: true
   commit_messages:
     create: 'Panel: nueva tarjeta "{{slug}}"'
     update: 'Panel: cambios en "{{slug}}"'

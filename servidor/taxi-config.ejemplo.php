@@ -15,4 +15,11 @@ return [
     ],
     // Texto al azar (cualquiera) para cifrar las IP.
     'sal' => 'cambiar-por-un-texto-al-azar',
+    // Panel /admin/ con mail y contraseña (public/api/panel/).
+    'panel' => [
+        // Token "fine-grained" de GitHub: solo el repositorio MROFER/taxi-fray-bentos, permiso Contents en "Read and write".
+        'github_token' => 'github_pat_…',
+        // Quiénes pueden entrar. Si se deja vacío, entra el correo de avisos ('correo' → 'para').
+        'correos' => [],
+    ],
 ];
